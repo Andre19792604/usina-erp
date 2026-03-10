@@ -1,0 +1,108 @@
+import axios from 'axios'
+
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+
+export const api = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+})
+
+// Inject JWT token on every request
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
+// Handle 401 globally
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('token')
+      window.location.href = '/login'
+    }
+    return Promise.reject(err)
+  }
+)
+
+// ── Auth ─────────────────────────────────────────────────────
+export const authService = {
+  login: (email: string, password: string) =>
+    api.post('/auth/login', { email, password }).then(r => r.data),
+  me: () => api.get('/auth/me').then(r => r.data),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    api.put('/auth/password', { currentPassword, newPassword }),
+}
+
+// ── Clients ───────────────────────────────────────────────────
+export const clientService = {
+  list: (params?: { search?: string; active?: boolean }) =>
+    api.get('/clients', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/clients/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/clients', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/clients/${id}`, data).then(r => r.data),
+  remove: (id: string) => api.delete(`/clients/${id}`).then(r => r.data),
+}
+
+// ── Suppliers ─────────────────────────────────────────────────
+export const supplierService = {
+  list: (params?: { search?: string }) =>
+    api.get('/suppliers', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/suppliers/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/suppliers', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/suppliers/${id}`, data).then(r => r.data),
+  remove: (id: string) => api.delete(`/suppliers/${id}`).then(r => r.data),
+}
+
+// ── Materials ─────────────────────────────────────────────────
+export const materialService = {
+  list: (params?: { search?: string; category?: string }) =>
+    api.get('/materials', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/materials/${id}`).then(r => r.data),
+  movements: (id: string) => api.get(`/materials/${id}/movements`).then(r => r.data),
+  create: (data: any) => api.post('/materials', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/materials/${id}`, data).then(r => r.data),
+}
+
+// ── Production ────────────────────────────────────────────────
+export const productionService = {
+  list: (params?: { status?: string; from?: string; to?: string }) =>
+    api.get('/production', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/production/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/production', data).then(r => r.data),
+  updateStatus: (id: string, data: any) =>
+    api.put(`/production/${id}/status`, data).then(r => r.data),
+  addQualityControl: (id: string, data: any) =>
+    api.post(`/production/${id}/quality`, data).then(r => r.data),
+}
+
+// ── Weight ────────────────────────────────────────────────────
+export const weightService = {
+  list: (params?: { from?: string; to?: string; vehicleId?: string }) =>
+    api.get('/weight', { params }).then(r => r.data),
+  create: (data: any) => api.post('/weight', data).then(r => r.data),
+}
+
+// ── Financial ─────────────────────────────────────────────────
+export const financialService = {
+  dashboard: () => api.get('/financial/dashboard').then(r => r.data),
+  listPayable: (params?: { status?: string }) =>
+    api.get('/financial/payable', { params }).then(r => r.data),
+  createPayable: (data: any) => api.post('/financial/payable', data).then(r => r.data),
+  payPayable: (id: string, data: any) =>
+    api.put(`/financial/payable/${id}/pay`, data).then(r => r.data),
+  listReceivable: (params?: { status?: string }) =>
+    api.get('/financial/receivable', { params }).then(r => r.data),
+  createReceivable: (data: any) => api.post('/financial/receivable', data).then(r => r.data),
+  receivePayment: (id: string, data: any) =>
+    api.put(`/financial/receivable/${id}/receive`, data).then(r => r.data),
+}
+
+// ── Users ─────────────────────────────────────────────────────
+export const userService = {
+  list: () => api.get('/users').then(r => r.data),
+  create: (data: any) => api.post('/users', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/users/${id}`, data).then(r => r.data),
+  remove: (id: string) => api.delete(`/users/${id}`).then(r => r.data),
+}

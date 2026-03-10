@@ -12,6 +12,7 @@ import {
   InboxOutlined, ShopOutlined, BellOutlined, FileTextOutlined,
   ApartmentOutlined, BarChartOutlined,
 } from '@ant-design/icons'
+import { useAuth } from '../contexts/AuthContext'
 
 const { Sider, Header, Content } = Layout
 const { Text } = Typography
@@ -82,11 +83,15 @@ export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+  const { user, logout } = useAuth()
 
   const userMenuItems: MenuProps['items'] = [
     { key: 'profile', icon: <UserOutlined />, label: 'Meu Perfil' },
     { type: 'divider' },
-    { key: 'logout', icon: <LogoutOutlined />, label: 'Sair', danger: true },
+    {
+      key: 'logout', icon: <LogoutOutlined />, label: 'Sair', danger: true,
+      onClick: () => { logout(); navigate('/login') },
+    },
   ]
 
   return (
@@ -194,14 +199,14 @@ export default function MainLayout() {
                   style={{ background: '#f59e0b', color: '#0f172a', fontWeight: 700 }}
                   size={32}
                 >
-                  A
+                  {user?.name?.charAt(0) ?? 'U'}
                 </Avatar>
                 {!collapsed && (
                   <div>
                     <Text style={{ color: '#e2e8f0', fontSize: 13, display: 'block', lineHeight: '16px' }}>
-                      Administrador
+                      {user?.name ?? 'Usuário'}
                     </Text>
-                    <Text style={{ color: '#64748b', fontSize: 11 }}>Admin</Text>
+                    <Text style={{ color: '#64748b', fontSize: 11 }}>{user?.role ?? ''}</Text>
                   </div>
                 )}
               </Space>

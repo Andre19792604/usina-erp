@@ -1,4 +1,7 @@
+import React from "react"
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Spin } from 'antd'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import MainLayout from './layouts/MainLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
@@ -18,11 +21,17 @@ import MaterialsPage from './pages/MaterialsPage'
 import VehiclesPage from './pages/VehiclesPage'
 import UsersPage from './pages/UsersPage'
 
-export default function App() {
+function PrivateRoute({ children }: { children: React.ReactElement }) {
+  const { isAuthenticated, loading } = useAuth()
+  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Spin size="large" /></div>
+  return isAuthenticated ? children : <Navigate to="/login" replace />
+}
+
+function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<MainLayout />}>
+      <Route path="/" element={<PrivateRoute><MainLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="producao" element={<ProductionPage />} />
@@ -43,5 +52,13 @@ export default function App() {
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   )
 }
