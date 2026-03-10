@@ -1,9 +1,11 @@
 import 'dotenv/config'
+import http from 'http'
 import express from 'express'
 import cors from 'cors'
 import { router } from './routes'
 import { errorHandler } from './middleware/errorHandler'
 import { logger } from './utils/logger'
+import { setupWebSocket } from './services/integrations/websocket.service'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -19,7 +21,10 @@ app.get('/health', (_req, res) => {
 app.use('/api', router)
 app.use(errorHandler)
 
-app.listen(PORT, () => {
+const server = http.createServer(app)
+setupWebSocket(server)
+
+server.listen(PORT, () => {
   logger.info(`Servidor rodando na porta ${PORT}`)
 })
 
