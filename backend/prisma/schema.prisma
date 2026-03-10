@@ -1,0 +1,817 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── AUTENTICAÇÃO ────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  GERENTE
+  OPERADOR
+  FINANCEIRO
+  VENDAS
+  COMPRAS
+  BALANCA
+  MANUTENCAO
+  VIEWER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(OPERADOR)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productionOrders  ProductionOrder[]
+  weightTickets     WeightTicket[]
+  maintenanceOrders MaintenanceOrder[]
+  purchaseOrders    PurchaseOrder[]
+  salesOrders       SalesOrder[]
+
+  @@map("users")
+}
+
+// ─── CADASTROS ───────────────────────────────────────────────
+
+model Client {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  name         String
+  tradeName    String?
+  cnpjCpf      String   @unique
+  stateReg     String?
+  email        String?
+  phone        String?
+  address      String?
+  city         String?
+  state        String?
+  zipCode      String?
+  creditLimit  Decimal  @default(0) @db.Decimal(14, 2)
+  active       Boolean  @default(true)
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  salesOrders  SalesOrder[]
+  quotes       Quote[]
+  contracts    Contract[]
+  invoices     Invoice[]
+
+  @@map("clients")
+}
+
+model Supplier {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  tradeName   String?
+  cnpjCpf     String   @unique
+  stateReg    String?
+  email       String?
+  phone       String?
+  address     String?
+  city        String?
+  state       String?
+  zipCode     String?
+  active      Boolean  @default(true)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  purchaseOrders PurchaseOrder[]
+  accountsPayable AccountPayable[]
+
+  @@map("suppliers")
+}
+
+model Employee {
+  id         String    @id @default(cuid())
+  code       String    @unique
+  name       String
+  cpf        String    @unique
+  role       String
+  department String?
+  phone      String?
+  email      String?
+  hireDate   DateTime
+  fireDate   DateTime?
+  salary     Decimal   @db.Decimal(12, 2)
+  active     Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("employees")
+}
+
+enum VehicleType {
+  TRUCK
+  TANKER
+  PICKUP
+  MACHINE
+  OTHER
+}
+
+model Vehicle {
+  id           String      @id @default(cuid())
+  plate        String      @unique
+  type         VehicleType
+  brand        String?
+  model        String?
+  year         Int?
+  capacity     Decimal?    @db.Decimal(10, 2)  // toneladas
+  tare         Decimal?    @db.Decimal(10, 2)  // tara (kg)
+  active       Boolean     @default(true)
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  weightTickets    WeightTicket[]
+  maintenanceOrders MaintenanceOrder[]
+
+  @@map("vehicles")
+}
+
+// ─── MATERIAIS E PRODUTOS ────────────────────────────────────
+
+enum MaterialUnit {
+  TON
+  KG
+  LITRO
+  M3
+  UNIDADE
+}
+
+enum MaterialCategory {
+  CAP           // Cimento Asfáltico de Petróleo
+  AGREGADO_GRAU // Brita graduada
+  PEDRISCO      // Pedrisco
+  PO_PEDRA      // Pó de pedra
+  AREIA
+  CAL
+  ADITIVO
+  OLEO_BPF      // Óleo BPF (combustível queimador)
+  DIESEL
+  COMBUSTIVEL
+  OUTRO
+}
+
+enum StockOwner {
+  USINA    // Estoque da empresa
+  CLIENTE  // Material fornecido pelo cliente
+}
+
+model Material {
+  id           String           @id @default(cuid())
+  code         String           @unique
+  name         String
+  category     MaterialCategory
+  unit         MaterialUnit
+  density      Decimal?         @db.Decimal(8, 4)  // g/cm³
+  minStock     Decimal          @default(0) @db.Decimal(14, 2)
+  currentStock Decimal          @default(0) @db.Decimal(14, 2)
+  unitCost     Decimal          @default(0) @db.Decimal(14, 4)
+  active       Boolean          @default(true)
+  notes        String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  stockMovements    StockMovement[]
+  formulaItems      FormulaItem[]
+  purchaseOrderItems PurchaseOrderItem[]
+
+  @@map("materials")
+}
+
+enum MixtureType {
+  CBUQ    // Concreto Betuminoso Usinado a Quente
+  PMF     // Pré-misturado a Frio
+  TSD     // Tratamento Superficial Duplo
+  TSS     // Tratamento Superficial Simples
+  MICROSF // Microrrevestimento
+  SMA     // Stone Matrix Asphalt
+  OUTRO
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  name        String
+  type        MixtureType
+  description String?
+  unitPrice   Decimal     @default(0) @db.Decimal(14, 4)
+  unit        MaterialUnit @default(TON)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  formulas        Formula[]
+  salesOrderItems SalesOrderItem[]
+  quoteItems      QuoteItem[]
+  productionOrders ProductionOrder[]
+
+  @@map("products")
+}
+
+model Formula {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  version     Int      @default(1)
+  active      Boolean  @default(true)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items            FormulaItem[]
+  productionOrders ProductionOrder[]
+
+  @@map("formulas")
+}
+
+model FormulaItem {
+  id         String   @id @default(cuid())
+  formulaId  String
+  formula    Formula  @relation(fields: [formulaId], references: [id])
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
+  percentage Decimal  @db.Decimal(8, 4) // % em massa
+  createdAt  DateTime @default(now())
+
+  @@unique([formulaId, materialId])
+  @@map("formula_items")
+}
+
+// ─── PRODUÇÃO ────────────────────────────────────────────────
+
+enum ProductionStatus {
+  PLANNED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+model ProductionOrder {
+  id               String           @id @default(cuid())
+  number           String           @unique
+  productId        String
+  product          Product          @relation(fields: [productId], references: [id])
+  formulaId        String?
+  formula          Formula?         @relation(fields: [formulaId], references: [id])
+  plannedQty       Decimal          @db.Decimal(14, 2) // toneladas
+  producedQty      Decimal          @default(0) @db.Decimal(14, 2)
+  status           ProductionStatus @default(PLANNED)
+  scheduledDate    DateTime
+  startedAt        DateTime?
+  completedAt      DateTime?
+  operatorId       String?
+  operator         User?            @relation(fields: [operatorId], references: [id])
+  temperature      Decimal?         @db.Decimal(6, 2) // temperatura de usinagem °C
+  notes            String?
+  salesOrderId     String?
+  salesOrder       SalesOrder?      @relation(fields: [salesOrderId], references: [id])
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  qualityControls QualityControl[]
+  stockMovements  StockMovement[]
+
+  @@map("production_orders")
+}
+
+model QualityControl {
+  id                String          @id @default(cuid())
+  productionOrderId String
+  productionOrder   ProductionOrder @relation(fields: [productionOrderId], references: [id])
+  testedAt          DateTime        @default(now())
+  temperature       Decimal?        @db.Decimal(6, 2)
+  density           Decimal?        @db.Decimal(8, 4)
+  vv                Decimal?        @db.Decimal(6, 2)  // Vazios no Concreto
+  vam               Decimal?        @db.Decimal(6, 2)  // Vazios no Agregado Mineral
+  rbd               Decimal?        @db.Decimal(8, 4)  // Relação Betume/Densid.
+  stability         Decimal?        @db.Decimal(10, 2) // Estabilidade Marshall (kgf)
+  fluency           Decimal?        @db.Decimal(6, 2)  // Fluência (mm)
+  approved          Boolean         @default(true)
+  notes             String?
+  createdAt         DateTime        @default(now())
+
+  @@map("quality_controls")
+}
+
+// ─── ESTOQUE DA USINA ────────────────────────────────────────
+
+enum MovementType {
+  ENTRADA_COMPRA
+  ENTRADA_DEVOLUCAO
+  SAIDA_PRODUCAO
+  SAIDA_VENDA
+  SAIDA_PERDA
+  AJUSTE_INVENTARIO
+  TRANSFERENCIA
+}
+
+model StockMovement {
+  id                String          @id @default(cuid())
+  materialId        String
+  material          Material        @relation(fields: [materialId], references: [id])
+  type              MovementType
+  quantity          Decimal         @db.Decimal(14, 2)
+  unitCost          Decimal         @db.Decimal(14, 4)
+  totalCost         Decimal         @db.Decimal(14, 2)
+  balance           Decimal         @db.Decimal(14, 2) // saldo após movimentação
+  productionOrderId String?
+  productionOrder   ProductionOrder? @relation(fields: [productionOrderId], references: [id])
+  purchaseOrderId   String?
+  purchaseOrder     PurchaseOrder?  @relation(fields: [purchaseOrderId], references: [id])
+  lossId            String?
+  loss              OperationalLoss? @relation(fields: [lossId], references: [id])
+  notes             String?
+  occurredAt        DateTime        @default(now())
+  createdAt         DateTime        @default(now())
+
+  @@map("stock_movements")
+}
+
+// ─── ESTOQUE DE CLIENTES ─────────────────────────────────────
+// Materiais fornecidos pelo cliente (ex: CAP, agregados)
+
+enum ClientStockMovementType {
+  ENTRADA       // cliente entrega material
+  CONSUMO       // usado na produção do pedido do cliente
+  PERDA         // perda operacional
+  AJUSTE
+}
+
+model ClientStock {
+  id         String   @id @default(cuid())
+  clientId   String
+  client     Client   @relation(fields: [clientId], references: [id])
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
+  balance    Decimal  @default(0) @db.Decimal(14, 2)
+  updatedAt  DateTime @updatedAt
+
+  movements ClientStockMovement[]
+
+  @@unique([clientId, materialId])
+  @@map("client_stocks")
+}
+
+model ClientStockMovement {
+  id             String                   @id @default(cuid())
+  clientStockId  String
+  clientStock    ClientStock              @relation(fields: [clientStockId], references: [id])
+  type           ClientStockMovementType
+  quantity       Decimal                  @db.Decimal(14, 2)
+  balance        Decimal                  @db.Decimal(14, 2)
+  salesOrderId   String?
+  salesOrder     SalesOrder?              @relation(fields: [salesOrderId], references: [id])
+  notes          String?
+  occurredAt     DateTime                 @default(now())
+  createdAt      DateTime                 @default(now())
+
+  @@map("client_stock_movements")
+}
+
+// ─── PERDAS OPERACIONAIS ─────────────────────────────────────
+
+enum LossReason {
+  TEMPERATURA   // descarte por temperatura incorreta
+  UMIDADE
+  CONTAMINACAO
+  EQUIPAMENTO
+  OUTRO
+}
+
+model OperationalLoss {
+  id                String          @id @default(cuid())
+  productionOrderId String?
+  productionOrder   ProductionOrder? @relation(fields: [productionOrderId], references: [id])
+  quantity          Decimal         @db.Decimal(14, 2) // toneladas descartadas
+  reason            LossReason
+  temperature       Decimal?        @db.Decimal(6, 2)
+  description       String?
+  registeredById    String?
+  occurredAt        DateTime        @default(now())
+  createdAt         DateTime        @default(now())
+
+  stockMovements StockMovement[]
+
+  @@map("operational_losses")
+}
+
+// ─── ENSAIOS DE LABORATÓRIO (Controle Tecnológico) ───────────
+
+model LabTest {
+  id                String          @id @default(cuid())
+  number            String          @unique
+  productionOrderId String?
+  productionOrder   ProductionOrder? @relation(fields: [productionOrderId], references: [id])
+  productId         String?
+  product           Product?        @relation(fields: [productId], references: [id])
+  testedAt          DateTime        @default(now())
+  technicianName    String?
+  // Parâmetros Marshall
+  temperature       Decimal?        @db.Decimal(6, 2)
+  capContent        Decimal?        @db.Decimal(6, 3)  // % CAP
+  density           Decimal?        @db.Decimal(8, 4)  // g/cm³
+  vv                Decimal?        @db.Decimal(6, 2)  // Vazios no Concreto (%)
+  vam               Decimal?        @db.Decimal(6, 2)  // Vazios Agregado Mineral (%)
+  rbv               Decimal?        @db.Decimal(6, 2)  // Relação Betume/Vazios (%)
+  stability         Decimal?        @db.Decimal(10, 2) // Estabilidade (kgf)
+  fluency           Decimal?        @db.Decimal(6, 2)  // Fluência (mm)
+  // Limites normativos (DNIT/ABNT)
+  stabilityMin      Decimal?        @db.Decimal(10, 2)
+  vvMin             Decimal?        @db.Decimal(6, 2)
+  vvMax             Decimal?        @db.Decimal(6, 2)
+  approved          Boolean         @default(true)
+  pdfPath           String?
+  notes             String?
+  createdAt         DateTime        @default(now())
+
+  @@map("lab_tests")
+}
+
+// ─── BALANÇA / PESAGEM ───────────────────────────────────────
+
+enum TicketType {
+  ENTRADA
+  SAIDA
+}
+
+model WeightTicket {
+  id           String     @id @default(cuid())
+  number       String     @unique
+  vehicleId    String
+  vehicle      Vehicle    @relation(fields: [vehicleId], references: [id])
+  type         TicketType
+  driverName   String?
+  grossWeight  Decimal    @db.Decimal(10, 2) // kg
+  tare         Decimal    @db.Decimal(10, 2) // kg
+  netWeight    Decimal    @db.Decimal(10, 2) // kg
+  operatorId   String?
+  operator     User?      @relation(fields: [operatorId], references: [id])
+  salesOrderId String?
+  salesOrder   SalesOrder? @relation(fields: [salesOrderId], references: [id])
+  notes        String?
+  weighedAt    DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+
+  @@map("weight_tickets")
+}
+
+// ─── VENDAS ──────────────────────────────────────────────────
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+model Quote {
+  id          String      @id @default(cuid())
+  number      String      @unique
+  clientId    String
+  client      Client      @relation(fields: [clientId], references: [id])
+  status      QuoteStatus @default(DRAFT)
+  validUntil  DateTime
+  totalAmount Decimal     @db.Decimal(14, 2)
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  items      QuoteItem[]
+  salesOrders SalesOrder[]
+
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id        String  @id @default(cuid())
+  quoteId   String
+  quote     Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Decimal @db.Decimal(14, 2)
+  unitPrice Decimal @db.Decimal(14, 4)
+  total     Decimal @db.Decimal(14, 2)
+
+  @@map("quote_items")
+}
+
+enum SalesOrderStatus {
+  OPEN
+  IN_PRODUCTION
+  READY
+  DELIVERING
+  COMPLETED
+  CANCELLED
+}
+
+model SalesOrder {
+  id           String           @id @default(cuid())
+  number       String           @unique
+  clientId     String
+  client       Client           @relation(fields: [clientId], references: [id])
+  quoteId      String?
+  quote        Quote?           @relation(fields: [quoteId], references: [id])
+  status       SalesOrderStatus @default(OPEN)
+  deliveryDate DateTime?
+  address      String?
+  totalAmount  Decimal          @db.Decimal(14, 2)
+  notes        String?
+  operatorId   String?
+  operator     User?            @relation(fields: [operatorId], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  items            SalesOrderItem[]
+  productionOrders ProductionOrder[]
+  weightTickets    WeightTicket[]
+  invoices         Invoice[]
+  accountsReceivable AccountReceivable[]
+
+  @@map("sales_orders")
+}
+
+model SalesOrderItem {
+  id           String     @id @default(cuid())
+  salesOrderId String
+  salesOrder   SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product    @relation(fields: [productId], references: [id])
+  quantity     Decimal    @db.Decimal(14, 2)
+  unitPrice    Decimal    @db.Decimal(14, 4)
+  total        Decimal    @db.Decimal(14, 2)
+
+  @@map("sales_order_items")
+}
+
+enum ContractStatus {
+  ACTIVE
+  SUSPENDED
+  FINISHED
+  CANCELLED
+}
+
+model Contract {
+  id          String         @id @default(cuid())
+  number      String         @unique
+  clientId    String
+  client      Client         @relation(fields: [clientId], references: [id])
+  status      ContractStatus @default(ACTIVE)
+  startDate   DateTime
+  endDate     DateTime?
+  totalValue  Decimal        @db.Decimal(14, 2)
+  description String?
+  filePath    String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("contracts")
+}
+
+// ─── COMPRAS ─────────────────────────────────────────────────
+
+enum PurchaseOrderStatus {
+  DRAFT
+  SENT
+  PARTIAL
+  RECEIVED
+  CANCELLED
+}
+
+model PurchaseOrder {
+  id           String              @id @default(cuid())
+  number       String              @unique
+  supplierId   String
+  supplier     Supplier            @relation(fields: [supplierId], references: [id])
+  status       PurchaseOrderStatus @default(DRAFT)
+  expectedDate DateTime?
+  totalAmount  Decimal             @db.Decimal(14, 2)
+  notes        String?
+  operatorId   String?
+  operator     User?               @relation(fields: [operatorId], references: [id])
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  items          PurchaseOrderItem[]
+  stockMovements StockMovement[]
+  accountsPayable AccountPayable[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  materialId      String
+  material        Material      @relation(fields: [materialId], references: [id])
+  quantity        Decimal       @db.Decimal(14, 2)
+  unitPrice       Decimal       @db.Decimal(14, 4)
+  total           Decimal       @db.Decimal(14, 2)
+  receivedQty     Decimal       @default(0) @db.Decimal(14, 2)
+
+  @@map("purchase_order_items")
+}
+
+// ─── FINANCEIRO ──────────────────────────────────────────────
+
+enum PaymentStatus {
+  OPEN
+  PARTIAL
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  DINHEIRO
+  BOLETO
+  PIX
+  TRANSFERENCIA
+  CHEQUE
+  CARTAO
+}
+
+model AccountPayable {
+  id              String        @id @default(cuid())
+  supplierId      String
+  supplier        Supplier      @relation(fields: [supplierId], references: [id])
+  purchaseOrderId String?
+  purchaseOrder   PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  description     String
+  amount          Decimal       @db.Decimal(14, 2)
+  paidAmount      Decimal       @default(0) @db.Decimal(14, 2)
+  dueDate         DateTime
+  paidAt          DateTime?
+  status          PaymentStatus @default(OPEN)
+  paymentMethod   PaymentMethod?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("accounts_payable")
+}
+
+model AccountReceivable {
+  id           String        @id @default(cuid())
+  salesOrderId String?
+  salesOrder   SalesOrder?   @relation(fields: [salesOrderId], references: [id])
+  description  String
+  amount       Decimal       @db.Decimal(14, 2)
+  paidAmount   Decimal       @default(0) @db.Decimal(14, 2)
+  dueDate      DateTime
+  paidAt       DateTime?
+  status       PaymentStatus @default(OPEN)
+  paymentMethod PaymentMethod?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("accounts_receivable")
+}
+
+// ─── NOTA FISCAL ─────────────────────────────────────────────
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  CANCELLED
+}
+
+model Invoice {
+  id           String        @id @default(cuid())
+  number       String        @unique
+  series       String        @default("001")
+  clientId     String
+  client       Client        @relation(fields: [clientId], references: [id])
+  salesOrderId String?
+  salesOrder   SalesOrder?   @relation(fields: [salesOrderId], references: [id])
+  status       InvoiceStatus @default(DRAFT)
+  issuedAt     DateTime?
+  totalAmount  Decimal       @db.Decimal(14, 2)
+  taxAmount    Decimal       @default(0) @db.Decimal(14, 2)
+  xmlPath      String?
+  pdfPath      String?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("invoices")
+}
+
+// ─── MANUTENÇÃO ──────────────────────────────────────────────
+
+enum EquipmentCategory {
+  USINA
+  VEICULO
+  BALANCA
+  ELETRICO
+  HIDRAULICO
+  OUTRO
+}
+
+model Equipment {
+  id           String            @id @default(cuid())
+  code         String            @unique
+  name         String
+  category     EquipmentCategory
+  brand        String?
+  model        String?
+  serialNumber String?
+  purchaseDate DateTime?
+  active       Boolean           @default(true)
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  maintenanceOrders MaintenanceOrder[]
+
+  @@map("equipments")
+}
+
+enum MaintenanceType {
+  PREVENTIVE
+  CORRECTIVE
+  PREDICTIVE
+}
+
+enum MaintenanceStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model MaintenanceOrder {
+  id           String            @id @default(cuid())
+  number       String            @unique
+  equipmentId  String?
+  equipment    Equipment?        @relation(fields: [equipmentId], references: [id])
+  vehicleId    String?
+  vehicle      Vehicle?          @relation(fields: [vehicleId], references: [id])
+  type         MaintenanceType
+  status       MaintenanceStatus @default(OPEN)
+  description  String
+  scheduledAt  DateTime?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  cost         Decimal?          @db.Decimal(14, 2)
+  technicianId String?
+  technician   User?             @relation(fields: [technicianId], references: [id])
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@map("maintenance_orders")
+}
+
+// ─── INTEGRAÇÃO BALANÇA RODOVIÁRIA ───────────────────────────
+// Leituras automáticas recebidas da balança (serial/TCP)
+
+model ScaleReading {
+  id          String   @id @default(cuid())
+  rawData     String   // dado bruto recebido
+  grossWeight Decimal? @db.Decimal(10, 2)
+  stable      Boolean  @default(false) // peso estabilizado
+  readAt      DateTime @default(now())
+  usedIn      String?  // ID do WeightTicket gerado com essa leitura
+
+  @@map("scale_readings")
+}
+
+// ─── INTEGRAÇÃO MX3000 (Controlador da Usina) ────────────────
+// Dados de temperatura e produção recebidos do controlador
+
+model Mx3000Reading {
+  id                  String   @id @default(cuid())
+  productionOrderId   String?
+  productionOrder     ProductionOrder? @relation(fields: [productionOrderId], references: [id])
+  // Temperaturas (°C)
+  tempDrum            Decimal? @db.Decimal(6, 2)  // tambor secador
+  tempMixer           Decimal? @db.Decimal(6, 2)  // misturador
+  tempCap             Decimal? @db.Decimal(6, 2)  // CAP
+  tempOutput          Decimal? @db.Decimal(6, 2)  // saída da massa
+  // Produção
+  batchWeight         Decimal? @db.Decimal(10, 2) // peso do traço (kg)
+  batchCount          Int?                         // nº de traços
+  totalProduced       Decimal? @db.Decimal(14, 2) // toneladas acumuladas
+  readAt              DateTime @default(now())
+
+  @@map("mx3000_readings")
+}
