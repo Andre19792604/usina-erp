@@ -110,6 +110,65 @@ export const nfeService = {
   downloadXml: (id: string) => api.get(`/nfe/${id}/xml`, { responseType: 'blob' }).then(r => r.data),
 }
 
+// ── Sales ─────────────────────────────────────────────────────
+export const salesService = {
+  listQuotes: (params?: { status?: string }) =>
+    api.get('/quotes', { params }).then(r => r.data),
+  createQuote: (data: any) => api.post('/quotes', data).then(r => r.data),
+  updateQuoteStatus: (id: string, data: any) =>
+    api.put(`/quotes/${id}/status`, data).then(r => r.data),
+  convertQuote: (id: string) => api.post(`/quotes/${id}/convert`, {}).then(r => r.data),
+  listOrders: (params?: { status?: string }) =>
+    api.get('/sales-orders', { params }).then(r => r.data),
+  createOrder: (data: any) => api.post('/sales-orders', data).then(r => r.data),
+  updateOrderStatus: (id: string, data: any) =>
+    api.put(`/sales-orders/${id}/status`, data).then(r => r.data),
+}
+
+// ── Purchase ──────────────────────────────────────────────────
+export const purchaseService = {
+  list: (params?: { status?: string }) =>
+    api.get('/purchase-orders', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/purchase-orders/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/purchase-orders', data).then(r => r.data),
+  receiveItems: (id: string, data: any) =>
+    api.post(`/purchase-orders/${id}/receive`, data).then(r => r.data),
+  cancel: (id: string) => api.put(`/purchase-orders/${id}/cancel`, {}).then(r => r.data),
+}
+
+// ── Vehicles ──────────────────────────────────────────────────
+export const vehicleService = {
+  list: (params?: { search?: string }) =>
+    api.get('/vehicles', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/vehicles/${id}`).then(r => r.data),
+  getByPlate: (plate: string) => api.get(`/vehicles/plate/${plate}`).then(r => r.data),
+  create: (data: any) => api.post('/vehicles', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/vehicles/${id}`, data).then(r => r.data),
+  remove: (id: string) => api.delete(`/vehicles/${id}`).then(r => r.data),
+}
+
+// ── Maintenance ───────────────────────────────────────────────
+export const maintenanceService = {
+  listEquipments: () => api.get('/equipments').then(r => r.data),
+  createEquipment: (data: any) => api.post('/equipments', data).then(r => r.data),
+  updateEquipment: (id: string, data: any) =>
+    api.put(`/equipments/${id}`, data).then(r => r.data),
+  listOrders: (params?: { status?: string }) =>
+    api.get('/maintenance-orders', { params }).then(r => r.data),
+  getOrderById: (id: string) => api.get(`/maintenance-orders/${id}`).then(r => r.data),
+  createOrder: (data: any) => api.post('/maintenance-orders', data).then(r => r.data),
+  updateOrderStatus: (id: string, data: any) =>
+    api.put(`/maintenance-orders/${id}/status`, data).then(r => r.data),
+}
+
+// ── Products / Formulas ───────────────────────────────────────
+export const productService = {
+  listProducts: () => api.get('/products').then(r => r.data),
+  listFormulas: () => api.get('/formulas').then(r => r.data),
+  createProduct: (data: any) => api.post('/products', data).then(r => r.data),
+  createFormula: (data: any) => api.post('/formulas', data).then(r => r.data),
+}
+
 // ── Users ─────────────────────────────────────────────────────
 export const userService = {
   list: () => api.get('/users').then(r => r.data),
