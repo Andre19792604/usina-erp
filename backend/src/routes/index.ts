@@ -13,6 +13,7 @@ import * as purchase from '../controllers/purchase.controller'
 import * as products from '../controllers/products.controller'
 import * as vehicles from '../controllers/vehicles.controller'
 import * as maintenance from '../controllers/maintenance.controller'
+import * as nfe from '../controllers/nfe.controller'
 
 export const router = Router()
 
@@ -112,3 +113,11 @@ router.get('/maintenance-orders', authenticate, maintenance.listOrders)
 router.get('/maintenance-orders/:id', authenticate, maintenance.getOrderById)
 router.post('/maintenance-orders', authenticate, authorize('ADMIN', 'GERENTE', 'MANUTENCAO'), maintenance.createOrder)
 router.put('/maintenance-orders/:id/status', authenticate, maintenance.updateOrderStatus)
+
+// ── NF-e ──────────────────────────────────────────────────────
+router.get('/nfe', authenticate, nfe.list)
+router.get('/nfe/:id', authenticate, nfe.getById)
+router.get('/nfe/:id/xml', authenticate, nfe.getXml)
+router.post('/nfe', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO', 'VENDAS'), nfe.create)
+router.post('/nfe/import-xml', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), nfe.importXml)
+router.put('/nfe/:id/status', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), nfe.updateStatus)

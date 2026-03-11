@@ -99,6 +99,17 @@ export const financialService = {
     api.put(`/financial/receivable/${id}/receive`, data).then(r => r.data),
 }
 
+// ── NF-e ──────────────────────────────────────────────────────
+export const nfeService = {
+  list: (params?: { status?: string; clientId?: string; from?: string; to?: string }) =>
+    api.get('/nfe', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/nfe/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/nfe', data).then(r => r.data),
+  importXml: (xml: string) => api.post('/nfe/import-xml', { xml }).then(r => r.data),
+  updateStatus: (id: string, data: any) => api.put(`/nfe/${id}/status`, data).then(r => r.data),
+  downloadXml: (id: string) => api.get(`/nfe/${id}/xml`, { responseType: 'blob' }).then(r => r.data),
+}
+
 // ── Users ─────────────────────────────────────────────────────
 export const userService = {
   list: () => api.get('/users').then(r => r.data),

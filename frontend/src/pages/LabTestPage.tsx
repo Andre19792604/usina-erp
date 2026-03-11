@@ -4,6 +4,7 @@ import {
   Modal, Form, Select, Input, InputNumber, Divider, Tooltip,
 } from 'antd'
 import { PlusOutlined, FilePdfOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { generateLabPDF } from '../utils/generateLabPDF'
 
 const { Title, Text } = Typography
 
@@ -137,9 +138,15 @@ export default function LabTestPage() {
             {
               title: 'PDF',
               key: 'pdf',
-              render: () => (
+              render: (_: any, record: any) => (
                 <Tooltip title="Gerar relatório PDF">
-                  <Button size="small" icon={<FilePdfOutlined />} style={{ color: '#ef4444', borderColor: '#ef4444' }} ghost>
+                  <Button
+                    size="small"
+                    icon={<FilePdfOutlined />}
+                    style={{ color: '#ef4444', borderColor: '#ef4444' }}
+                    ghost
+                    onClick={() => generateLabPDF(record)}
+                  >
                     PDF
                   </Button>
                 </Tooltip>

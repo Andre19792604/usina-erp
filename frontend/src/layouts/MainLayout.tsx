@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { useWebSocket } from '../hooks/useWebSocket'
 import {
   Layout, Menu, Badge, Avatar, Dropdown, Space, Typography, Button,
 } from 'antd'
@@ -53,9 +54,13 @@ const menuItems: MenuProps['items'] = [
     ],
   },
   {
-    key: '/financeiro',
+    key: 'fiscal',
     icon: <DollarOutlined />,
-    label: 'Financeiro',
+    label: 'Fiscal / Financeiro',
+    children: [
+      { key: '/financeiro', icon: <DollarOutlined />, label: 'Financeiro' },
+      { key: '/nfe', icon: <FileTextOutlined />, label: 'NF-e' },
+    ],
   },
   {
     key: '/manutencao',
@@ -84,6 +89,7 @@ export default function MainLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const { user, logout } = useAuth()
+  const { mx3000Data, scaleReading, wsStatus } = useWebSocket()
 
   const userMenuItems: MenuProps['items'] = [
     { key: 'profile', icon: <UserOutlined />, label: 'Meu Perfil' },
@@ -143,7 +149,7 @@ export default function MainLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
-          defaultOpenKeys={['operacao', 'estoque', 'comercial', 'cadastros']}
+          defaultOpenKeys={['operacao', 'estoque', 'comercial', 'fiscal', 'cadastros']}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
           style={{ border: 'none', marginTop: 8 }}
@@ -165,24 +171,28 @@ export default function MainLayout() {
           />
 
           <Space size={16}>
-            {/* MX3000 status */}
+            {/* MX3000 status — tempo real */}
             <Space style={{
               background: '#162032', border: '1px solid #1e3a5f',
               borderRadius: 8, padding: '4px 12px',
             }}>
-              <Badge status="success" />
-              <Text style={{ color: '#94a3b8', fontSize: 12 }}>MX3000 Online</Text>
-              <Text style={{ color: '#f59e0b', fontSize: 12, fontWeight: 600 }}>148°C</Text>
+              <Badge status={wsStatus.mx3000 ? 'success' : 'error'} />
+              <Text style={{ color: '#94a3b8', fontSize: 12 }}>MX3000</Text>
+              <Text style={{ color: '#f59e0b', fontSize: 12, fontWeight: 600 }}>
+                {mx3000Data ? `${mx3000Data.tempOutput}°C` : (wsStatus.mx3000 ? '...' : 'Offline')}
+              </Text>
             </Space>
 
-            {/* Balança status */}
+            {/* Balança status — tempo real */}
             <Space style={{
               background: '#162032', border: '1px solid #1e3a5f',
               borderRadius: 8, padding: '4px 12px',
             }}>
-              <Badge status="success" />
+              <Badge status={wsStatus.scale ? 'success' : 'error'} />
               <Text style={{ color: '#94a3b8', fontSize: 12 }}>Balança</Text>
-              <Text style={{ color: '#22c55e', fontSize: 12, fontWeight: 600 }}>Conectada</Text>
+              <Text style={{ color: wsStatus.scale ? '#22c55e' : '#ef4444', fontSize: 12, fontWeight: 600 }}>
+                {scaleReading ? `${(scaleReading.weight * 1000).toLocaleString('pt-BR')} kg` : (wsStatus.scale ? '...' : 'Offline')}
+              </Text>
             </Space>
 
             <Badge count={3} size="small">

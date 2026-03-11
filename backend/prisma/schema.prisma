@@ -689,28 +689,38 @@ model AccountReceivable {
 // ─── NOTA FISCAL ─────────────────────────────────────────────
 
 enum InvoiceStatus {
-  DRAFT
-  ISSUED
-  CANCELLED
+  PENDENTE
+  EMITIDA
+  CANCELADA
+  DENEGADA
+  INUTILIZADA
 }
 
 model Invoice {
-  id           String        @id @default(cuid())
-  number       String        @unique
-  series       String        @default("001")
-  clientId     String
-  client       Client        @relation(fields: [clientId], references: [id])
-  salesOrderId String?
-  salesOrder   SalesOrder?   @relation(fields: [salesOrderId], references: [id])
-  status       InvoiceStatus @default(DRAFT)
-  issuedAt     DateTime?
-  totalAmount  Decimal       @db.Decimal(14, 2)
-  taxAmount    Decimal       @default(0) @db.Decimal(14, 2)
-  xmlPath      String?
-  pdfPath      String?
-  notes        String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id             String        @id @default(cuid())
+  number         String        @unique
+  serie          String        @default("001")
+  nature         String        @default("Venda de Mercadoria")
+  clientId       String?
+  client         Client?       @relation(fields: [clientId], references: [id])
+  salesOrderId   String?
+  salesOrder     SalesOrder?   @relation(fields: [salesOrderId], references: [id])
+  status         InvoiceStatus @default(PENDENTE)
+  issueDate      DateTime?
+  chave          String?       // chave de acesso 44 dígitos
+  protocol       String?       // protocolo de autorização SEFAZ
+  cancelReason   String?
+  totalProducts  Decimal       @default(0) @db.Decimal(14, 2)
+  totalIcms      Decimal       @default(0) @db.Decimal(14, 2)
+  totalIpi       Decimal       @default(0) @db.Decimal(14, 2)
+  totalPis       Decimal       @default(0) @db.Decimal(14, 2)
+  totalCofins    Decimal       @default(0) @db.Decimal(14, 2)
+  totalNfe       Decimal       @default(0) @db.Decimal(14, 2)
+  items          Json          @default("[]")
+  xmlContent     String?       @db.Text
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@map("invoices")
 }
