@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import {
   Row, Col, Card, Table, Tag, Typography, Button, Space, Modal,
-  Form, Input, InputNumber, Select, Divider, Tooltip, Upload,
+  Form, Input, InputNumber, Select, Divider, Tooltip,
   message, Statistic,
 } from 'antd'
 import {
