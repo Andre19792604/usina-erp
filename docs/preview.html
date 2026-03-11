@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Usina ERP — Preview Visual</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0f1a; color: #e2e8f0; }
+  .page { width: 1440px; min-height: 900px; background: #0f172a; display: flex; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { width: 240px; background: #0d1b2e; border-right: 1px solid #1e3a5f; display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; position: sticky; top: 0; }
+  .logo { height: 64px; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 1px solid #1e3a5f; }
+  .logo-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .logo-text { font-size: 14px; font-weight: 700; color: #f59e0b; }
+  .logo-sub { font-size: 11px; color: #64748b; }
+  .menu { padding: 8px 0; }
+  .menu-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: #94a3b8; font-size: 13px; cursor: pointer; }
+  .menu-item.active { background: #1e3a5f22; color: #f59e0b; border-right: 2px solid #f59e0b; }
+  .menu-item:hover { background: #1e3a5f22; color: #e2e8f0; }
+  .menu-group { padding: 6px 20px; font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
+  .menu-divider { border: none; border-top: 1px solid #1e3a5f; margin: 8px 0; }
+
+  /* ─── MAIN ─── */
+  .main { flex: 1; display: flex; flex-direction: column; }
+  .header { height: 64px; background: #0d1b2e; border-bottom: 1px solid #1e3a5f; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; }
+  .header-status { display: flex; gap: 12px; align-items: center; }
+  .status-pill { display: flex; align-items: center; gap: 6px; background: #162032; border: 1px solid #1e3a5f; border-radius: 8px; padding: 4px 12px; font-size: 12px; }
+  .dot-green { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+  .dot-red { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+  .content { padding: 24px; flex: 1; }
+
+  /* ─── CARDS ─── */
+  .page-title { font-size: 20px; font-weight: 700; color: #e2e8f0; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+  .row { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .card { background: #162032; border: 1px solid #1e3a5f; border-radius: 12px; padding: 20px; }
+  .kpi-card { flex: 1; min-width: 180px; }
+  .kpi-label { font-size: 12px; color: #64748b; margin-bottom: 6px; }
+  .kpi-value { font-size: 28px; font-weight: 700; }
+  .kpi-trend { font-size: 12px; color: #22c55e; margin-top: 6px; }
+  .card-title { font-size: 14px; color: #e2e8f0; font-weight: 600; margin-bottom: 16px; }
+  .chart-placeholder { background: #0f172a; border-radius: 8px; height: 200px; display: flex; align-items: flex-end; gap: 12px; padding: 16px; }
+  .bar { background: linear-gradient(to top, #f59e0b88, #f59e0b); border-radius: 4px 4px 0 0; flex: 1; }
+  .temp-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e3a5f11; }
+  .temp-label { font-size: 12px; color: #94a3b8; }
+  .temp-value { font-size: 14px; font-weight: 600; color: #22c55e; }
+  .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .table th { color: #64748b; font-size: 11px; text-align: left; padding: 8px 12px; border-bottom: 1px solid #1e3a5f; }
+  .table td { padding: 10px 12px; border-bottom: 1px solid #1e3a5f11; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: #16a34a22; color: #22c55e; border: 1px solid #22c55e44; }
+  .badge-blue { background: #1d4ed822; color: #60a5fa; border: 1px solid #60a5fa44; }
+  .badge-amber { background: #92400e22; color: #f59e0b; border: 1px solid #f59e0b44; }
+  .badge-red { background: #7f1d1d22; color: #ef4444; border: 1px solid #ef444444; }
+
+  /* ─── BALANÇA ─── */
+  .scale-display { background: #0f172a; border: 1px solid #1e3a5f; border-radius: 8px; padding: 24px; text-align: center; }
+  .scale-weight { font-size: 72px; font-weight: 800; color: #f59e0b; font-family: monospace; letter-spacing: 4px; }
+  .scale-unit { font-size: 14px; color: #64748b; }
+  .stable-tag { display: inline-block; background: #16a34a22; border: 1px solid #22c55e44; color: #22c55e; border-radius: 4px; padding: 2px 12px; font-size: 12px; margin-top: 8px; }
+  .net-display { background: #0d2a1f; border: 1px solid #22c55e44; border-radius: 8px; padding: 16px; text-align: center; margin: 12px 0; }
+  .net-value { font-size: 48px; font-weight: 800; color: #22c55e; font-family: monospace; }
+
+  /* ─── LOGIN ─── */
+  .login-page { min-height: 100vh; background: #0f172a; display: flex; align-items: center; justify-content: center; }
+  .login-card { background: #162032; border: 1px solid #1e3a5f; border-radius: 16px; padding: 40px; width: 420px; }
+  .login-logo { text-align: center; font-size: 32px; font-weight: 800; color: #f59e0b; margin-bottom: 4px; }
+  .login-sub { text-align: center; font-size: 13px; color: #64748b; margin-bottom: 32px; }
+  .input-group { margin-bottom: 16px; }
+  .input-label { font-size: 12px; color: #94a3b8; margin-bottom: 6px; display: block; }
+  .input-field { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; color: #e2e8f0; font-size: 14px; }
+  .btn-primary { width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px; padding: 12px; color: #0f172a; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
+
+  /* ─── NF-e ─── */
+  .nfe-tag-emitida { background: #16a34a22; color: #22c55e; border: 1px solid #22c55e44; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+  .nfe-tag-pendente { background: #92400e22; color: #f59e0b; border: 1px solid #f59e0b44; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+  .nfe-tag-cancelada { background: #7f1d1d22; color: #ef4444; border: 1px solid #ef444444; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+
+  /* ─── SECTION TABS ─── */
+  .section { margin-bottom: 32px; }
+  .section-header { font-size: 16px; font-weight: 700; color: #f59e0b; padding: 12px 0; border-bottom: 2px solid #1e3a5f; margin-bottom: 16px; }
+  .screen-label { font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 1px; }
+
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f59e0b; color: #0f172a; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .progress-bar { height: 6px; background: #1e3a5f; border-radius: 3px; overflow: hidden; margin: 4px 0; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 1: LOGIN -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">📱 Tela 1 — Login</div>
+<div style="background:#0f172a; padding:60px; display:flex; justify-content:center;">
+  <div class="login-card">
+    <div class="login-logo">⚙️ Usina ERP</div>
+    <div class="login-sub">Sistema de Gestão de Usina de Asfalto</div>
+    <div class="input-group">
+      <label class="input-label">E-mail</label>
+      <div class="input-field" style="color:#60a5fa;">admin@usina.com</div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Senha</label>
+      <div class="input-field">••••••••</div>
+    </div>
+    <button class="btn-primary">Entrar</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 2: DASHBOARD -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">📊 Tela 2 — Dashboard (visão geral em tempo real)</div>
+<div class="page" style="height:auto; min-height:900px;">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🏭</div>
+      <div><div class="logo-text">USINA ERP</div><div class="logo-sub">Gestão de Asfalto</div></div>
+    </div>
+    <div class="menu">
+      <div class="menu-item active">📊 Dashboard</div>
+      <div class="menu-group">Operação</div>
+      <div class="menu-item">🧪 Produção</div>
+      <div class="menu-item">⚖️ Balança / Pesagem</div>
+      <div class="menu-item">⚠️ Perdas Operacionais</div>
+      <div class="menu-item">🔬 Controle Tecnológico</div>
+      <div class="menu-group">Estoque</div>
+      <div class="menu-item">📦 Estoque da Usina</div>
+      <div class="menu-item">🏪 Estoque de Clientes</div>
+      <div class="menu-group">Comercial</div>
+      <div class="menu-item">🛒 Vendas / Pedidos</div>
+      <div class="menu-item">✂️ Compras</div>
+      <div class="menu-group">Fiscal / Financeiro</div>
+      <div class="menu-item">💰 Financeiro</div>
+      <div class="menu-item">🧾 NF-e</div>
+      <hr class="menu-divider">
+      <div class="menu-item">🔧 Manutenção</div>
+      <div class="menu-group">Cadastros</div>
+      <div class="menu-item">👥 Clientes</div>
+      <div class="menu-item">🏬 Fornecedores</div>
+      <div class="menu-item">📋 Materiais</div>
+      <div class="menu-item">🚛 Veículos</div>
+      <div class="menu-item">👤 Usuários</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="header">
+      <span style="color:#94a3b8; font-size:14px;">☰</span>
+      <div class="header-status">
+        <div class="status-pill"><div class="dot-green"></div><span style="color:#94a3b8">MX3000</span><span style="color:#f59e0b; font-weight:600;">148°C</span></div>
+        <div class="status-pill"><div class="dot-green"></div><span style="color:#94a3b8">Balança</span><span style="color:#22c55e; font-weight:600;">28.450 kg</span></div>
+        <div class="avatar">A</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Visão geral da operação em tempo real</div>
+      <div class="row">
+        <div class="card kpi-card"><div class="kpi-label">Produção Hoje (MX3000)</div><div class="kpi-value" style="color:#f59e0b">892 <span style="font-size:16px">ton</span></div><div class="kpi-trend">▲ +12% vs ontem</div></div>
+        <div class="card kpi-card"><div class="kpi-label">Lotes Produzidos</div><div class="kpi-value" style="color:#60a5fa">124</div><div class="kpi-trend">▲ +5 vs ontem</div></div>
+        <div class="card kpi-card"><div class="kpi-label">A Receber</div><div class="kpi-value" style="color:#22c55e">R$ 284k</div><div class="kpi-trend">▲ +R$12k</div></div>
+        <div class="card kpi-card"><div class="kpi-label">Balança — Peso Atual</div><div class="kpi-value" style="color:#22c55e; font-size:20px">28.450 kg</div></div>
+      </div>
+      <div class="row">
+        <div class="card" style="flex:2">
+          <div class="card-title">Produção da Semana (ton)</div>
+          <div class="chart-placeholder">
+            <div class="bar" style="height:62%"></div>
+            <div class="bar" style="height:79%"></div>
+            <div class="bar" style="height:73%"></div>
+            <div class="bar" style="height:100%"></div>
+            <div class="bar" style="height:94%"></div>
+            <div class="bar" style="height:40%"></div>
+            <div class="bar" style="height:4%"></div>
+          </div>
+        </div>
+        <div class="card" style="flex:1">
+          <div class="card-title">🟢 MX3000 — Tempo Real</div>
+          <div class="temp-row"><span class="temp-label">Temperatura Saída</span><span class="temp-value">148°C</span></div>
+          <div class="temp-row"><span class="temp-label">Temperatura CAP</span><span class="temp-value">162°C</span></div>
+          <div class="temp-row"><span class="temp-label">Temperatura Drum</span><span class="temp-value" style="color:#f59e0b">195°C</span></div>
+          <div class="temp-row"><span class="temp-label">Temperatura Misturador</span><span class="temp-value">155°C</span></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="card" style="flex:3">
+          <div class="card-title">🚛 Últimas Pesagens</div>
+          <table class="table">
+            <tr><th>Placa</th><th>Líquido</th><th>Hora</th><th>Tipo</th></tr>
+            <tr><td style="color:#60a5fa;font-weight:600">ABC-1234</td><td style="color:#f59e0b;font-weight:700">15.240 kg</td><td style="color:#94a3b8">08:32</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
+            <tr><td style="color:#60a5fa;font-weight:600">DEF-5678</td><td style="color:#f59e0b;font-weight:700">14.890 kg</td><td style="color:#94a3b8">09:15</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
+            <tr><td style="color:#60a5fa;font-weight:600">GHI-9012</td><td style="color:#f59e0b;font-weight:700">16.100 kg</td><td style="color:#94a3b8">10:01</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
+            <tr><td style="color:#60a5fa;font-weight:600">JKL-3456</td><td style="color:#f59e0b;font-weight:700">13.750 kg</td><td style="color:#94a3b8">10:45</td><td><span class="badge badge-blue">ENTRADA</span></td></tr>
+          </table>
+        </div>
+        <div class="card" style="flex:2">
+          <div class="card-title">⚠️ Alertas de Estoque</div>
+          <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">CAP 50/70</span><span style="color:#ef4444;font-weight:600">45 ton</span></div><div class="progress-bar"><div class="progress-fill" style="width:90%;background:#ef4444"></div></div><div style="font-size:11px;color:#475569">Mínimo: 50 ton</div></div>
+          <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Cal Hidratada</span><span style="color:#ef4444;font-weight:600">12 ton</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%;background:#ef4444"></div></div><div style="font-size:11px;color:#475569">Mínimo: 20 ton</div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Diesel</span><span style="color:#ef4444;font-weight:600">3.200 L</span></div><div class="progress-bar"><div class="progress-fill" style="width:64%;background:#ef4444"></div></div><div style="font-size:11px;color:#475569">Mínimo: 5.000 L</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 3: BALANÇA -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">⚖️ Tela 3 — Balança / Pesagem (tempo real)</div>
+<div style="background:#0f172a; padding:24px; display:flex; gap:16px;">
+  <div style="flex:1">
+    <div class="card">
+      <div class="scale-display">
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">
+          <div class="dot-green"></div>
+          <span style="color:#22c55e;font-size:12px">Conectada</span>
+          <span class="stable-tag">ESTÁVEL</span>
+        </div>
+        <div class="scale-weight">28.450</div>
+        <div class="scale-unit">kg (peso bruto)</div>
+        <div style="border-top:1px solid #1e3a5f;margin:12px 0;padding-top:12px">
+          <button style="background:#1e3a5f;border:none;color:#e2e8f0;padding:6px 16px;border-radius:6px;font-size:13px">⟳ Simular Leitura</button>
+        </div>
+      </div>
+      <div style="margin:16px 0;font-size:13px;color:#94a3b8">Modo: 🔌 Automático</div>
+      <div class="row" style="margin:0 0 12px">
+        <div style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px"><div style="font-size:11px;color:#94a3b8">Peso Bruto (kg)</div><div style="font-size:18px;font-weight:600;color:#f59e0b">28.450</div></div>
+        <div style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px"><div style="font-size:11px;color:#94a3b8">Tara (kg)</div><div style="font-size:18px;font-weight:600;color:#e2e8f0">13.200</div></div>
+      </div>
+      <div class="net-display">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px">PESO LÍQUIDO</div>
+        <div class="net-value">15.250</div>
+        <div style="color:#64748b;font-size:13px"> kg &nbsp;|&nbsp; <span style="color:#f59e0b;font-weight:600">15.250 ton</span></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <div style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px"><div style="font-size:11px;color:#94a3b8">Placa</div><div style="color:#60a5fa;font-weight:600">ABC-1234</div></div>
+        <div style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px"><div style="font-size:11px;color:#94a3b8">Tipo</div><div style="color:#22c55e">Saída (carregado)</div></div>
+      </div>
+      <button class="btn-primary">✓ Registrar Pesagem</button>
+    </div>
+  </div>
+  <div style="flex:1.5">
+    <div class="card">
+      <div class="card-title">Tickets de Hoje — 11/03/2026</div>
+      <table class="table">
+        <tr><th>Ticket</th><th>Placa</th><th>Líquido</th><th>Hora</th><th>Tipo</th></tr>
+        <tr><td style="color:#60a5fa;font-size:12px">PES00000001</td><td style="font-weight:600">ABC-1234</td><td style="color:#f59e0b;font-weight:700">15.200 kg</td><td style="color:#94a3b8">08:32</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
+        <tr><td style="color:#60a5fa;font-size:12px">PES00000002</td><td style="font-weight:600">DEF-5678</td><td style="color:#f59e0b;font-weight:700">14.900 kg</td><td style="color:#94a3b8">09:15</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
+        <tr><td style="color:#60a5fa;font-size:12px">PES00000003</td><td style="font-weight:600">GHI-9012</td><td style="color:#f59e0b;font-weight:700">16.100 kg</td><td style="color:#94a3b8">10:01</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
+        <tr><td style="color:#60a5fa;font-size:12px">PES00000004</td><td style="font-weight:600">JKL-3456</td><td style="color:#f59e0b;font-weight:700">13.750 kg</td><td style="color:#94a3b8">10:45</td><td><span class="badge badge-blue">ENTRADA</span></td></tr>
+      </table>
+      <div style="display:flex;gap:16px;margin-top:16px">
+        <div style="flex:1;text-align:center;background:#0f172a;border-radius:8px;padding:12px"><div style="color:#64748b;font-size:12px">Caminhões</div><div style="color:#f59e0b;font-size:22px;font-weight:700">4</div></div>
+        <div style="flex:1;text-align:center;background:#0f172a;border-radius:8px;padding:12px"><div style="color:#64748b;font-size:12px">Total Saída</div><div style="color:#f59e0b;font-size:22px;font-weight:700">46.200 kg</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 4: LABORATÓRIO MARSHALL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">🔬 Tela 4 — Controle Tecnológico (Ensaio Marshall)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Ensaios no Mês</div><div class="kpi-value" style="color:#60a5fa;font-size:24px">41</div></div>
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Aprovados</div><div class="kpi-value" style="color:#22c55e;font-size:24px">38</div></div>
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Reprovados</div><div class="kpi-value" style="color:#ef4444;font-size:24px">3</div></div>
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Taxa de Aprovação</div><div class="kpi-value" style="color:#f59e0b;font-size:24px">92.7%</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div style="font-size:13px;color:#e2e8f0;margin-bottom:12px;font-weight:600">Parâmetros Normativos — DNIT ES 031/2006 (CBUQ)</div>
+    <div style="display:flex;gap:32px">
+      <div><div style="font-size:11px;color:#64748b">VV (%)</div><div style="color:#f59e0b;font-weight:600">3 – 5</div></div>
+      <div><div style="font-size:11px;color:#64748b">VAM (%)</div><div style="color:#f59e0b;font-weight:600">≥ 15</div></div>
+      <div><div style="font-size:11px;color:#64748b">RBV (%)</div><div style="color:#f59e0b;font-weight:600">65 – 75</div></div>
+      <div><div style="font-size:11px;color:#64748b">Estab. (kgf)</div><div style="color:#f59e0b;font-weight:600">≥ 500</div></div>
+      <div><div style="font-size:11px;color:#64748b">Fluência (mm)</div><div style="color:#f59e0b;font-weight:600">2 – 4.5</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <table class="table">
+      <tr><th>Nº</th><th>Produto</th><th>Data</th><th>Temp.</th><th>% CAP</th><th>VV (%)</th><th>VAM (%)</th><th>RBV (%)</th><th>Estab.</th><th>Fluência</th><th>Resultado</th><th>PDF</th></tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">LAB00000041</td>
+        <td>CBUQ BC</td>
+        <td style="color:#64748b">10/03/2026</td>
+        <td style="color:#f59e0b">148°C</td>
+        <td><span style="color:#22c55e;font-weight:600">5.2 ✓</span></td>
+        <td><span style="color:#22c55e;font-weight:600">4.1 ✓</span></td>
+        <td><span style="color:#22c55e;font-weight:600">16.2 ✓</span></td>
+        <td><span style="color:#22c55e;font-weight:600">74.7 ✓</span></td>
+        <td><span style="color:#22c55e;font-weight:600">900 ✓</span></td>
+        <td><span style="color:#22c55e;font-weight:600">3.2 ✓</span></td>
+        <td><span class="badge badge-green">✓ APROVADO</span></td>
+        <td><button style="border:1px solid #ef4444;background:transparent;color:#ef4444;border-radius:4px;padding:2px 10px;font-size:12px;cursor:pointer">📄 PDF</button></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">LAB00000040</td>
+        <td>CBUQ CR</td>
+        <td style="color:#64748b">09/03/2026</td>
+        <td style="color:#f59e0b">152°C</td>
+        <td><span style="color:#22c55e;font-weight:600">5.5 ✓</span></td>
+        <td><span style="color:#ef4444;font-weight:600">5.8 ✗</span></td>
+        <td><span style="color:#22c55e;font-weight:600">17.1 ✓</span></td>
+        <td><span style="color:#ef4444;font-weight:600">66.1 ✗</span></td>
+        <td><span style="color:#ef4444;font-weight:600">780 ✗</span></td>
+        <td><span style="color:#22c55e;font-weight:600">3.8 ✓</span></td>
+        <td><span class="badge badge-red">✗ REPROVADO</span></td>
+        <td><button style="border:1px solid #ef4444;background:transparent;color:#ef4444;border-radius:4px;padding:2px 10px;font-size:12px;cursor:pointer">📄 PDF</button></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 5: NF-e -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">🧾 Tela 5 — NF-e (Nota Fiscal Eletrônica)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Total</div><div class="kpi-value" style="color:#60a5fa;font-size:24px">128</div></div>
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Emitidas</div><div class="kpi-value" style="color:#22c55e;font-size:24px">115</div></div>
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Pendentes</div><div class="kpi-value" style="color:#f59e0b;font-size:24px">8</div></div>
+    <div class="card" style="flex:1;text-align:center"><div class="kpi-label">Canceladas</div><div class="kpi-value" style="color:#ef4444;font-size:24px">5</div></div>
+    <div class="card" style="flex:2"><div class="kpi-label">Valor Total Emitido</div><div class="kpi-value" style="color:#22c55e;font-size:24px">R$ 2.841.920,00</div></div>
+  </div>
+  <div class="card">
+    <table class="table">
+      <tr><th>Número</th><th>Série</th><th>Cliente</th><th>Natureza</th><th>Data</th><th>Valor Total</th><th>Chave Acesso</th><th>Status</th><th>Ações</th></tr>
+      <tr>
+        <td style="color:#60a5fa;font-family:monospace;font-weight:600">000000128</td>
+        <td style="color:#94a3b8">001</td>
+        <td>Prefeitura Municipal SP</td>
+        <td style="color:#94a3b8;font-size:12px">Venda de Mercadoria</td>
+        <td style="color:#94a3b8;font-size:12px">11/03/2026</td>
+        <td style="color:#f59e0b;font-weight:700">R$ 48.200,00</td>
+        <td style="color:#475569;font-size:10px">35260311234567…</td>
+        <td><span class="nfe-tag-emitida">Emitida</span></td>
+        <td><button style="border:1px solid #ef4444;background:transparent;color:#ef4444;border-radius:4px;padding:2px 8px;font-size:11px">✗ Cancelar</button> <button style="border:1px solid #60a5fa;background:transparent;color:#60a5fa;border-radius:4px;padding:2px 8px;font-size:11px">⬇ XML</button></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-family:monospace;font-weight:600">000000127</td>
+        <td style="color:#94a3b8">001</td>
+        <td>Construtora ABC Ltda</td>
+        <td style="color:#94a3b8;font-size:12px">Venda de Mercadoria</td>
+        <td style="color:#94a3b8;font-size:12px">10/03/2026</td>
+        <td style="color:#f59e0b;font-weight:700">R$ 32.150,00</td>
+        <td style="color:#475569;font-size:10px">—</td>
+        <td><span class="nfe-tag-pendente">Pendente</span></td>
+        <td><button style="border:1px solid #22c55e;background:transparent;color:#22c55e;border-radius:4px;padding:2px 8px;font-size:11px">✓ Emitir</button></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-family:monospace;font-weight:600">000000115</td>
+        <td style="color:#94a3b8">001</td>
+        <td>Rodovias do Brasil S.A.</td>
+        <td style="color:#94a3b8;font-size:12px">Venda de Mercadoria</td>
+        <td style="color:#94a3b8;font-size:12px">01/03/2026</td>
+        <td style="color:#f59e0b;font-weight:700">R$ 98.400,00</td>
+        <td style="color:#475569;font-size:10px">35260311234567…</td>
+        <td><span class="nfe-tag-cancelada">Cancelada</span></td>
+        <td><button style="border:1px solid #60a5fa;background:transparent;color:#60a5fa;border-radius:4px;padding:2px 8px;font-size:11px">⬇ XML</button></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 6: APP MOBILE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">📱 Tela 6 — App Mobile (React Native)</div>
+<div style="background:#0f172a; padding:40px; display:flex; gap:24px; justify-content:center; flex-wrap:wrap;">
+  <!-- Phone frame: Dashboard -->
+  <div style="width:320px">
+    <div style="font-size:12px;color:#64748b;text-align:center;margin-bottom:8px">Dashboard Mobile</div>
+    <div style="background:#0d1b2e;border-radius:32px;padding:16px;border:4px solid #1e3a5f;">
+      <div style="background:#0d1b2e;border-radius:20px;overflow:hidden;">
+        <div style="background:#0f172a;padding:16px 12px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="color:#f59e0b;font-size:14px;font-weight:700">⚙️ Usina ERP</div><div style="color:#64748b;font-size:11px">Olá, Admin</div></div>
+          <button style="background:#1e3a5f;border:none;color:#94a3b8;border-radius:6px;padding:4px 10px;font-size:11px">Sair</button>
+        </div>
+        <div style="padding:12px;background:#0f172a">
+          <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:8px">MX3000 — Tempo Real</div>
+          <div style="background:#162032;border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div style="flex:1;text-align:center;background:#0f172a;border-radius:6px;padding:8px"><div style="font-size:10px;color:#64748b">Tambor</div><div style="color:#22c55e;font-weight:700">195°C</div></div>
+              <div style="flex:1;text-align:center;background:#0f172a;border-radius:6px;padding:8px"><div style="font-size:10px;color:#64748b">Misturador</div><div style="color:#22c55e;font-weight:700">155°C</div></div>
+              <div style="flex:1;text-align:center;background:#0f172a;border-radius:6px;padding:8px"><div style="font-size:10px;color:#64748b">CAP</div><div style="color:#22c55e;font-weight:700">162°C</div></div>
+              <div style="flex:1;text-align:center;background:#0f172a;border-radius:6px;padding:8px"><div style="font-size:10px;color:#64748b">Saída</div><div style="color:#22c55e;font-weight:700">148°C</div></div>
+            </div>
+            <div style="display:flex;justify-content:space-around;margin-top:10px;padding-top:10px;border-top:1px solid #1e3a5f">
+              <div style="text-align:center"><div style="font-size:10px;color:#64748b">Lote atual</div><div style="color:#f59e0b;font-weight:700">2.400 kg</div></div>
+              <div style="text-align:center"><div style="font-size:10px;color:#64748b">Lotes</div><div style="color:#60a5fa;font-weight:700">124</div></div>
+              <div style="text-align:center"><div style="font-size:10px;color:#64748b">Total</div><div style="color:#22c55e;font-weight:700">892 t</div></div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:8px">Balança</div>
+          <div style="background:#162032;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:32px;font-weight:800;color:#f59e0b;font-family:monospace">28.450 kg</div>
+            <div style="background:#16a34a22;border-radius:4px;padding:2px 12px;display:inline-block;color:#22c55e;font-size:11px;font-weight:600;margin-top:6px">● ESTÁVEL</div>
+          </div>
+        </div>
+        <!-- Bottom tabs -->
+        <div style="background:#0d1b2e;display:flex;border-top:1px solid #1e3a5f;padding:8px 0">
+          <div style="flex:1;text-align:center;color:#f59e0b;font-size:18px">⚡</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">🏭</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">⚖️</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">📦</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">💰</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone frame: Balança -->
+  <div style="width:320px">
+    <div style="font-size:12px;color:#64748b;text-align:center;margin-bottom:8px">Balança Mobile</div>
+    <div style="background:#0d1b2e;border-radius:32px;padding:16px;border:4px solid #1e3a5f;">
+      <div style="background:#0d1b2e;border-radius:20px;overflow:hidden;">
+        <div style="background:#0f172a;padding:16px 12px;display:flex;justify-content:space-between;align-items:center">
+          <div style="color:#e2e8f0;font-size:14px;font-weight:700">⚖️ Balança Rodoviária</div>
+          <div style="background:#16a34a22;border-radius:12px;padding:3px 10px;display:flex;align-items:center;gap:4px"><div style="width:6px;height:6px;border-radius:50%;background:#22c55e"></div><span style="color:#22c55e;font-size:11px">Online</span></div>
+        </div>
+        <div style="padding:12px;background:#0f172a">
+          <div style="background:#162032;border-radius:8px;padding:14px;text-align:center;margin-bottom:10px">
+            <div style="font-size:42px;font-weight:800;color:#f59e0b;font-family:monospace">28.450 kg</div>
+            <div style="background:#16a34a22;border-radius:4px;padding:2px 12px;display:inline-block;color:#22c55e;font-size:11px;margin-top:6px">● ESTÁVEL</div>
+          </div>
+          <div style="background:#162032;border-radius:8px;padding:12px;margin-bottom:10px">
+            <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:8px">Registrar Ticket</div>
+            <div style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:8px;margin-bottom:8px;color:#60a5fa;font-weight:600">ABC-1234</div>
+            <div style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:8px;margin-bottom:10px;color:#e2e8f0">13.200 (tara)</div>
+            <div style="background:#0d2a1f;border-radius:6px;padding:10px;text-align:center;margin-bottom:10px">
+              <div style="font-size:10px;color:#64748b">PESO LÍQUIDO</div>
+              <div style="font-size:28px;font-weight:800;color:#22c55e;font-family:monospace">15.250 kg</div>
+            </div>
+            <button style="width:100%;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:10px;color:#0f172a;font-weight:700;font-size:13px">Registrar Pesagem</button>
+          </div>
+        </div>
+        <div style="background:#0d1b2e;display:flex;border-top:1px solid #1e3a5f;padding:8px 0">
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">⚡</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">🏭</div>
+          <div style="flex:1;text-align:center;color:#f59e0b;font-size:18px">⚖️</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">📦</div>
+          <div style="flex:1;text-align:center;color:#475569;font-size:18px">💰</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
