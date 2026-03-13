@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USINA ERP</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+:root{--bg:#0a0f1a;--surface:#111827;--surface2:#1f2937;--border:#374151;--text:#f9fafb;--text2:#9ca3af;--amber:#f59e0b;--amber2:#d97706;--red:#ef4444;--green:#10b981;--blue:#3b82f6;--purple:#8b5cf6}
+body{background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+/* Sidebar */
+#sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:14px}
+.logo-text{font-weight:700;font-size:15px;color:var(--amber)}
+.logo-sub{font-size:10px;color:var(--text2)}
+nav{flex:1;padding:12px 8px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;transition:.15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(245,158,11,.15);color:var(--amber);font-weight:600}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);text-align:center}
+/* Main */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0}
+#page-title{font-weight:700;font-size:18px;flex:1}
+.badge{background:rgba(245,158,11,.2);color:var(--amber);padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+#content{flex:1;overflow-y:auto;padding:24px}
+/* Cards */
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card-title{font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:500}
+.stat-val{font-size:26px;font-weight:700}
+.stat-change{font-size:12px;margin-top:4px}
+.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--text2)}
+/* Tables */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 12px;color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td{padding:10px 12px;border-bottom:1px solid rgba(55,65,81,.5)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+/* Buttons */
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.btn-primary{background:var(--amber);color:#000}
+.btn-primary:hover{background:var(--amber2)}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.btn-sm{padding:5px 10px;font-size:12px}
+/* Badges */
+.status{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.status-green{background:rgba(16,185,129,.15);color:var(--green)}
+.status-amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.status-red{background:rgba(239,68,68,.15);color:var(--red)}
+.status-blue{background:rgba(59,130,246,.15);color:var(--blue)}
+.status-purple{background:rgba(139,92,246,.15);color:var(--purple)}
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.toolbar-right{margin-left:auto;display:flex;gap:8px}
+input[type=text],input[type=date],input[type=number],input[type=email],select,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:13px;outline:none}
+input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--amber)}
+.search{width:220px}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:20px}
+.form-row{margin-bottom:14px}
+.form-row label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.form-row input,.form-row select,.form-row textarea{width:100%}
+.form-row textarea{resize:vertical;min-height:70px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface2);padding:4px;border-radius:10px;width:fit-content}
+.tab{padding:7px 18px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);border:none;background:none;transition:.15s}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+/* Toast */
+#toast-container{position:fixed;top:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-size:13px;display:flex;align-items:center;gap:10px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:slideIn .2s ease}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast-success{border-left:3px solid var(--green)}
+.toast-error{border-left:3px solid var(--red)}
+.toast-info{border-left:3px solid var(--blue)}
+/* Activity */
+.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(55,65,81,.5)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.activity-text{font-size:13px}
+.activity-time{font-size:11px;color:var(--text2);margin-top:2px}
+/* Progress */
+.progress{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;margin-top:6px}
+.progress-bar{height:100%;border-radius:4px;background:var(--amber);transition:.3s}
+/* Page header */
+.page-header{display:flex;align-items:center;margin-bottom:20px}
+.page-header h2{font-size:20px;font-weight:700;flex:1}
+/* Section title */
+.section-title{font-size:14px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+/* Misc */
+.text-amber{color:var(--amber)}.text-red{color:var(--red)}.text-green{color:var(--green)}.text-blue{color:var(--blue)}
+.mt-16{margin-top:16px}.mb-16{margin-bottom:16px}
+.empty{text-align:center;padding:40px;color:var(--text2);font-size:14px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--amber);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000}
+</style>
+</head>
+<body>
+<!-- Sidebar -->
+<div id="sidebar">
+  <div class="logo">
+    <div class="logo-icon">U</div>
+    <div><div class="logo-text">USINA ERP</div><div class="logo-sub">Sistema de Gestão</div></div>
+  </div>
+  <nav>
+    <button class="nav-item active" onclick="nav('dashboard')"><span class="nav-icon">📊</span>Dashboard</button>
+    <button class="nav-item" onclick="nav('vendas')"><span class="nav-icon">🛒</span>Vendas</button>
+    <button class="nav-item" onclick="nav('estoque')"><span class="nav-icon">📦</span>Estoque</button>
+    <button class="nav-item" onclick="nav('financeiro')"><span class="nav-icon">💰</span>Financeiro</button>
+    <button class="nav-item" onclick="nav('clientes')"><span class="nav-icon">👥</span>Clientes</button>
+    <button class="nav-item" onclick="nav('fornecedores')"><span class="nav-icon">🏭</span>Fornecedores</button>
+    <button class="nav-item" onclick="nav('rh')"><span class="nav-icon">👤</span>RH</button>
+    <button class="nav-item" onclick="nav('producao')"><span class="nav-icon">⚙️</span>Produção</button>
+    <button class="nav-item" onclick="nav('relatorios')"><span class="nav-icon">📈</span>Relatórios</button>
+    <button class="nav-item" onclick="nav('config')"><span class="nav-icon">⚙</span>Configurações</button>
+  </nav>
+  <div class="sidebar-footer">v2.4.1 · Safra 2025/26</div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <div id="page-title">Dashboard</div>
+    <span class="badge">● Online</span>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:8px">
+      <div class="avatar">JS</div>
+      <span style="font-size:13px">João Silva</span>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Modal: Nova Venda -->
+<div class="modal-bg" id="modal-venda">
+  <div class="modal">
+    <h3>🛒 Novo Pedido de Venda</h3>
+    <div class="form-row"><label>Cliente *</label><select id="v-cliente"><option value="">Selecione...</option><option>Açucareira Piracicaba</option><option>Trading Canavieira Exportações</option><option>Destilaria Álcool do Brasil</option><option>Coop. Açucareira do Vale</option><option>Bebidas Sertão S.A.</option></select></div>
+    <div class="form-row"><label>Produto *</label><select id="v-produto"><option value="">Selecione...</option><option>Açúcar VHP</option><option>Etanol Anidro</option><option>Etanol Hidratado</option><option>Calcário Agrícola</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Quantidade (ton) *</label><input type="number" id="v-qtd" min="1" placeholder="0"></div>
+      <div class="form-row"><label>Preço Unit. (R$) *</label><input type="number" id="v-preco" min="0" step="0.01" placeholder="0,00"></div>
+    </div>
+    <div class="form-row"><label>Data de Entrega *</label><input type="date" id="v-data"></div>
+    <div class="form-row"><label>Observações</label><textarea id="v-obs" placeholder="Detalhes adicionais..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-venda')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveVenda()">💾 Salvar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo Produto -->
+<div class="modal-bg" id="modal-produto">
+  <div class="modal">
+    <h3>📦 Novo Produto</h3>
+    <div class="form-row"><label>Nome do Produto *</label><input type="text" id="p-nome" placeholder="Ex: Açúcar VHP"></div>
+    <div class="form-row"><label>Categoria *</label><select id="p-cat"><option value="">Selecione...</option><option>Produto Acabado</option><option>Insumo Agrícola</option><option>Peças e Equipamentos</option><option>Embalagens</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Estoque Atual *</label><input type="number" id="p-estoque" min="0" placeholder="0"></div>
+      <div class="form-row"><label>Estoque Mínimo *</label><input type="number" id="p-min" min="0" placeholder="0"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Unidade</label><select id="p-un"><option>ton</option><option>m³</option><option>kg</option><option>L</option><option>un</option><option>cx</option></select></div>
+      <div class="form-row"><label>Preço Unitário (R$)</label><input type="number" id="p-preco" min="0" step="0.01" placeholder="0,00"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-produto')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProduto()">💾 Salvar Produto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo Cliente -->
+<div class="modal-bg" id="modal-cliente">
+  <div class="modal">
+    <h3>👥 Novo Cliente</h3>
+    <div class="form-row"><label>Razão Social *</label><input type="text" id="c-nome" placeholder="Nome da empresa"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>CNPJ *</label><input type="text" id="c-cnpj" placeholder="00.000.000/0000-00"></div>
+      <div class="form-row"><label>Segmento</label><select id="c-seg"><option>Usina/Destilaria</option><option>Exportação</option><option>Cooperativa</option><option>Indústria</option><option>Outro</option></select></div>
+    </div>
+    <div class="form-row"><label>E-mail</label><input type="email" id="c-email" placeholder="contato@empresa.com.br"></div>
+    <div class="form-row"><label>Telefone</label><input type="text" id="c-tel" placeholder="(00) 00000-0000"></div>
+    <div class="form-row"><label>Cidade/UF</label><input type="text" id="c-cidade" placeholder="Ex: Piracicaba/SP"></div>
+    <div class="form-row"><label>Limite de Crédito (R$)</label><input type="number" id="c-limite" min="0" step="1000" placeholder="0,00"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-cliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveCliente()">💾 Salvar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo Fornecedor -->
+<div class="modal-bg" id="modal-fornecedor">
+  <div class="modal">
+    <h3>🏭 Novo Fornecedor</h3>
+    <div class="form-row"><label>Razão Social *</label><input type="text" id="f-nome" placeholder="Nome da empresa"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>CNPJ *</label><input type="text" id="f-cnpj" placeholder="00.000.000/0000-00"></div>
+      <div class="form-row"><label>Categoria</label><select id="f-cat"><option>Insumos Agrícolas</option><option>Peças e Manutenção</option><option>Embalagens</option><option>Energia</option><option>Serviços</option></select></div>
+    </div>
+    <div class="form-row"><label>E-mail</label><input type="email" id="f-email" placeholder="contato@empresa.com.br"></div>
+    <div class="form-row"><label>Telefone</label><input type="text" id="f-tel" placeholder="(00) 00000-0000"></div>
+    <div class="form-row"><label>Prazo de Pagamento</label><select id="f-prazo"><option>À vista</option><option>15 dias</option><option>30 dias</option><option>45 dias</option><option>60 dias</option></select></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-fornecedor')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveFornecedor()">💾 Salvar Fornecedor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo Funcionário -->
+<div class="modal-bg" id="modal-func">
+  <div class="modal">
+    <h3>👤 Novo Funcionário</h3>
+    <div class="form-row"><label>Nome Completo *</label><input type="text" id="fn-nome" placeholder="Nome do funcionário"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>CPF *</label><input type="text" id="fn-cpf" placeholder="000.000.000-00"></div>
+      <div class="form-row"><label>Cargo *</label><select id="fn-cargo"><option>Operador de Usina</option><option>Técnico de Manutenção</option><option>Analista de Laboratório</option><option>Motorista</option><option>Supervisor</option><option>Gerente</option><option>Administrativo</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Salário (R$) *</label><input type="number" id="fn-sal" min="0" step="100" placeholder="0,00"></div>
+      <div class="form-row"><label>Data de Admissão *</label><input type="date" id="fn-adm"></div>
+    </div>
+    <div class="form-row"><label>Setor</label><select id="fn-setor"><option>Produção</option><option>Manutenção</option><option>Laboratório</option><option>Logística</option><option>Administrativo</option><option>Agrícola</option></select></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-func')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveFunc()">💾 Salvar Funcionário</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Conta a Pagar -->
+<div class="modal-bg" id="modal-pagar">
+  <div class="modal">
+    <h3>💸 Nova Conta a Pagar</h3>
+    <div class="form-row"><label>Descrição *</label><input type="text" id="pg-desc" placeholder="Ex: Fatura fornecedor..."></div>
+    <div class="form-row"><label>Fornecedor</label><select id="pg-forn"><option value="">Selecione...</option><option>AgroInsumos Brasil</option><option>Peças &amp; Cia</option><option>Embalagens Premium</option><option>Energética do Interior</option><option>TecService</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Valor (R$) *</label><input type="number" id="pg-val" min="0" step="0.01" placeholder="0,00"></div>
+      <div class="form-row"><label>Vencimento *</label><input type="date" id="pg-venc"></div>
+    </div>
+    <div class="form-row"><label>Categoria</label><select id="pg-cat"><option>Insumos</option><option>Manutenção</option><option>Energia</option><option>Serviços</option><option>Impostos</option><option>Outros</option></select></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-pagar')">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePagar()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Conta a Receber -->
+<div class="modal-bg" id="modal-receber">
+  <div class="modal">
+    <h3>💵 Nova Conta a Receber</h3>
+    <div class="form-row"><label>Descrição *</label><input type="text" id="rc-desc" placeholder="Ex: Fatura cliente..."></div>
+    <div class="form-row"><label>Cliente</label><select id="rc-cli"><option value="">Selecione...</option><option>Açucareira Piracicaba</option><option>Trading Canavieira Exportações</option><option>Destilaria Álcool do Brasil</option><option>Coop. Açucareira do Vale</option><option>Bebidas Sertão S.A.</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Valor (R$) *</label><input type="number" id="rc-val" min="0" step="0.01" placeholder="0,00"></div>
+      <div class="form-row"><label>Vencimento *</label><input type="date" id="rc-venc"></div>
+    </div>
+    <div class="form-row"><label>Pedido de Venda</label><input type="text" id="rc-pv" placeholder="Ex: PV-2024"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-receber')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveReceber()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ordem de Produção -->
+<div class="modal-bg" id="modal-op">
+  <div class="modal">
+    <h3>⚙️ Nova Ordem de Produção</h3>
+    <div class="form-row"><label>Produto *</label><select id="op-prod"><option value="">Selecione...</option><option>Açúcar VHP</option><option>Etanol Anidro</option><option>Etanol Hidratado</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-row"><label>Quantidade (ton) *</label><input type="number" id="op-qtd" min="1" placeholder="0"></div>
+      <div class="form-row"><label>Data Início *</label><input type="date" id="op-ini"></div>
+    </div>
+    <div class="form-row"><label>Data Prevista Conclusão *</label><input type="date" id="op-fim"></div>
+    <div class="form-row"><label>Responsável</label><select id="op-resp"><option>Carlos Eduardo Lima</option><option>Ana Paula Rodrigues</option><option>Marcos Vinícius Santos</option><option>Fernanda Costa</option></select></div>
+    <div class="form-row"><label>Prioridade</label><select id="op-pri"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-op')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveOP()">💾 Salvar OP</button>
+    </div>
+  </div>
+</div>
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+let DB = {
+  vendas: [
+    {id:'PV-2024',cliente:'Açucareira Piracicaba',produto:'Açúcar VHP',qtd:500,preco:2850,total:1425000,data:'2026-03-20',status:'Aprovado'},
+    {id:'PV-2025',cliente:'Trading Canavieira Exportações',produto:'Etanol Anidro',qtd:200,preco:3200,total:640000,data:'2026-03-22',status:'Em Transporte'},
+    {id:'PV-2026',cliente:'Destilaria Álcool do Brasil',produto:'Etanol Hidratado',qtd:150,preco:2900,total:435000,data:'2026-03-25',status:'Pendente'},
+    {id:'PV-2027',cliente:'Coop. Açucareira do Vale',produto:'Açúcar VHP',qtd:800,preco:2800,total:2240000,data:'2026-04-01',status:'Aprovado'},
+    {id:'PV-2028',cliente:'Bebidas Sertão S.A.',produto:'Etanol Hidratado',qtd:80,preco:3100,total:248000,data:'2026-04-05',status:'Pendente'},
+    {id:'PV-2029',cliente:'Açucareira Piracicaba',produto:'Etanol Anidro',qtd:300,preco:3250,total:975000,data:'2026-04-10',status:'Rascunho'},
+  ],
+  estoque: [
+    {id:1,nome:'Açúcar VHP',cat:'Produto Acabado',estoque:3200,min:500,un:'ton',preco:2850,status:'OK'},
+    {id:2,nome:'Etanol Anidro',cat:'Produto Acabado',estoque:980,min:200,un:'m³',preco:3200,status:'OK'},
+    {id:3,nome:'Etanol Hidratado',cat:'Produto Acabado',estoque:120,min:150,un:'m³',preco:2900,status:'Crítico'},
+    {id:4,nome:'Calcário Agrícola',cat:'Insumo Agrícola',estoque:45,min:100,un:'ton',preco:180,status:'Crítico'},
+    {id:5,nome:'Herbicida Glifosato',cat:'Insumo Agrícola',estoque:320,min:50,un:'L',preco:22,status:'OK'},
+    {id:6,nome:'Sacos 50kg',cat:'Embalagens',estoque:28000,min:5000,un:'un',preco:3.20,status:'OK'},
+    {id:7,nome:'Rolamento 6205',cat:'Peças e Equipamentos',estoque:8,min:20,un:'un',preco:45,status:'Crítico'},
+    {id:8,nome:'Óleo Lubrificante',cat:'Peças e Equipamentos',estoque:450,min:100,un:'L',preco:18,status:'OK'},
+  ],
+  clientes: [
+    {id:1,nome:'Açucareira Piracicaba',cnpj:'12.345.678/0001-90',seg:'Usina/Destilaria',email:'compras@piracicaba.com.br',tel:'(19) 3400-1234',cidade:'Piracicaba/SP',limite:5000000,status:'Ativo'},
+    {id:2,nome:'Trading Canavieira Exportações',cnpj:'23.456.789/0001-01',seg:'Exportação',email:'trading@canavieira.com.br',tel:'(11) 3200-5678',cidade:'São Paulo/SP',limite:10000000,status:'Ativo'},
+    {id:3,nome:'Destilaria Álcool do Brasil',cnpj:'34.567.890/0001-12',seg:'Usina/Destilaria',email:'compras@alcoolbrasil.com.br',tel:'(17) 3500-9012',cidade:'Araçatuba/SP',limite:3000000,status:'Ativo'},
+    {id:4,nome:'Coop. Açucareira do Vale',cnpj:'45.678.901/0001-23',seg:'Cooperativa',email:'coop@valecana.com.br',tel:'(16) 3600-3456',cidade:'Ribeirão Preto/SP',limite:8000000,status:'Ativo'},
+    {id:5,nome:'Bebidas Sertão S.A.',cnpj:'56.789.012/0001-34',seg:'Indústria',email:'insumos@bebidasertao.com.br',tel:'(85) 3300-7890',cidade:'Fortaleza/CE',limite:1500000,status:'Inativo'},
+  ],
+  fornecedores: [
+    {id:1,nome:'AgroInsumos Brasil',cnpj:'67.890.123/0001-45',cat:'Insumos Agrícolas',email:'vendas@agroinsumos.com.br',tel:'(19) 3700-1111',prazo:'30 dias',status:'Ativo'},
+    {id:2,nome:'Peças & Cia',cnpj:'78.901.234/0001-56',cat:'Peças e Manutenção',email:'pedidos@pecasecia.com.br',tel:'(15) 3800-2222',prazo:'15 dias',status:'Ativo'},
+    {id:3,nome:'Embalagens Premium',cnpj:'89.012.345/0001-67',cat:'Embalagens',email:'vendas@embalagprem.com.br',tel:'(11) 3900-3333',prazo:'30 dias',status:'Ativo'},
+    {id:4,nome:'Energética do Interior',cnpj:'90.123.456/0001-78',cat:'Energia',email:'contratos@energetica.com.br',tel:'(19) 3100-4444',prazo:'À vista',status:'Ativo'},
+    {id:5,nome:'TecService',cnpj:'01.234.567/0001-89',cat:'Serviços',email:'suporte@tecservice.com.br',tel:'(11) 2900-5555',prazo:'15 dias',status:'Inativo'},
+  ],
+  funcionarios: [
+    {id:1,nome:'Carlos Eduardo Lima',cpf:'111.222.333-44',cargo:'Supervisor de Produção',setor:'Produção',salario:8500,adm:'2018-03-01',status:'Ativo'},
+    {id:2,nome:'Ana Paula Rodrigues',cpf:'222.333.444-55',cargo:'Analista de Laboratório',setor:'Laboratório',salario:6200,adm:'2019-06-15',status:'Ativo'},
+    {id:3,nome:'Marcos Vinícius Santos',cpf:'333.444.555-66',cargo:'Operador de Usina',setor:'Produção',salario:4800,adm:'2020-01-10',status:'Ativo'},
+    {id:4,nome:'Fernanda Costa',cpf:'444.555.666-77',cargo:'Administrativo',setor:'Administrativo',salario:4200,adm:'2021-04-20',status:'Ativo'},
+    {id:5,nome:'Roberto Alves',cpf:'555.666.777-88',cargo:'Técnico de Manutenção',setor:'Manutenção',salario:5600,adm:'2017-11-05',status:'Ativo'},
+    {id:6,nome:'Juliana Mendes',cpf:'666.777.888-99',cargo:'Motorista',setor:'Logística',salario:3900,adm:'2022-08-01',status:'Férias'},
+  ],
+  contasPagar: [
+    {id:1,desc:'Herbicida Glifosato - Lote 8821',forn:'AgroInsumos Brasil',valor:45600,venc:'2026-03-18',cat:'Insumos',status:'Vencendo'},
+    {id:2,desc:'Rolamentos e Correias - NF 4521',forn:'Peças & Cia',valor:12800,venc:'2026-03-25',cat:'Manutenção',status:'Pendente'},
+    {id:3,desc:'Sacos 50kg - 10.000 un',forn:'Embalagens Premium',valor:32000,venc:'2026-04-02',cat:'Embalagens',status:'Pendente'},
+    {id:4,desc:'Energia Elétrica - Março/26',forn:'Energética do Interior',valor:89500,venc:'2026-03-30',cat:'Energia',status:'Pendente'},
+    {id:5,desc:'Manutenção Preventiva - Turbinas',forn:'TecService',valor:28000,venc:'2026-04-15',cat:'Serviços',status:'Pendente'},
+  ],
+  contasReceber: [
+    {id:1,desc:'Açúcar VHP - PV-2024',cli:'Açucareira Piracicaba',valor:1425000,venc:'2026-03-28',pv:'PV-2024',status:'Pendente'},
+    {id:2,desc:'Etanol Anidro - PV-2025',cli:'Trading Canavieira Exportações',valor:640000,venc:'2026-04-05',pv:'PV-2025',status:'Pendente'},
+    {id:3,desc:'Etanol Hidratado - PV-2026',cli:'Destilaria Álcool do Brasil',valor:435000,venc:'2026-04-10',pv:'PV-2026',status:'Pendente'},
+    {id:4,desc:'Açúcar VHP - PV-2027',cli:'Coop. Açucareira do Vale',valor:2240000,venc:'2026-04-20',pv:'PV-2027',status:'Pendente'},
+  ],
+  ordens: [
+    {id:'OP-0841',produto:'Açúcar VHP',qtd:1200,ini:'2026-03-01',fim:'2026-03-31',resp:'Carlos Eduardo Lima',progresso:72,status:'Em Andamento',pri:'Normal'},
+    {id:'OP-0842',produto:'Etanol Anidro',qtd:500,ini:'2026-03-10',fim:'2026-03-25',resp:'Marcos Vinícius Santos',progresso:45,status:'Em Andamento',pri:'Alta'},
+    {id:'OP-0843',produto:'Etanol Hidratado',qtd:200,ini:'2026-03-13',fim:'2026-03-20',resp:'Ana Paula Rodrigues',progresso:15,status:'Em Andamento',pri:'Urgente'},
+  ],
+  activity: [
+    {text:'Pedido PV-2029 criado por João Silva',time:'há 5 min',color:'#f59e0b'},
+    {text:'OP-0843 iniciada — Etanol Hidratado',time:'há 1h',color:'#3b82f6'},
+    {text:'Pagamento aprovado: Fatura AgroInsumos',time:'há 2h',color:'#10b981'},
+    {text:'Estoque crítico: Rolamento 6205 (8 un)',time:'há 3h',color:'#ef4444'},
+    {text:'Cliente Bebidas Sertão inativado',time:'há 5h',color:'#9ca3af'},
+  ]
+};
+
+let pvCounter = 2030;
+let opCounter = 844;
+let currentPage = 'dashboard';
+let finTab = 'pagar', rhTab = 'func';
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+const titles = {dashboard:'Dashboard',vendas:'Vendas',estoque:'Estoque',financeiro:'Financeiro',clientes:'Clientes',fornecedores:'Fornecedores',rh:'Recursos Humanos',producao:'Produção',relatorios:'Relatórios',config:'Configurações'};
+
+function nav(page) {
+  currentPage = page;
+  document.getElementById('page-title').textContent = titles[page];
+  document.querySelectorAll('.nav-item').forEach((el,i) => {
+    const pages = ['dashboard','vendas','estoque','financeiro','clientes','fornecedores','rh','producao','relatorios','config'];
+    el.classList.toggle('active', pages[i] === page);
+  });
+  render(page);
+}
+
+function render(page) {
+  const el = document.getElementById('content');
+  const fns = {dashboard:renderDashboard,vendas:renderVendas,estoque:renderEstoque,financeiro:renderFinanceiro,clientes:renderClientes,fornecedores:renderFornecedores,rh:renderRH,producao:renderProducao,relatorios:renderRelatorios,config:renderConfig};
+  el.innerHTML = (fns[page] || (() => '<p>Em desenvolvimento</p>'))();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const totalVendas = DB.vendas.reduce((s,v) => s + v.total, 0);
+  const totalReceber = DB.contasReceber.reduce((s,v) => s + v.valor, 0);
+  const totalPagar = DB.contasPagar.reduce((s,v) => s + v.valor, 0);
+  const criticos = DB.estoque.filter(p => p.status === 'Crítico').length;
+
+  return `
+  <div class="grid grid-4 mb-16">
+    <div class="card"><div class="card-title">Faturamento (Safra)</div><div class="stat-val text-amber">${fmtMoney(totalVendas)}</div><div class="stat-change up">↑ 12,4% vs safra anterior</div></div>
+    <div class="card"><div class="card-title">A Receber (30 dias)</div><div class="stat-val text-green">${fmtMoney(totalReceber)}</div><div class="stat-change neutral">${DB.contasReceber.length} faturas em aberto</div></div>
+    <div class="card"><div class="card-title">A Pagar (30 dias)</div><div class="stat-val text-red">${fmtMoney(totalPagar)}</div><div class="stat-change neutral">${DB.contasPagar.length} contas pendentes</div></div>
+    <div class="card"><div class="card-title">Itens em Estoque Crítico</div><div class="stat-val text-red">${criticos}</div><div class="stat-change down">↓ Reposição necessária</div></div>
+  </div>
+  <div class="grid grid-2 mb-16">
+    <div class="card">
+      <div class="section-title">Pedidos Recentes</div>
+      <table><thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Status</th></tr></thead><tbody>
+      ${DB.vendas.slice(0,5).map(v => `<tr><td class="text-amber">${v.id}</td><td>${v.cliente}</td><td>${fmtMoney(v.total)}</td><td><span class="status ${statusClass(v.status)}">${v.status}</span></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="section-title">Atividade Recente</div>
+      ${DB.activity.map(a => `<div class="activity-item"><div class="activity-dot" style="background:${a.color}"></div><div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div></div>`).join('')}
+    </div>
+  </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="section-title">Estoque Crítico</div>
+      ${DB.estoque.filter(p => p.status === 'Crítico').map(p => `
+      <div style="padding:8px 0;border-bottom:1px solid rgba(55,65,81,.4)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px">${p.nome}</span>
+          <span class="status status-red">${p.estoque} ${p.un}</span>
+        </div>
+        <div class="progress"><div class="progress-bar" style="width:${Math.round(p.estoque/p.min*100)}%;background:#ef4444"></div></div>
+        <div style="font-size:11px;color:#9ca3af;margin-top:3px">Mínimo: ${p.min} ${p.un}</div>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="section-title">Contas a Vencer (7 dias)</div>
+      ${DB.contasPagar.filter(c => c.status === 'Vencendo' || true).slice(0,4).map(c => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(55,65,81,.4)">
+        <div><div style="font-size:13px">${c.desc}</div><div style="font-size:11px;color:#9ca3af">${c.forn} · Vence ${c.venc}</div></div>
+        <span class="text-red" style="font-weight:600;font-size:13px">${fmtMoney(c.valor)}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ─── VENDAS ──────────────────────────────────────────────────────────────────
+function renderVendas() {
+  return `
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar pedido..." oninput="filterTable(this,'vendas-table',0,1,2)">
+    <select onchange="filterTableByStatus(this,'vendas-table',6)" style="width:160px">
+      <option value="">Todos os status</option>
+      <option>Aprovado</option><option>Pendente</option><option>Em Transporte</option><option>Rascunho</option>
+    </select>
+    <div class="toolbar-right">
+      <button class="btn btn-primary" onclick="openModal('modal-venda')">+ Novo Pedido</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table id="vendas-table"><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Total</th><th>Entrega</th><th>Status</th><th>Ações</th></tr></thead>
+      <tbody>${DB.vendas.map((v,i) => `
+        <tr>
+          <td class="text-amber">${v.id}</td>
+          <td>${v.cliente}</td>
+          <td>${v.produto}</td>
+          <td>${v.qtd} ton</td>
+          <td style="font-weight:600">${fmtMoney(v.total)}</td>
+          <td>${v.data}</td>
+          <td><span class="status ${statusClass(v.status)}">${v.status}</span></td>
+          <td><button class="btn btn-sm btn-ghost" onclick="editVenda(${i})">✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteItem('vendas',${i},'Pedido ${v.id}')">🗑️</button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
+
+function editVenda(i) {
+  const v = DB.vendas[i];
+  toast(`Editando pedido ${v.id}`, 'info');
+}
+
+// ─── ESTOQUE ─────────────────────────────────────────────────────────────────
+function renderEstoque() {
+  return `
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar produto..." oninput="filterTable(this,'est-table',0,1)">
+    <select onchange="filterTableByStatus(this,'est-table',6)" style="width:140px">
+      <option value="">Todas categorias</option>
+      <option>Produto Acabado</option><option>Insumo Agrícola</option><option>Peças e Equipamentos</option><option>Embalagens</option>
+    </select>
+    <div class="toolbar-right">
+      <button class="btn btn-primary" onclick="openModal('modal-produto')">+ Novo Produto</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table id="est-table"><thead><tr><th>Produto</th><th>Categoria</th><th>Estoque Atual</th><th>Mínimo</th><th>Un.</th><th>Preço Unit.</th><th>Status</th><th>Ações</th></tr></thead>
+      <tbody>${DB.estoque.map((p,i) => `
+        <tr>
+          <td style="font-weight:500">${p.nome}</td>
+          <td>${p.cat}</td>
+          <td style="font-weight:600">${p.estoque.toLocaleString('pt-BR')}</td>
+          <td style="color:#9ca3af">${p.min.toLocaleString('pt-BR')}</td>
+          <td>${p.un}</td>
+          <td>${fmtMoney(p.preco)}</td>
+          <td><span class="status ${p.status==='OK'?'status-green':'status-red'}">${p.status}</span></td>
+          <td><button class="btn btn-sm btn-ghost" onclick="toast('Editando ${p.nome}','info')">✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteItem('estoque',${i},'${p.nome}')">🗑️</button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
+
+// ─── FINANCEIRO ───────────────────────────────────────────────────────────────
+function renderFinanceiro() {
+  return `
+  <div class="tabs">
+    <button class="tab ${finTab==='pagar'?'active':''}" onclick="setFinTab('pagar')">💸 Contas a Pagar</button>
+    <button class="tab ${finTab==='receber'?'active':''}" onclick="setFinTab('receber')">💵 Contas a Receber</button>
+    <button class="tab ${finTab==='fluxo'?'active':''}" onclick="setFinTab('fluxo')">📊 Fluxo de Caixa</button>
+  </div>
+  ${finTab==='pagar'?renderPagar():finTab==='receber'?renderReceber():renderFluxo()}`;
+}
+
+function setFinTab(t) { finTab = t; render('financeiro'); }
+
+function renderPagar() {
+  const total = DB.contasPagar.reduce((s,c) => s+c.valor, 0);
+  return `
+  <div style="display:flex;gap:12px;margin-bottom:16px">
+    <div class="card" style="flex:1"><div class="card-title">Total a Pagar</div><div class="stat-val text-red">${fmtMoney(total)}</div></div>
+    <div class="card" style="flex:1"><div class="card-title">Contas Pendentes</div><div class="stat-val">${DB.contasPagar.filter(c=>c.status==='Pendente').length}</div></div>
+    <div class="card" style="flex:1"><div class="card-title">Vencendo Hoje</div><div class="stat-val text-amber">${DB.contasPagar.filter(c=>c.status==='Vencendo').length}</div></div>
+  </div>
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar conta..." oninput="filterTable(this,'pg-table',0,1)">
+    <div class="toolbar-right"><button class="btn btn-primary" onclick="openModal('modal-pagar')">+ Nova Conta</button></div>
+  </div>
+  <div class="card"><div class="table-wrap">
+    <table id="pg-table"><thead><tr><th>Descrição</th><th>Fornecedor</th><th>Categoria</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>${DB.contasPagar.map((c,i) => `
+      <tr>
+        <td>${c.desc}</td><td>${c.forn}</td><td>${c.cat}</td>
+        <td style="font-weight:600;color:#ef4444">${fmtMoney(c.valor)}</td>
+        <td>${c.venc}</td>
+        <td><span class="status ${c.status==='Vencendo'?'status-red':'status-amber'}">${c.status}</span></td>
+        <td>
+          <button class="btn btn-sm btn-primary" onclick="pagarConta('pagar',${i})">✔ Pagar</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteItem('contasPagar',${i},'${c.desc}')">🗑️</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div></div>`;
+}
+
+function renderReceber() {
+  const total = DB.contasReceber.reduce((s,c) => s+c.valor, 0);
+  return `
+  <div style="display:flex;gap:12px;margin-bottom:16px">
+    <div class="card" style="flex:1"><div class="card-title">Total a Receber</div><div class="stat-val text-green">${fmtMoney(total)}</div></div>
+    <div class="card" style="flex:1"><div class="card-title">Faturas em Aberto</div><div class="stat-val">${DB.contasReceber.length}</div></div>
+  </div>
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar fatura..." oninput="filterTable(this,'rc-table',0,1)">
+    <div class="toolbar-right"><button class="btn btn-primary" onclick="openModal('modal-receber')">+ Nova Fatura</button></div>
+  </div>
+  <div class="card"><div class="table-wrap">
+    <table id="rc-table"><thead><tr><th>Descrição</th><th>Cliente</th><th>Pedido</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>${DB.contasReceber.map((c,i) => `
+      <tr>
+        <td>${c.desc}</td><td>${c.cli}</td><td class="text-amber">${c.pv}</td>
+        <td style="font-weight:600;color:#10b981">${fmtMoney(c.valor)}</td>
+        <td>${c.venc}</td>
+        <td><span class="status status-amber">${c.status}</span></td>
+        <td>
+          <button class="btn btn-sm btn-primary" onclick="pagarConta('receber',${i})">✔ Baixar</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteItem('contasReceber',${i},'${c.desc}')">🗑️</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div></div>`;
+}
+
+function renderFluxo() {
+  const receber = DB.contasReceber.reduce((s,c) => s+c.valor, 0);
+  const pagar = DB.contasPagar.reduce((s,c) => s+c.valor, 0);
+  const saldo = receber - pagar;
+  return `
+  <div class="grid grid-3 mb-16">
+    <div class="card"><div class="card-title">Entradas Previstas</div><div class="stat-val text-green">${fmtMoney(receber)}</div></div>
+    <div class="card"><div class="card-title">Saídas Previstas</div><div class="stat-val text-red">${fmtMoney(pagar)}</div></div>
+    <div class="card"><div class="card-title">Saldo Projetado</div><div class="stat-val ${saldo>=0?'text-green':'text-red'}">${fmtMoney(saldo)}</div></div>
+  </div>
+  <div class="card">
+    <div class="section-title">Projeção Mensal — Março a Maio 2026</div>
+    ${[
+      {mes:'Março/26',ent:2300000,sai:1200000},
+      {mes:'Abril/26',ent:3100000,sai:980000},
+      {mes:'Maio/26',ent:2800000,sai:1450000},
+    ].map(m => {
+      const s = m.ent - m.sai;
+      const pct = Math.round(m.ent/(m.ent+m.sai)*100);
+      return `<div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:500">${m.mes}</span>
+          <span class="text-green" style="font-size:13px">Saldo: ${fmtMoney(s)}</span>
+        </div>
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:4px">Entradas: ${fmtMoney(m.ent)} · Saídas: ${fmtMoney(m.sai)}</div>
+        <div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ─── CLIENTES ────────────────────────────────────────────────────────────────
+function renderClientes() {
+  return `
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar cliente..." oninput="filterTable(this,'cli-table',0,1)">
+    <div class="toolbar-right"><button class="btn btn-primary" onclick="openModal('modal-cliente')">+ Novo Cliente</button></div>
+  </div>
+  <div class="card"><div class="table-wrap">
+    <table id="cli-table"><thead><tr><th>Razão Social</th><th>CNPJ</th><th>Segmento</th><th>Cidade</th><th>Limite</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>${DB.clientes.map((c,i) => `
+      <tr>
+        <td style="font-weight:500">${c.nome}</td>
+        <td style="color:#9ca3af;font-size:12px">${c.cnpj}</td>
+        <td>${c.seg}</td>
+        <td>${c.cidade}</td>
+        <td>${fmtMoney(c.limite)}</td>
+        <td><span class="status ${c.status==='Ativo'?'status-green':'status-red'}">${c.status}</span></td>
+        <td><button class="btn btn-sm btn-ghost" onclick="toast('Editando ${c.nome}','info')">✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteItem('clientes',${i},'${c.nome}')">🗑️</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div></div>`;
+}
+
+// ─── FORNECEDORES ─────────────────────────────────────────────────────────────
+function renderFornecedores() {
+  return `
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar fornecedor..." oninput="filterTable(this,'forn-table',0,1)">
+    <div class="toolbar-right"><button class="btn btn-primary" onclick="openModal('modal-fornecedor')">+ Novo Fornecedor</button></div>
+  </div>
+  <div class="card"><div class="table-wrap">
+    <table id="forn-table"><thead><tr><th>Razão Social</th><th>CNPJ</th><th>Categoria</th><th>E-mail</th><th>Prazo Pgto</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>${DB.fornecedores.map((f,i) => `
+      <tr>
+        <td style="font-weight:500">${f.nome}</td>
+        <td style="color:#9ca3af;font-size:12px">${f.cnpj}</td>
+        <td>${f.cat}</td>
+        <td style="color:#9ca3af">${f.email}</td>
+        <td>${f.prazo}</td>
+        <td><span class="status ${f.status==='Ativo'?'status-green':'status-red'}">${f.status}</span></td>
+        <td><button class="btn btn-sm btn-ghost" onclick="toast('Editando ${f.nome}','info')">✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteItem('fornecedores',${i},'${f.nome}')">🗑️</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div></div>`;
+}
+
+// ─── RH ──────────────────────────────────────────────────────────────────────
+function renderRH() {
+  return `
+  <div class="tabs">
+    <button class="tab ${rhTab==='func'?'active':''}" onclick="setRHTab('func')">👤 Funcionários</button>
+    <button class="tab ${rhTab==='folha'?'active':''}" onclick="setRHTab('folha')">💰 Folha de Pagamento</button>
+    <button class="tab ${rhTab==='ferias'?'active':''}" onclick="setRHTab('ferias')">🏖️ Férias</button>
+  </div>
+  ${rhTab==='func'?renderFuncionarios():rhTab==='folha'?renderFolha():renderFerias()}`;
+}
+
+function setRHTab(t) { rhTab = t; render('rh'); }
+
+function renderFuncionarios() {
+  return `
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar funcionário..." oninput="filterTable(this,'func-table',0,1)">
+    <div class="toolbar-right"><button class="btn btn-primary" onclick="openModal('modal-func')">+ Novo Funcionário</button></div>
+  </div>
+  <div class="card"><div class="table-wrap">
+    <table id="func-table"><thead><tr><th>Nome</th><th>CPF</th><th>Cargo</th><th>Setor</th><th>Salário</th><th>Admissão</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>${DB.funcionarios.map((f,i) => `
+      <tr>
+        <td style="font-weight:500">${f.nome}</td>
+        <td style="color:#9ca3af;font-size:12px">${f.cpf}</td>
+        <td>${f.cargo}</td>
+        <td>${f.setor}</td>
+        <td style="font-weight:600">${fmtMoney(f.salario)}</td>
+        <td>${f.adm}</td>
+        <td><span class="status ${f.status==='Ativo'?'status-green':f.status==='Férias'?'status-blue':'status-red'}">${f.status}</span></td>
+        <td><button class="btn btn-sm btn-ghost" onclick="toast('Editando ${f.nome}','info')">✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteItem('funcionarios',${i},'${f.nome}')">🗑️</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div></div>`;
+}
+
+function renderFolha() {
+  const total = DB.funcionarios.reduce((s,f) => s+f.salario, 0);
+  return `
+  <div class="grid grid-3 mb-16">
+    <div class="card"><div class="card-title">Total Folha/Mês</div><div class="stat-val text-amber">${fmtMoney(total)}</div></div>
+    <div class="card"><div class="card-title">Total Funcionários</div><div class="stat-val">${DB.funcionarios.length}</div></div>
+    <div class="card"><div class="card-title">Média Salarial</div><div class="stat-val">${fmtMoney(total/DB.funcionarios.length)}</div></div>
+  </div>
+  <div class="card">
+    <div class="section-title">Folha — Março 2026</div>
+    <div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Cargo</th><th>Salário Bruto</th><th>INSS (11%)</th><th>IRRF</th><th>Líquido</th></tr></thead>
+    <tbody>${DB.funcionarios.map(f => {
+      const inss = f.salario * 0.11;
+      const irrf = f.salario > 4664 ? f.salario * 0.075 : 0;
+      const liq = f.salario - inss - irrf;
+      return `<tr><td>${f.nome}</td><td style="color:#9ca3af">${f.cargo}</td>
+        <td>${fmtMoney(f.salario)}</td>
+        <td class="text-red">${fmtMoney(inss)}</td>
+        <td class="text-red">${fmtMoney(irrf)}</td>
+        <td style="font-weight:700" class="text-green">${fmtMoney(liq)}</td></tr>`;
+    }).join('')}
+    </tbody></table></div>
+    <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" onclick="toast('Folha de Março/26 enviada para processamento','success')">📤 Processar Folha</button></div>
+  </div>`;
+}
+
+function renderFerias() {
+  const ferias = DB.funcionarios.filter(f => f.status === 'Férias');
+  return `
+  <div class="card mb-16">
+    <div class="section-title">Em Férias Agora (${ferias.length})</div>
+    ${ferias.length ? ferias.map(f => `
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(55,65,81,.4)">
+        <div class="avatar">${f.nome.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+        <div><div style="font-size:13px;font-weight:500">${f.nome}</div><div style="font-size:12px;color:#9ca3af">${f.cargo} — ${f.setor}</div></div>
+        <span class="status status-blue" style="margin-left:auto">Em Férias</span>
+      </div>`).join('') : '<p style="color:#9ca3af;font-size:13px">Nenhum funcionário em férias.</p>'}
+  </div>
+  <div class="card">
+    <div class="section-title">Escala de Férias 2026</div>
+    ${DB.funcionarios.map((f,i) => `
+      <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(55,65,81,.4)">
+        <div class="avatar">${f.nome.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+        <div style="flex:1"><div style="font-size:13px">${f.nome}</div><div style="font-size:11px;color:#9ca3af">${f.setor}</div></div>
+        <button class="btn btn-sm btn-ghost" onclick="toast('Férias agendadas para ${f.nome}','success')">📅 Agendar Férias</button>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ─── PRODUÇÃO ─────────────────────────────────────────────────────────────────
+function renderProducao() {
+  const totalTon = DB.ordens.reduce((s,o) => s+o.qtd, 0);
+  return `
+  <div class="grid grid-3 mb-16">
+    <div class="card"><div class="card-title">Ordens Ativas</div><div class="stat-val text-amber">${DB.ordens.length}</div></div>
+    <div class="card"><div class="card-title">Volume Total (ton)</div><div class="stat-val">${totalTon.toLocaleString('pt-BR')}</div></div>
+    <div class="card"><div class="card-title">Progresso Médio</div><div class="stat-val text-green">${Math.round(DB.ordens.reduce((s,o)=>s+o.progresso,0)/DB.ordens.length)}%</div></div>
+  </div>
+  <div class="toolbar">
+    <input type="text" class="search" placeholder="🔍 Buscar ordem..." oninput="filterTable(this,'op-table',0,1)">
+    <div class="toolbar-right"><button class="btn btn-primary" onclick="openModal('modal-op')">+ Nova OP</button></div>
+  </div>
+  <div class="card"><div class="table-wrap">
+    <table id="op-table"><thead><tr><th>OP</th><th>Produto</th><th>Qtd (ton)</th><th>Início</th><th>Conclusão</th><th>Progresso</th><th>Prioridade</th><th>Ações</th></tr></thead>
+    <tbody>${DB.ordens.map((o,i) => `
+      <tr>
+        <td class="text-amber">${o.id}</td>
+        <td style="font-weight:500">${o.produto}</td>
+        <td>${o.qtd.toLocaleString('pt-BR')}</td>
+        <td>${o.ini}</td>
+        <td>${o.fim}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="progress" style="flex:1;width:80px"><div class="progress-bar" style="width:${o.progresso}%;background:${o.progresso<30?'#ef4444':o.progresso<70?'#f59e0b':'#10b981'}"></div></div>
+            <span style="font-size:12px;color:#9ca3af;min-width:30px">${o.progresso}%</span>
+          </div>
+        </td>
+        <td><span class="status ${o.pri==='Urgente'?'status-red':o.pri==='Alta'?'status-amber':'status-blue'}">${o.pri}</span></td>
+        <td>
+          <button class="btn btn-sm btn-ghost" onclick="toast('Editando ${o.id}','info')">✏️</button>
+          <button class="btn btn-sm btn-primary" onclick="avancarOP(${i})">▶ Avançar</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div></div>`;
+}
+
+function avancarOP(i) {
+  const o = DB.ordens[i];
+  o.progresso = Math.min(100, o.progresso + 10);
+  toast(`${o.id} atualizada: ${o.progresso}% concluído`, 'success');
+  render('producao');
+}
+
+// ─── RELATÓRIOS ───────────────────────────────────────────────────────────────
+function renderRelatorios() {
+  const relats = [
+    {icon:'📊',titulo:'Relatório de Vendas',desc:'Análise completa por período, cliente e produto'},
+    {icon:'📦',titulo:'Relatório de Estoque',desc:'Posição atual, giro e projeção de consumo'},
+    {icon:'💰',titulo:'DRE — Demonstrativo de Resultados',desc:'Receitas, custos e resultado do exercício'},
+    {icon:'💵',titulo:'Fluxo de Caixa',desc:'Entradas e saídas projetadas e realizadas'},
+    {icon:'👥',titulo:'Relatório de Clientes',desc:'Ranking de clientes por volume e faturamento'},
+    {icon:'⚙️',titulo:'Relatório de Produção',desc:'Volume produzido, eficiência e paradas'},
+    {icon:'👤',titulo:'Relatório de RH',desc:'Headcount, folha e indicadores de pessoal'},
+    {icon:'🌿',titulo:'Relatório Agrícola',desc:'Produtividade de cana, ATR e qualidade'},
+  ];
+  return `
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+    ${relats.map(r => `
+      <div class="card" style="display:flex;gap:16px;align-items:center;cursor:pointer" onclick="gerarRelatorio('${r.titulo}')">
+        <div style="font-size:32px">${r.icon}</div>
+        <div>
+          <div style="font-weight:600;margin-bottom:4px">${r.titulo}</div>
+          <div style="font-size:13px;color:#9ca3af">${r.desc}</div>
+        </div>
+        <button class="btn btn-sm btn-ghost" style="margin-left:auto">📥 Gerar</button>
+      </div>`).join('')}
+  </div>`;
+}
+
+function gerarRelatorio(nome) {
+  toast(`Gerando: ${nome}...`, 'info');
+  setTimeout(() => toast(`${nome} pronto para download!`, 'success'), 1500);
+}
+
+// ─── CONFIGURAÇÕES ────────────────────────────────────────────────────────────
+function renderConfig() {
+  return `
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="section-title">Dados da Empresa</div>
+      <div class="form-row"><label>Razão Social</label><input type="text" value="Usina São Paulo Açúcar e Álcool S.A."></div>
+      <div class="form-row"><label>CNPJ</label><input type="text" value="12.345.678/0001-99"></div>
+      <div class="form-row"><label>Cidade/UF</label><input type="text" value="Piracicaba / SP"></div>
+      <div class="form-row"><label>E-mail</label><input type="email" value="erp@usinasaopaulo.com.br"></div>
+      <div class="form-row"><label>Telefone</label><input type="text" value="(19) 3400-9000"></div>
+      <button class="btn btn-primary mt-16" onclick="toast('Dados da empresa salvos!','success')">💾 Salvar</button>
+    </div>
+    <div>
+      <div class="card mb-16">
+        <div class="section-title">Safra Atual</div>
+        <div class="form-row"><label>Safra</label><input type="text" value="2025/26"></div>
+        <div class="form-row"><label>Início da Moagem</label><input type="date" value="2026-04-01"></div>
+        <div class="form-row"><label>Previsão de Encerramento</label><input type="date" value="2026-11-30"></div>
+        <div class="form-row"><label>Meta de Produção (ton)</label><input type="number" value="380000"></div>
+        <button class="btn btn-primary mt-16" onclick="toast('Configurações de safra salvas!','success')">💾 Salvar</button>
+      </div>
+      <div class="card">
+        <div class="section-title">Usuário</div>
+        <div class="form-row"><label>Nome</label><input type="text" value="João Silva"></div>
+        <div class="form-row"><label>E-mail</label><input type="email" value="joao.silva@usinasaopaulo.com.br"></div>
+        <div class="form-row"><label>Perfil</label><select><option>Administrador</option><option>Gerente</option><option>Operador</option></select></div>
+        <button class="btn btn-ghost mt-16" onclick="toast('Senha alterada com sucesso!','success')">🔑 Alterar Senha</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── CRUD HELPERS ─────────────────────────────────────────────────────────────
+function deleteItem(collection, idx, name) {
+  if(confirm(`Excluir "${name}"?`)) {
+    DB[collection].splice(idx, 1);
+    toast(`"${name}" excluído com sucesso.`, 'success');
+    render(currentPage);
+  }
+}
+
+function pagarConta(tipo, idx) {
+  const col = tipo === 'pagar' ? 'contasPagar' : 'contasReceber';
+  const item = DB[col][idx];
+  DB[col].splice(idx, 1);
+  toast(`${tipo==='pagar'?'Pagamento':'Baixa'} realizado: ${fmtMoney(item.valor)}`, 'success');
+  render('financeiro');
+}
+
+// ─── SAVE MODALS ─────────────────────────────────────────────────────────────
+function saveVenda() {
+  const cli = v('v-cliente'), prod = v('v-produto'), qtd = Number(v('v-qtd')), preco = Number(v('v-preco')), data = v('v-data');
+  if(!cli||!prod||!qtd||!preco||!data) return toast('Preencha todos os campos obrigatórios.','error');
+  DB.vendas.unshift({id:'PV-'+pvCounter++,cliente:cli,produto:prod,qtd,preco,total:qtd*preco,data,status:'Pendente'});
+  closeModal('modal-venda'); clearModal(['v-cliente','v-produto','v-qtd','v-preco','v-data','v-obs']);
+  toast('Pedido criado com sucesso!','success'); render('vendas');
+}
+
+function saveProduto() {
+  const nome = v('p-nome'), cat = v('p-cat'), estoque = Number(v('p-estoque')), min = Number(v('p-min'));
+  if(!nome||!cat||estoque===''||min==='') return toast('Preencha todos os campos obrigatórios.','error');
+  const un = v('p-un'), preco = Number(v('p-preco'));
+  const status = estoque < min ? 'Crítico' : 'OK';
+  DB.estoque.push({id:DB.estoque.length+1,nome,cat,estoque,min,un,preco,status});
+  closeModal('modal-produto'); clearModal(['p-nome','p-cat','p-estoque','p-min','p-preco']);
+  toast('Produto adicionado ao estoque!','success'); render('estoque');
+}
+
+function saveCliente() {
+  const nome = v('c-nome'), cnpj = v('c-cnpj');
+  if(!nome||!cnpj) return toast('Preencha os campos obrigatórios.','error');
+  DB.clientes.push({id:DB.clientes.length+1,nome,cnpj,seg:v('c-seg'),email:v('c-email'),tel:v('c-tel'),cidade:v('c-cidade'),limite:Number(v('c-limite'))||0,status:'Ativo'});
+  closeModal('modal-cliente'); clearModal(['c-nome','c-cnpj','c-email','c-tel','c-cidade','c-limite']);
+  toast('Cliente cadastrado!','success'); render('clientes');
+}
+
+function saveFornecedor() {
+  const nome = v('f-nome'), cnpj = v('f-cnpj');
+  if(!nome||!cnpj) return toast('Preencha os campos obrigatórios.','error');
+  DB.fornecedores.push({id:DB.fornecedores.length+1,nome,cnpj,cat:v('f-cat'),email:v('f-email'),tel:v('f-tel'),prazo:v('f-prazo'),status:'Ativo'});
+  closeModal('modal-fornecedor'); clearModal(['f-nome','f-cnpj','f-email','f-tel']);
+  toast('Fornecedor cadastrado!','success'); render('fornecedores');
+}
+
+function saveFunc() {
+  const nome = v('fn-nome'), cpf = v('fn-cpf'), salario = Number(v('fn-sal')), adm = v('fn-adm');
+  if(!nome||!cpf||!salario||!adm) return toast('Preencha os campos obrigatórios.','error');
+  DB.funcionarios.push({id:DB.funcionarios.length+1,nome,cpf,cargo:v('fn-cargo'),setor:v('fn-setor'),salario,adm,status:'Ativo'});
+  closeModal('modal-func'); clearModal(['fn-nome','fn-cpf','fn-sal','fn-adm']);
+  toast('Funcionário cadastrado!','success'); render('rh');
+}
+
+function savePagar() {
+  const desc = v('pg-desc'), valor = Number(v('pg-val')), venc = v('pg-venc');
+  if(!desc||!valor||!venc) return toast('Preencha os campos obrigatórios.','error');
+  DB.contasPagar.push({id:DB.contasPagar.length+1,desc,forn:v('pg-forn'),valor,venc,cat:v('pg-cat'),status:'Pendente'});
+  closeModal('modal-pagar'); clearModal(['pg-desc','pg-val','pg-venc']);
+  toast('Conta a pagar registrada!','success'); render('financeiro');
+}
+
+function saveReceber() {
+  const desc = v('rc-desc'), valor = Number(v('rc-val')), venc = v('rc-venc');
+  if(!desc||!valor||!venc) return toast('Preencha os campos obrigatórios.','error');
+  DB.contasReceber.push({id:DB.contasReceber.length+1,desc,cli:v('rc-cli'),valor,venc,pv:v('rc-pv'),status:'Pendente'});
+  closeModal('modal-receber'); clearModal(['rc-desc','rc-val','rc-venc','rc-pv']);
+  toast('Conta a receber registrada!','success'); render('financeiro');
+}
+
+function saveOP() {
+  const prod = v('op-prod'), qtd = Number(v('op-qtd')), ini = v('op-ini'), fim = v('op-fim');
+  if(!prod||!qtd||!ini||!fim) return toast('Preencha os campos obrigatórios.','error');
+  DB.ordens.push({id:'OP-0'+opCounter++,produto:prod,qtd,ini,fim,resp:v('op-resp'),progresso:0,status:'Em Andamento',pri:v('op-pri')});
+  closeModal('modal-op'); clearModal(['op-prod','op-qtd','op-ini','op-fim']);
+  toast('Ordem de produção criada!','success'); render('producao');
+}
+
+// ─── UTILITIES ───────────────────────────────────────────────────────────────
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function clearModal(ids) { ids.forEach(id => { const el=document.getElementById(id); if(el) el.value=''; }); }
+
+document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); }));
+
+function toast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  const icons = {success:'✅',error:'❌',info:'ℹ️'};
+  t.className = `toast toast-${type}`;
+  t.innerHTML = `<span>${icons[type]||''}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => t.style.opacity='0', 2800);
+  setTimeout(() => t.remove(), 3100);
+}
+
+function fmtMoney(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function statusClass(s) {
+  const m = {Aprovado:'status-green',Pendente:'status-amber','Em Transporte':'status-blue',Rascunho:'status-purple','Em Andamento':'status-blue',Concluído:'status-green',Cancelado:'status-red',Vencendo:'status-red'};
+  return m[s] || 'status-amber';
+}
+
+function filterTable(input, tableId, ...cols) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
+    const text = cols.map(c => row.cells[c]?.textContent.toLowerCase()).join(' ');
+    row.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+function filterTableByStatus(sel, tableId, col) {
+  const q = sel.value.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
+    const cell = row.cells[col]?.textContent.toLowerCase() || '';
+    row.style.display = (!q || cell.includes(q)) ? '' : 'none';
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+nav('dashboard');
+</script>
+</body>
+</html>
