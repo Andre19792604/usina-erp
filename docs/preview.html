@@ -465,5 +465,936 @@
 </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 7: PRODUÇÃO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">🏭 Tela 7 — Produção (Ordens de Produção)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Produção Hoje</div><div class="kpi-value" style="color:#f59e0b">892 <span style="font-size:16px">ton</span></div><div class="kpi-trend">▲ +12% vs ontem</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Lotes Concluídos</div><div class="kpi-value" style="color:#60a5fa">124</div><div class="kpi-trend">▲ +5 vs ontem</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Em Andamento</div><div class="kpi-value" style="color:#22c55e">2</div><div class="kpi-trend">MX3000 + MX2000</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Taxa de Utilização</div><div class="kpi-value" style="color:#f59e0b">87%</div><div class="kpi-trend">Meta: 85%</div></div>
+  </div>
+
+  <!-- Fórmulas/Traços -->
+  <div class="row">
+    <div class="card" style="flex:1">
+      <div class="card-title">🧪 Fórmulas de Dosagem Ativas</div>
+      <table class="table">
+        <tr><th>Produto</th><th>Brita 0</th><th>Brita 1</th><th>Areia</th><th>Pó Cal.</th><th>CAP 50/70</th><th>Temp. Prod.</th></tr>
+        <tr>
+          <td><strong style="color:#f59e0b">CBUQ BC</strong></td>
+          <td>28.0%</td><td>38.5%</td><td>26.8%</td><td>1.5%</td>
+          <td style="color:#60a5fa;font-weight:600">5.2%</td>
+          <td style="color:#22c55e">148°C</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#f59e0b">CBUQ CR</strong></td>
+          <td>22.0%</td><td>35.0%</td><td>35.0%</td><td>2.5%</td>
+          <td style="color:#60a5fa;font-weight:600">5.5%</td>
+          <td style="color:#22c55e">152°C</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#f59e0b">PMF I</strong></td>
+          <td>30.0%</td><td>42.0%</td><td>23.0%</td><td>1.0%</td>
+          <td style="color:#60a5fa;font-weight:600">4.8%</td>
+          <td style="color:#22c55e">144°C</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Ordens de Produção -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="card-title" style="margin:0">Ordens de Produção — 11/03/2026</div>
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:6px 16px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Nova Ordem</button>
+    </div>
+    <table class="table">
+      <tr><th>Nº Ordem</th><th>Produto</th><th>Equipamento</th><th>Previsto</th><th>Realizado</th><th>% Concluído</th><th>Início</th><th>Status</th></tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">OP000000245</td>
+        <td><strong>CBUQ BC</strong></td>
+        <td>MX3000</td>
+        <td style="color:#94a3b8">500 ton</td>
+        <td style="color:#f59e0b;font-weight:600">500 ton</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:100%;background:#22c55e"></div></div>
+            <span style="font-size:11px;color:#22c55e">100%</span>
+          </div>
+        </td>
+        <td style="color:#94a3b8;font-size:12px">06:00</td>
+        <td><span class="badge badge-green">Concluída</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">OP000000246</td>
+        <td><strong>CBUQ CR</strong></td>
+        <td>MX3000</td>
+        <td style="color:#94a3b8">392 ton</td>
+        <td style="color:#f59e0b;font-weight:600">392 ton</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:79%;background:#f59e0b"></div></div>
+            <span style="font-size:11px;color:#f59e0b">79%</span>
+          </div>
+        </td>
+        <td style="color:#94a3b8;font-size:12px">10:30</td>
+        <td><span class="badge badge-amber">Em Produção</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">OP000000247</td>
+        <td><strong>PMF I</strong></td>
+        <td>MX2000</td>
+        <td style="color:#94a3b8">200 ton</td>
+        <td style="color:#f59e0b;font-weight:600">0 ton</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:0%;background:#60a5fa"></div></div>
+            <span style="font-size:11px;color:#64748b">0%</span>
+          </div>
+        </td>
+        <td style="color:#94a3b8;font-size:12px">14:00</td>
+        <td><span class="badge badge-blue">Aguardando</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 8: PERDAS OPERACIONAIS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">⚠️ Tela 8 — Perdas Operacionais</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Perda Total do Mês</div><div class="kpi-value" style="color:#ef4444">18.4 <span style="font-size:16px">ton</span></div><div class="kpi-trend" style="color:#ef4444">▲ +2.1 ton vs mês anterior</div></div>
+    <div class="card kpi-card"><div class="kpi-label">% Perda / Produção</div><div class="kpi-value" style="color:#f59e0b">0.82%</div><div class="kpi-trend">Meta: ≤ 1.0%</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Ocorrências</div><div class="kpi-value" style="color:#60a5fa">23</div><div class="kpi-trend" style="color:#64748b">No mês</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Custo Estimado</div><div class="kpi-value" style="color:#ef4444; font-size:20px">R$ 9.840</div><div class="kpi-trend" style="color:#64748b">@ R$ 534/ton</div></div>
+  </div>
+
+  <div class="row">
+    <div class="card" style="flex:2">
+      <div class="card-title">Registro de Perdas — Março/2026</div>
+      <table class="table">
+        <tr><th>Data</th><th>Ordem</th><th>Produto</th><th>Tipo de Perda</th><th>Qtd (ton)</th><th>Causa</th><th>Responsável</th></tr>
+        <tr>
+          <td style="color:#94a3b8;font-size:12px">11/03</td>
+          <td style="color:#60a5fa;font-size:12px">OP000000243</td>
+          <td>CBUQ BC</td>
+          <td><span class="badge badge-amber">Descarte de Início</span></td>
+          <td style="color:#ef4444;font-weight:600">0.8</td>
+          <td style="font-size:12px;color:#94a3b8">Temperatura baixa ao ligar</td>
+          <td style="font-size:12px">João Operador</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;font-size:12px">10/03</td>
+          <td style="color:#60a5fa;font-size:12px">OP000000241</td>
+          <td>CBUQ CR</td>
+          <td><span class="badge badge-red">Reprovação Lab</span></td>
+          <td style="color:#ef4444;font-weight:600">2.4</td>
+          <td style="font-size:12px;color:#94a3b8">% CAP fora de especificação</td>
+          <td style="font-size:12px">Carlos Lab</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;font-size:12px">09/03</td>
+          <td style="color:#60a5fa;font-size:12px">OP000000238</td>
+          <td>PMF I</td>
+          <td><span class="badge badge-amber">Rejeito de Mistura</span></td>
+          <td style="color:#ef4444;font-weight:600">1.2</td>
+          <td style="font-size:12px;color:#94a3b8">Segregação de agregados</td>
+          <td style="font-size:12px">João Operador</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;font-size:12px">07/03</td>
+          <td style="color:#60a5fa;font-size:12px">OP000000235</td>
+          <td>CBUQ BC</td>
+          <td><span class="badge badge-red">Parada de Emergência</span></td>
+          <td style="color:#ef4444;font-weight:600">3.6</td>
+          <td style="font-size:12px;color:#94a3b8">Falha no queimador principal</td>
+          <td style="font-size:12px">Manutenção</td>
+        </tr>
+      </table>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="card-title">Perdas por Tipo (Março)</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Descarte de Início</span><span style="color:#f59e0b;font-weight:600">6.2 ton</span></div><div class="progress-bar"><div class="progress-fill" style="width:34%;background:#f59e0b"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Reprovação Lab</span><span style="color:#ef4444;font-weight:600">5.8 ton</span></div><div class="progress-bar"><div class="progress-fill" style="width:31%;background:#ef4444"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Parada de Emergência</span><span style="color:#ef4444;font-weight:600">4.2 ton</span></div><div class="progress-bar"><div class="progress-fill" style="width:23%;background:#ef4444"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Rejeito de Mistura</span><span style="color:#60a5fa;font-weight:600">2.2 ton</span></div><div class="progress-bar"><div class="progress-fill" style="width:12%;background:#60a5fa"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 9: ESTOQUE DA USINA -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">📦 Tela 9 — Estoque da Usina (Insumos)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Itens em Estoque</div><div class="kpi-value" style="color:#60a5fa">24</div><div class="kpi-trend">6 abaixo do mínimo</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Valor em Estoque</div><div class="kpi-value" style="color:#22c55e; font-size:20px">R$ 1.24M</div><div class="kpi-trend">▲ +R$48k vs semana</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Pedidos de Compra</div><div class="kpi-value" style="color:#f59e0b">3</div><div class="kpi-trend" style="color:#f59e0b">Aguardando entrega</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Consumo Hoje</div><div class="kpi-value" style="color:#e2e8f0; font-size:20px">892 ton</div><div class="kpi-trend">De insumos processados</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="card-title" style="margin:0">Posição de Estoque — 11/03/2026</div>
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:6px 16px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Registrar Entrada</button>
+    </div>
+    <table class="table">
+      <tr><th>Material</th><th>Tipo</th><th>Saldo Atual</th><th>Estoque Mín.</th><th>Estoque Máx.</th><th>Unidade</th><th>Valor Unit.</th><th>Valor Total</th><th>Status</th></tr>
+      <tr>
+        <td><strong>CAP 50/70</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Ligante</td>
+        <td style="color:#ef4444;font-weight:700">45.0</td>
+        <td style="color:#64748b">50.0</td>
+        <td style="color:#64748b">300.0</td>
+        <td style="color:#94a3b8">ton</td>
+        <td>R$ 3.800</td>
+        <td style="color:#22c55e;font-weight:600">R$ 171.000</td>
+        <td><span class="badge badge-red">⚠ Abaixo Mín.</span></td>
+      </tr>
+      <tr>
+        <td><strong>Brita 0 (4,8mm)</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Agregado</td>
+        <td style="color:#22c55e;font-weight:700">1.850</td>
+        <td style="color:#64748b">500</td>
+        <td style="color:#64748b">5.000</td>
+        <td style="color:#94a3b8">ton</td>
+        <td>R$ 48</td>
+        <td style="color:#22c55e;font-weight:600">R$ 88.800</td>
+        <td><span class="badge badge-green">OK</span></td>
+      </tr>
+      <tr>
+        <td><strong>Brita 1 (12,5mm)</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Agregado</td>
+        <td style="color:#22c55e;font-weight:700">2.420</td>
+        <td style="color:#64748b">500</td>
+        <td style="color:#64748b">6.000</td>
+        <td style="color:#94a3b8">ton</td>
+        <td>R$ 52</td>
+        <td style="color:#22c55e;font-weight:600">R$ 125.840</td>
+        <td><span class="badge badge-green">OK</span></td>
+      </tr>
+      <tr>
+        <td><strong>Areia Natural</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Agregado</td>
+        <td style="color:#22c55e;font-weight:700">3.100</td>
+        <td style="color:#64748b">800</td>
+        <td style="color:#64748b">8.000</td>
+        <td style="color:#94a3b8">ton</td>
+        <td>R$ 32</td>
+        <td style="color:#22c55e;font-weight:600">R$ 99.200</td>
+        <td><span class="badge badge-green">OK</span></td>
+      </tr>
+      <tr>
+        <td><strong>Cal Hidratada</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Fíler</td>
+        <td style="color:#ef4444;font-weight:700">12.0</td>
+        <td style="color:#64748b">20.0</td>
+        <td style="color:#64748b">100.0</td>
+        <td style="color:#94a3b8">ton</td>
+        <td>R$ 420</td>
+        <td style="color:#22c55e;font-weight:600">R$ 5.040</td>
+        <td><span class="badge badge-red">⚠ Abaixo Mín.</span></td>
+      </tr>
+      <tr>
+        <td><strong>Pó de Calcário</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Fíler</td>
+        <td style="color:#f59e0b;font-weight:700">28.0</td>
+        <td style="color:#64748b">30.0</td>
+        <td style="color:#64748b">150.0</td>
+        <td style="color:#94a3b8">ton</td>
+        <td>R$ 180</td>
+        <td style="color:#22c55e;font-weight:600">R$ 5.040</td>
+        <td><span class="badge badge-amber">⚡ Próx. Mín.</span></td>
+      </tr>
+      <tr>
+        <td><strong>Óleo Diesel B S10</strong></td>
+        <td style="color:#94a3b8;font-size:12px">Combustível</td>
+        <td style="color:#ef4444;font-weight:700">3.200</td>
+        <td style="color:#64748b">5.000</td>
+        <td style="color:#64748b">30.000</td>
+        <td style="color:#94a3b8">L</td>
+        <td>R$ 6.40</td>
+        <td style="color:#22c55e;font-weight:600">R$ 20.480</td>
+        <td><span class="badge badge-red">⚠ Abaixo Mín.</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 10: ESTOQUE DE CLIENTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">🏪 Tela 10 — Estoque de Clientes</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Clientes com Saldo</div><div class="kpi-value" style="color:#60a5fa">8</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Total em Estoque</div><div class="kpi-value" style="color:#f59e0b">4.280 <span style="font-size:14px">ton</span></div></div>
+    <div class="card kpi-card"><div class="kpi-label">Valor Total</div><div class="kpi-value" style="color:#22c55e; font-size:20px">R$ 2.28M</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Saldos por Cliente — 11/03/2026</div>
+    <table class="table">
+      <tr><th>Cliente</th><th>Produto</th><th>Saldo (ton)</th><th>Preço Unit.</th><th>Valor</th><th>Última Entrada</th><th>Última Retirada</th></tr>
+      <tr>
+        <td><strong>Prefeitura Municipal SP</strong></td>
+        <td>CBUQ BC</td>
+        <td style="color:#f59e0b;font-weight:700">1.200</td>
+        <td>R$ 534,00</td>
+        <td style="color:#22c55e;font-weight:600">R$ 640.800</td>
+        <td style="color:#94a3b8;font-size:12px">10/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">11/03/2026</td>
+      </tr>
+      <tr>
+        <td><strong>Rodovias do Brasil S.A.</strong></td>
+        <td>CBUQ CR</td>
+        <td style="color:#f59e0b;font-weight:700">980</td>
+        <td>R$ 548,00</td>
+        <td style="color:#22c55e;font-weight:600">R$ 537.040</td>
+        <td style="color:#94a3b8;font-size:12px">09/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">10/03/2026</td>
+      </tr>
+      <tr>
+        <td><strong>Construtora ABC Ltda</strong></td>
+        <td>PMF I</td>
+        <td style="color:#f59e0b;font-weight:700">650</td>
+        <td>R$ 520,00</td>
+        <td style="color:#22c55e;font-weight:600">R$ 338.000</td>
+        <td style="color:#94a3b8;font-size:12px">08/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">09/03/2026</td>
+      </tr>
+      <tr>
+        <td><strong>Engenharia Rápida ME</strong></td>
+        <td>CBUQ BC</td>
+        <td style="color:#f59e0b;font-weight:700">450</td>
+        <td>R$ 534,00</td>
+        <td style="color:#22c55e;font-weight:600">R$ 240.300</td>
+        <td style="color:#94a3b8;font-size:12px">07/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">08/03/2026</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 11: VENDAS / PEDIDOS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">🛒 Tela 11 — Vendas / Pedidos</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Pedidos no Mês</div><div class="kpi-value" style="color:#60a5fa">38</div><div class="kpi-trend">▲ +6 vs mês anterior</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Faturamento Mês</div><div class="kpi-value" style="color:#22c55e; font-size:20px">R$ 2.84M</div><div class="kpi-trend">▲ +14%</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Em Aberto</div><div class="kpi-value" style="color:#f59e0b">12</div><div class="kpi-trend" style="color:#f59e0b">Aguardando produção</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Ticket Médio</div><div class="kpi-value" style="color:#e2e8f0; font-size:20px">R$ 74,7k</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="card-title" style="margin:0">Pedidos — Março/2026</div>
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:6px 16px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Novo Pedido</button>
+    </div>
+    <table class="table">
+      <tr><th>Nº Pedido</th><th>Cliente</th><th>Produto</th><th>Qtd (ton)</th><th>Preço Unit.</th><th>Total</th><th>Data Entrega</th><th>Status</th></tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PED000000038</td>
+        <td>Prefeitura Municipal SP</td>
+        <td>CBUQ BC</td>
+        <td style="color:#f59e0b;font-weight:600">500</td>
+        <td>R$ 534,00</td>
+        <td style="color:#22c55e;font-weight:700">R$ 267.000</td>
+        <td style="color:#94a3b8;font-size:12px">15/03/2026</td>
+        <td><span class="badge badge-amber">Em Produção</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PED000000037</td>
+        <td>Construtora ABC Ltda</td>
+        <td>CBUQ CR</td>
+        <td style="color:#f59e0b;font-weight:600">300</td>
+        <td>R$ 548,00</td>
+        <td style="color:#22c55e;font-weight:700">R$ 164.400</td>
+        <td style="color:#94a3b8;font-size:12px">12/03/2026</td>
+        <td><span class="badge badge-blue">Aguardando</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PED000000036</td>
+        <td>Rodovias do Brasil S.A.</td>
+        <td>CBUQ BC</td>
+        <td style="color:#f59e0b;font-weight:600">900</td>
+        <td>R$ 534,00</td>
+        <td style="color:#22c55e;font-weight:700">R$ 480.600</td>
+        <td style="color:#94a3b8;font-size:12px">10/03/2026</td>
+        <td><span class="badge badge-green">Entregue</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PED000000035</td>
+        <td>Engenharia Rápida ME</td>
+        <td>PMF I</td>
+        <td style="color:#f59e0b;font-weight:600">150</td>
+        <td>R$ 520,00</td>
+        <td style="color:#22c55e;font-weight:700">R$ 78.000</td>
+        <td style="color:#94a3b8;font-size:12px">08/03/2026</td>
+        <td><span class="badge badge-green">Entregue</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 12: COMPRAS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">✂️ Tela 12 — Compras (Cotações e Pedidos)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Pedidos no Mês</div><div class="kpi-value" style="color:#60a5fa">14</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Total em Compras</div><div class="kpi-value" style="color:#ef4444; font-size:20px">R$ 428k</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Aguard. Entrega</div><div class="kpi-value" style="color:#f59e0b">3</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Cotações Abertas</div><div class="kpi-value" style="color:#22c55e">2</div></div>
+  </div>
+
+  <!-- Cotação ativa -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">⚡ Cotação Aberta — CAP 50/70 (Urgente)</div>
+    <table class="table">
+      <tr><th>Fornecedor</th><th>Preço/ton</th><th>Prazo Entrega</th><th>Validade</th><th>Observação</th><th>Ação</th></tr>
+      <tr>
+        <td><strong>Petrobras Distribuidora</strong></td>
+        <td style="color:#22c55e;font-weight:700">R$ 3.750</td>
+        <td>3 dias</td>
+        <td style="color:#94a3b8;font-size:12px">14/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">Frete incluso</td>
+        <td><button style="background:#22c55e22;border:1px solid #22c55e44;color:#22c55e;border-radius:4px;padding:3px 10px;font-size:12px;cursor:pointer">✓ Aprovar</button></td>
+      </tr>
+      <tr>
+        <td><strong>Ipiranga Asfaltos</strong></td>
+        <td style="color:#f59e0b;font-weight:700">R$ 3.820</td>
+        <td>2 dias</td>
+        <td style="color:#94a3b8;font-size:12px">13/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">Frete à cobrar</td>
+        <td><button style="background:#60a5fa22;border:1px solid #60a5fa44;color:#60a5fa;border-radius:4px;padding:3px 10px;font-size:12px;cursor:pointer">Selecionar</button></td>
+      </tr>
+      <tr>
+        <td><strong>Betunel Asfaltos</strong></td>
+        <td style="color:#94a3b8;font-weight:700">R$ 3.900</td>
+        <td>5 dias</td>
+        <td style="color:#94a3b8;font-size:12px">16/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">Entrega mínima 80t</td>
+        <td><button style="background:#60a5fa22;border:1px solid #60a5fa44;color:#60a5fa;border-radius:4px;padding:3px 10px;font-size:12px;cursor:pointer">Selecionar</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pedidos de Compra — Março/2026</div>
+    <table class="table">
+      <tr><th>Nº PC</th><th>Fornecedor</th><th>Material</th><th>Qtd</th><th>Total</th><th>Emissão</th><th>Previsão</th><th>Status</th></tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PC000000014</td>
+        <td>Pedreiras Norte Ltda</td>
+        <td>Brita 1</td>
+        <td style="color:#f59e0b">800 ton</td>
+        <td style="color:#22c55e;font-weight:600">R$ 41.600</td>
+        <td style="color:#94a3b8;font-size:12px">10/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">13/03/2026</td>
+        <td><span class="badge badge-amber">Aguard. Entrega</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PC000000013</td>
+        <td>Cal do Vale S.A.</td>
+        <td>Cal Hidratada</td>
+        <td style="color:#f59e0b">50 ton</td>
+        <td style="color:#22c55e;font-weight:600">R$ 21.000</td>
+        <td style="color:#94a3b8;font-size:12px">09/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">12/03/2026</td>
+        <td><span class="badge badge-amber">Aguard. Entrega</span></td>
+      </tr>
+      <tr>
+        <td style="color:#60a5fa;font-size:12px">PC000000012</td>
+        <td>Combustíveis Total</td>
+        <td>Diesel B S10</td>
+        <td style="color:#f59e0b">15.000 L</td>
+        <td style="color:#22c55e;font-weight:600">R$ 96.000</td>
+        <td style="color:#94a3b8;font-size:12px">08/03/2026</td>
+        <td style="color:#94a3b8;font-size:12px">10/03/2026</td>
+        <td><span class="badge badge-green">Entregue</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 13: FINANCEIRO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">💰 Tela 13 — Financeiro (Contas a Pagar/Receber + Fluxo de Caixa)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">A Receber (em aberto)</div><div class="kpi-value" style="color:#22c55e; font-size:22px">R$ 284k</div><div class="kpi-trend">▲ 3 clientes</div></div>
+    <div class="card kpi-card"><div class="kpi-label">A Pagar (vencendo)</div><div class="kpi-value" style="color:#ef4444; font-size:22px">R$ 178k</div><div class="kpi-trend" style="color:#ef4444">5 contas</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Saldo Caixa</div><div class="kpi-value" style="color:#f59e0b; font-size:22px">R$ 412k</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Resultado do Mês</div><div class="kpi-value" style="color:#22c55e; font-size:22px">R$ 618k</div><div class="kpi-trend">▲ +21% vs fev</div></div>
+  </div>
+
+  <!-- Fluxo de caixa visual -->
+  <div class="row">
+    <div class="card" style="flex:2">
+      <div class="card-title">Fluxo de Caixa — Março/2026 (R$ mil)</div>
+      <div style="background:#0f172a;border-radius:8px;padding:16px;display:flex;gap:0;align-items:flex-end;height:180px">
+        <!-- Simplificação: barras de entrada (verde) e saída (vermelho) lado a lado por semana -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="display:flex;gap:3px;align-items:flex-end">
+            <div style="width:20px;height:120px;background:linear-gradient(to top,#16a34a88,#22c55e);border-radius:3px 3px 0 0"></div>
+            <div style="width:20px;height:72px;background:linear-gradient(to top,#7f1d1d88,#ef4444);border-radius:3px 3px 0 0"></div>
+          </div>
+          <div style="font-size:10px;color:#64748b">Sem 1</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="display:flex;gap:3px;align-items:flex-end">
+            <div style="width:20px;height:140px;background:linear-gradient(to top,#16a34a88,#22c55e);border-radius:3px 3px 0 0"></div>
+            <div style="width:20px;height:80px;background:linear-gradient(to top,#7f1d1d88,#ef4444);border-radius:3px 3px 0 0"></div>
+          </div>
+          <div style="font-size:10px;color:#64748b">Sem 2</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="display:flex;gap:3px;align-items:flex-end">
+            <div style="width:20px;height:90px;background:linear-gradient(to top,#16a34a88,#22c55e);border-radius:3px 3px 0 0"></div>
+            <div style="width:20px;height:60px;background:linear-gradient(to top,#7f1d1d88,#ef4444);border-radius:3px 3px 0 0"></div>
+          </div>
+          <div style="font-size:10px;color:#64748b">Sem 3*</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="display:flex;gap:3px;align-items:flex-end">
+            <div style="width:20px;height:160px;background:linear-gradient(to top,#16a34a44,#22c55e44);border-radius:3px 3px 0 0;border:1px dashed #22c55e44"></div>
+            <div style="width:20px;height:90px;background:linear-gradient(to top,#7f1d1d44,#ef444444);border-radius:3px 3px 0 0;border:1px dashed #ef444444"></div>
+          </div>
+          <div style="font-size:10px;color:#64748b">Sem 4</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-left:16px;justify-content:center">
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:#22c55e;border-radius:2px"></div><span style="font-size:11px;color:#94a3b8">Entradas</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:#ef4444;border-radius:2px"></div><span style="font-size:11px;color:#94a3b8">Saídas</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="card-title">Saldo por Conta</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0f172a;border-radius:8px"><span style="font-size:13px">Conta Corrente BB</span><span style="color:#22c55e;font-weight:700">R$ 284.200</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0f172a;border-radius:8px"><span style="font-size:13px">Conta Corrente Itaú</span><span style="color:#22c55e;font-weight:700">R$ 127.800</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0f172a;border-radius:8px"><span style="font-size:13px">Caixa Interno</span><span style="color:#f59e0b;font-weight:700">R$ 0.000</span></div>
+        <div style="border-top:1px solid #1e3a5f;padding-top:10px;display:flex;justify-content:space-between"><span style="font-weight:600;color:#e2e8f0">Total</span><span style="color:#22c55e;font-weight:700;font-size:15px">R$ 412.000</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contas a Receber -->
+  <div class="row">
+    <div class="card" style="flex:1">
+      <div class="card-title" style="color:#22c55e">💚 Contas a Receber</div>
+      <table class="table">
+        <tr><th>Cliente</th><th>Referência</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr>
+        <tr>
+          <td>Prefeitura Municipal SP</td>
+          <td style="font-size:12px;color:#64748b">NF-000128</td>
+          <td style="color:#22c55e;font-size:12px">20/03/2026</td>
+          <td style="color:#22c55e;font-weight:700">R$ 48.200</td>
+          <td><span class="badge badge-green">A Receber</span></td>
+        </tr>
+        <tr>
+          <td>Rodovias do Brasil</td>
+          <td style="font-size:12px;color:#64748b">NF-000125</td>
+          <td style="color:#f59e0b;font-size:12px">14/03/2026</td>
+          <td style="color:#22c55e;font-weight:700">R$ 147.600</td>
+          <td><span class="badge badge-amber">Próx. Vcto.</span></td>
+        </tr>
+        <tr>
+          <td>Construtora ABC</td>
+          <td style="font-size:12px;color:#64748b">NF-000120</td>
+          <td style="color:#ef4444;font-size:12px">05/03/2026</td>
+          <td style="color:#22c55e;font-weight:700">R$ 88.200</td>
+          <td><span class="badge badge-red">Vencida</span></td>
+        </tr>
+      </table>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="card-title" style="color:#ef4444">❤️ Contas a Pagar</div>
+      <table class="table">
+        <tr><th>Fornecedor</th><th>Referência</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr>
+        <tr>
+          <td>Petrobras Distribuidora</td>
+          <td style="font-size:12px;color:#64748b">PC-000012</td>
+          <td style="color:#ef4444;font-size:12px">08/03/2026</td>
+          <td style="color:#ef4444;font-weight:700">R$ 95.000</td>
+          <td><span class="badge badge-red">Vencida</span></td>
+        </tr>
+        <tr>
+          <td>Pedreiras Norte Ltda</td>
+          <td style="font-size:12px;color:#64748b">PC-000014</td>
+          <td style="color:#f59e0b;font-size:12px">15/03/2026</td>
+          <td style="color:#ef4444;font-weight:700">R$ 41.600</td>
+          <td><span class="badge badge-amber">Próx. Vcto.</span></td>
+        </tr>
+        <tr>
+          <td>Cal do Vale S.A.</td>
+          <td style="font-size:12px;color:#64748b">PC-000013</td>
+          <td style="color:#22c55e;font-size:12px">18/03/2026</td>
+          <td style="color:#ef4444;font-weight:700">R$ 21.000</td>
+          <td><span class="badge badge-green">A Pagar</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 14: MANUTENÇÃO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">🔧 Tela 14 — Manutenção (Equipamentos e O.S.)</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="row">
+    <div class="card kpi-card"><div class="kpi-label">Equipamentos</div><div class="kpi-value" style="color:#60a5fa">18</div><div class="kpi-trend">14 operacionais</div></div>
+    <div class="card kpi-card"><div class="kpi-label">O.S. Abertas</div><div class="kpi-value" style="color:#f59e0b">6</div><div class="kpi-trend" style="color:#f59e0b">2 urgentes</div></div>
+    <div class="card kpi-card"><div class="kpi-label">O.S. no Mês</div><div class="kpi-value" style="color:#22c55e">22</div><div class="kpi-trend">▲ 18 concluídas</div></div>
+    <div class="card kpi-card"><div class="kpi-label">Custo de Manutenção</div><div class="kpi-value" style="color:#ef4444; font-size:20px">R$ 48k</div><div class="kpi-trend">No mês</div></div>
+  </div>
+
+  <!-- Status Equipamentos Principais -->
+  <div class="row">
+    <div class="card" style="flex:1">
+      <div class="card-title">Status dos Equipamentos Principais</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f172a;border-radius:8px;border-left:3px solid #22c55e">
+          <div><div style="font-weight:600;color:#e2e8f0">Usina MX3000</div><div style="font-size:12px;color:#64748b">Usinagem de Asfalto — Planta Principal</div></div>
+          <span class="badge badge-green">Operacional</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f172a;border-radius:8px;border-left:3px solid #22c55e">
+          <div><div style="font-weight:600;color:#e2e8f0">Usina MX2000</div><div style="font-size:12px;color:#64748b">Usinagem de Asfalto — Planta Secundária</div></div>
+          <span class="badge badge-green">Operacional</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f172a;border-radius:8px;border-left:3px solid #ef4444">
+          <div><div style="font-weight:600;color:#e2e8f0">Queimador principal MX3000</div><div style="font-size:12px;color:#64748b">Componente do tambor secador</div></div>
+          <span class="badge badge-red">Manutenção</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f172a;border-radius:8px;border-left:3px solid #22c55e">
+          <div><div style="font-weight:600;color:#e2e8f0">Balança Rodoviária</div><div style="font-size:12px;color:#64748b">Capacidade: 80 ton</div></div>
+          <span class="badge badge-green">Operacional</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f172a;border-radius:8px;border-left:3px solid #f59e0b">
+          <div><div style="font-weight:600;color:#e2e8f0">Elevador de Canecas #2</div><div style="font-size:12px;color:#64748b">Transporte de agregados quentes</div></div>
+          <span class="badge badge-amber">Preventiva Prog.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="flex:1.5">
+      <div class="card-title">Ordens de Serviço Abertas</div>
+      <table class="table">
+        <tr><th>Nº O.S.</th><th>Equipamento</th><th>Tipo</th><th>Descrição</th><th>Prioridade</th><th>Abertura</th><th>Status</th></tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">OS000000142</td>
+          <td>Queimador MX3000</td>
+          <td><span class="badge badge-red">Corretiva</span></td>
+          <td style="font-size:12px;color:#94a3b8">Troca do bico atomizador</td>
+          <td><span style="color:#ef4444;font-weight:600">🔴 URGENTE</span></td>
+          <td style="color:#94a3b8;font-size:12px">10/03</td>
+          <td><span class="badge badge-amber">Em Andamento</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">OS000000141</td>
+          <td>Elevador Canecas #2</td>
+          <td><span class="badge badge-blue">Preventiva</span></td>
+          <td style="font-size:12px;color:#94a3b8">Troca de correias e rolamentos</td>
+          <td><span style="color:#f59e0b;font-weight:600">🟡 Alta</span></td>
+          <td style="color:#94a3b8;font-size:12px">08/03</td>
+          <td><span class="badge badge-blue">Programada</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">OS000000139</td>
+          <td>Bomba CAP #1</td>
+          <td><span class="badge badge-red">Corretiva</span></td>
+          <td style="font-size:12px;color:#94a3b8">Vazamento na gaxeta da bomba</td>
+          <td><span style="color:#ef4444;font-weight:600">🔴 URGENTE</span></td>
+          <td style="color:#94a3b8;font-size:12px">07/03</td>
+          <td><span class="badge badge-amber">Em Andamento</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">OS000000137</td>
+          <td>Compressor Ar #3</td>
+          <td><span class="badge badge-green">Preditiva</span></td>
+          <td style="font-size:12px;color:#94a3b8">Análise de vibração e temperatura</td>
+          <td><span style="color:#22c55e;font-weight:600">🟢 Normal</span></td>
+          <td style="color:#94a3b8;font-size:12px">05/03</td>
+          <td><span class="badge badge-blue">Programada</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 15: CADASTROS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">👥 Tela 15 — Cadastros (Clientes / Fornecedores / Materiais / Veículos)</div>
+<div style="background:#0f172a; padding:24px;">
+
+  <!-- Clientes -->
+  <div style="margin-bottom:24px">
+    <div style="font-size:14px;color:#60a5fa;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      👥 Clientes
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:5px 14px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Novo Cliente</button>
+    </div>
+    <div class="card">
+      <table class="table">
+        <tr><th>Razão Social</th><th>CNPJ</th><th>Cidade/UF</th><th>Segmento</th><th>Limite Créd.</th><th>Status</th></tr>
+        <tr>
+          <td><strong>Prefeitura Municipal de São Paulo</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">46.395.000/0001-39</td>
+          <td style="color:#94a3b8;font-size:12px">São Paulo / SP</td>
+          <td><span class="badge badge-blue">Governo</span></td>
+          <td style="color:#22c55e;font-weight:600">R$ 2.000.000</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td><strong>Rodovias do Brasil S.A.</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">12.345.678/0001-90</td>
+          <td style="color:#94a3b8;font-size:12px">Campinas / SP</td>
+          <td><span class="badge badge-amber">Concessionária</span></td>
+          <td style="color:#22c55e;font-weight:600">R$ 5.000.000</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td><strong>Construtora ABC Ltda</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">98.765.432/0001-11</td>
+          <td style="color:#94a3b8;font-size:12px">Santo André / SP</td>
+          <td><span class="badge badge-green">Construtora</span></td>
+          <td style="color:#22c55e;font-weight:600">R$ 500.000</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td><strong>Engenharia Rápida ME</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">55.123.456/0001-77</td>
+          <td style="color:#94a3b8;font-size:12px">Guarulhos / SP</td>
+          <td><span class="badge badge-green">Construtora</span></td>
+          <td style="color:#22c55e;font-weight:600">R$ 100.000</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Fornecedores -->
+  <div style="margin-bottom:24px">
+    <div style="font-size:14px;color:#f59e0b;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      🏬 Fornecedores
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:5px 14px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Novo Fornecedor</button>
+    </div>
+    <div class="card">
+      <table class="table">
+        <tr><th>Razão Social</th><th>CNPJ</th><th>Material Fornecido</th><th>Avaliação</th><th>Status</th></tr>
+        <tr>
+          <td><strong>Petrobras Distribuidora S.A.</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">34.274.233/0001-02</td>
+          <td>CAP 50/70, CAP 30/45</td>
+          <td style="color:#f59e0b">★★★★★ <span style="color:#64748b;font-size:11px">(5.0)</span></td>
+          <td><span class="badge badge-green">Homologado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Pedreiras Norte Ltda</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">11.222.333/0001-44</td>
+          <td>Brita 0, Brita 1, Brita 2</td>
+          <td style="color:#f59e0b">★★★★☆ <span style="color:#64748b;font-size:11px">(4.2)</span></td>
+          <td><span class="badge badge-green">Homologado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Cal do Vale S.A.</strong></td>
+          <td style="font-family:monospace;font-size:12px;color:#64748b">77.888.999/0001-55</td>
+          <td>Cal Hidratada CH-I, Pó de Cal</td>
+          <td style="color:#f59e0b">★★★★☆ <span style="color:#64748b;font-size:11px">(4.0)</span></td>
+          <td><span class="badge badge-green">Homologado</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Veículos -->
+  <div style="margin-bottom:24px">
+    <div style="font-size:14px;color:#22c55e;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      🚛 Veículos (Frota Cadastrada)
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:5px 14px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Novo Veículo</button>
+    </div>
+    <div class="card">
+      <table class="table">
+        <tr><th>Placa</th><th>Tipo</th><th>Capacidade</th><th>Tara</th><th>Motorista</th><th>Proprietário</th><th>Status</th></tr>
+        <tr>
+          <td style="color:#60a5fa;font-weight:700;font-family:monospace">ABC-1234</td>
+          <td>Truck 6×4</td>
+          <td style="color:#f59e0b">16.000 kg</td>
+          <td style="color:#94a3b8">13.200 kg</td>
+          <td>José da Silva</td>
+          <td style="font-size:12px;color:#94a3b8">Transportes Rápidos Ltda</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-weight:700;font-family:monospace">DEF-5678</td>
+          <td>Bitruck 8×4</td>
+          <td style="color:#f59e0b">22.000 kg</td>
+          <td style="color:#94a3b8">17.100 kg</td>
+          <td>Carlos Pereira</td>
+          <td style="font-size:12px;color:#94a3b8">Auto Frete Norte</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-weight:700;font-family:monospace">GHI-9012</td>
+          <td>Rodotrem</td>
+          <td style="color:#f59e0b">41.000 kg</td>
+          <td style="color:#94a3b8">29.200 kg</td>
+          <td>Antonio Santos</td>
+          <td style="font-size:12px;color:#94a3b8">Fretes SP S.A.</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-weight:700;font-family:monospace">JKL-3456</td>
+          <td>Truck 6×2</td>
+          <td style="color:#f59e0b">14.000 kg</td>
+          <td style="color:#94a3b8">11.800 kg</td>
+          <td>—</td>
+          <td style="font-size:12px;color:#94a3b8">Proprietário Particular</td>
+          <td><span class="badge badge-amber">Manutenção</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Materiais -->
+  <div>
+    <div style="font-size:14px;color:#a78bfa;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      📋 Materiais Cadastrados
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:5px 14px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Novo Material</button>
+    </div>
+    <div class="card">
+      <table class="table">
+        <tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Unidade</th><th>Est. Mínimo</th><th>NCM</th><th>Status</th></tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">MAT0001</td>
+          <td><strong>CAP 50/70</strong></td>
+          <td><span class="badge badge-amber">Ligante</span></td>
+          <td>ton</td>
+          <td style="color:#f59e0b">50 ton</td>
+          <td style="font-family:monospace;font-size:11px;color:#64748b">27.13.20.10</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">MAT0002</td>
+          <td><strong>Brita 0 — 4,8mm</strong></td>
+          <td><span class="badge badge-blue">Agregado</span></td>
+          <td>ton</td>
+          <td style="color:#f59e0b">500 ton</td>
+          <td style="font-family:monospace;font-size:11px;color:#64748b">25.17.10.10</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">MAT0003</td>
+          <td><strong>Cal Hidratada CH-I</strong></td>
+          <td><span class="badge badge-green">Fíler</span></td>
+          <td>ton</td>
+          <td style="color:#f59e0b">20 ton</td>
+          <td style="font-family:monospace;font-size:11px;color:#64748b">25.22.10.00</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+        <tr>
+          <td style="color:#60a5fa;font-size:12px">MAT0010</td>
+          <td><strong>CBUQ BC (Produto Acabado)</strong></td>
+          <td><span class="badge" style="background:#7c3aed22;color:#a78bfa;border:1px solid #a78bfa44;">Produto Final</span></td>
+          <td>ton</td>
+          <td style="color:#64748b">—</td>
+          <td style="font-family:monospace;font-size:11px;color:#64748b">27.13.20.10</td>
+          <td><span class="badge badge-green">Ativo</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TELA 16: USUÁRIOS E PERMISSÕES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-header">👤 Tela 16 — Usuários e Controle de Acesso</div>
+<div style="background:#0f172a; padding:24px;">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="card-title" style="margin:0">Usuários do Sistema</div>
+      <button style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:6px;padding:6px 16px;color:#0f172a;font-weight:700;font-size:12px;cursor:pointer">+ Novo Usuário</button>
+    </div>
+    <table class="table">
+      <tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Módulos com Acesso</th><th>Último Acesso</th><th>Status</th></tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">A</div><span>Administrador</span></div></td>
+        <td style="color:#64748b;font-size:12px">admin@usina.com</td>
+        <td><span class="badge" style="background:#7c3aed22;color:#a78bfa;border:1px solid #a78bfa44">Admin</span></td>
+        <td style="font-size:12px;color:#94a3b8">Todos os módulos</td>
+        <td style="color:#22c55e;font-size:12px">Agora</td>
+        <td><span class="badge badge-green">Ativo</span></td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#60a5fa;font-size:12px">JO</div><span>João Operador</span></div></td>
+        <td style="color:#64748b;font-size:12px">joao@usina.com</td>
+        <td><span class="badge badge-amber">Operação</span></td>
+        <td style="font-size:12px;color:#94a3b8">Produção, Balança, Estoque (leitura)</td>
+        <td style="color:#94a3b8;font-size:12px">11/03 07:45</td>
+        <td><span class="badge badge-green">Ativo</span></td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#22c55e;font-size:12px">CL</div><span>Carlos Lab</span></div></td>
+        <td style="color:#64748b;font-size:12px">carlos.lab@usina.com</td>
+        <td><span class="badge badge-blue">Laboratório</span></td>
+        <td style="font-size:12px;color:#94a3b8">Controle Tecnológico, Perdas (leitura prod.)</td>
+        <td style="color:#94a3b8;font-size:12px">11/03 09:20</td>
+        <td><span class="badge badge-green">Ativo</span></td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#ef4444;font-size:12px">MF</div><span>Maria Financeiro</span></div></td>
+        <td style="color:#64748b;font-size:12px">maria@usina.com</td>
+        <td><span class="badge badge-green">Financeiro</span></td>
+        <td style="font-size:12px;color:#94a3b8">Financeiro, NF-e, Vendas, Compras, Relatórios</td>
+        <td style="color:#94a3b8;font-size:12px">11/03 08:10</td>
+        <td><span class="badge badge-green">Ativo</span></td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#64748b;font-size:12px">PT</div><span>Pedro Transporte</span></div></td>
+        <td style="color:#64748b;font-size:12px">pedro@transportes.com</td>
+        <td><span class="badge" style="background:#33415522;color:#64748b;border:1px solid #64748b44">Transportador</span></td>
+        <td style="font-size:12px;color:#94a3b8">Balança (somente registrar pesagem)</td>
+        <td style="color:#94a3b8;font-size:12px">11/03 10:45</td>
+        <td><span class="badge badge-green">Ativo</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
 </body>
 </html>
