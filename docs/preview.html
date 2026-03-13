@@ -1601,42 +1601,54 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
         </div>
       </div>
 
-      <!-- ========== USUÁRIOS ========== -->
+      <!-- ========== RELATÓRIOS ========== -->
       <div id="page-relatorios" class="page-content">
         <div class="page-header">
           <div class="page-title">Relatórios</div>
-          <div class="page-subtitle">Relatórios de produção, estoque, compras e profissionais contratados</div>
+          <div class="page-subtitle">Produção por cliente · Entrada de insumos · Manutenção e peças</div>
         </div>
-        <!-- Filtros -->
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-title-lg" style="margin-bottom:14px">Gerar Relatório de Produção e Estoque por Cliente</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px">
-            <div class="form-group">
-              <label>Cliente</label>
-              <select id="rel2-cliente" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
-                <option value="">— Selecione o cliente —</option>
-                <option value="prefeitura">Prefeitura Municipal SP</option>
-                <option value="rodovias">Rodovias do Brasil S.A.</option>
-                <option value="abc">Construtora ABC Ltda</option>
-                <option value="rapida">Engenharia Rápida ME</option>
-              </select>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             BLOCO 1 — PRODUÇÃO E ESTOQUE POR CLIENTE
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <div class="card" style="margin-bottom:20px;border-left:4px solid #f59e0b">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleRelBloco('bloco-clientes')">
+            <span style="font-size:20px">&#128202;</span>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;color:#f59e0b">Produção e Estoque por Cliente</div>
+              <div style="font-size:12px;color:#64748b">Relatório por cliente, materiais, produção e movimentações</div>
             </div>
-            <div class="form-group">
-              <label>Data Início</label>
-              <input type="date" id="rel2-dt-ini" value="2026-03-01" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
-            </div>
-            <div class="form-group">
-              <label>Data Fim</label>
-              <input type="date" id="rel2-dt-fim" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
-            </div>
-            <div class="form-group" style="align-self:flex-end">
-              <button class="btn btn-primary" style="width:100%;padding:11px" onclick="gerarRelatorio2()">&#128202; Gerar Relatório</button>
+            <span id="icon-bloco-clientes" style="color:#64748b;font-size:18px">&#9660;</span>
+          </div>
+          <div id="bloco-clientes">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px">
+              <div class="form-group">
+                <label>Cliente</label>
+                <select id="rel2-cliente" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                  <option value="">— Selecione o cliente —</option>
+                  <option value="prefeitura">Prefeitura Municipal SP</option>
+                  <option value="rodovias">Rodovias do Brasil S.A.</option>
+                  <option value="abc">Construtora ABC Ltda</option>
+                  <option value="rapida">Engenharia Rápida ME</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Data Início</label>
+                <input type="date" id="rel2-dt-ini" value="2026-03-01" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Data Fim</label>
+                <input type="date" id="rel2-dt-fim" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group" style="align-self:flex-end">
+                <button class="btn btn-primary" style="width:100%;padding:11px" onclick="gerarRelatorio2()">&#128202; Gerar Relatório</button>
+              </div>
             </div>
           </div>
         </div>
-        <!-- Resultado -->
-        <div id="rel2-resultado" style="display:none">
-          <div class="card" style="margin-bottom:16px;border:1px solid #1e3a5f">
+        <!-- Resultado clientes -->
+        <div id="rel2-resultado" style="display:none;margin-bottom:24px">
+          <div class="card" style="margin-bottom:16px;border:1px solid #f59e0b44">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
               <div>
                 <div style="font-size:20px;font-weight:800;color:#f59e0b">USINA ERP</div>
@@ -1677,29 +1689,185 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
             <div id="rel2-totais" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
           </div>
         </div>
-          <div id="rel2-card-compras" class="card" style="margin-bottom:16px">
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             BLOCO 2 — ENTRADA DE INSUMOS
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <div class="card" style="margin-bottom:20px;border-left:4px solid #22c55e">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleRelBloco('bloco-insumos')">
+            <span style="font-size:20px">&#127981;</span>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;color:#22c55e">Entrada de Insumos</div>
+              <div style="font-size:12px;color:#64748b">CAP / ligante, agregados, cal, fíler, óleo BPF, diesel e demais insumos de produção</div>
+            </div>
+            <span id="icon-bloco-insumos" style="color:#64748b;font-size:18px">&#9660;</span>
+          </div>
+          <div id="bloco-insumos">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
+              <div class="form-group">
+                <label>Insumo</label>
+                <select id="ins-tipo" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                  <option value="">— Todos —</option>
+                  <option value="cap">CAP / Ligante Asfáltico</option>
+                  <option value="brita0">Brita 0 (4,75–9,5mm)</option>
+                  <option value="brita1">Brita 1 (9,5–19mm)</option>
+                  <option value="brita2">Brita 2 (19–25mm)</option>
+                  <option value="po">Pó-de-pedra / Fíler</option>
+                  <option value="areia">Areia Natural</option>
+                  <option value="cal">Cal Hidratada</option>
+                  <option value="oleo">Óleo BPF</option>
+                  <option value="diesel">Diesel S-10</option>
+                  <option value="desmold">Desmoldante / Óleo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Fornecedor</label>
+                <select id="ins-forn" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                  <option value="">— Todos —</option>
+                  <option value="petrobras">Petrobras Distribuidora</option>
+                  <option value="pedreira">Pedreira Vale Verde</option>
+                  <option value="quimica">Química Industrial SP</option>
+                  <option value="calcario">Calcário Norte ME</option>
+                  <option value="posto">Posto Rota 45</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Data Início</label>
+                <input type="date" id="ins-dt-ini" value="2026-03-01" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Data Fim</label>
+                <input type="date" id="ins-dt-fim" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group" style="align-self:flex-end">
+                <button class="btn btn-primary" style="width:100%;padding:11px;background:#16a34a;border-color:#16a34a" onclick="gerarRelInsumos()">&#127981; Gerar Relatório</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Resultado insumos -->
+        <div id="ins-resultado" style="display:none;margin-bottom:24px">
+          <div class="card" style="margin-bottom:16px;border:1px solid #22c55e44">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+              <div>
+                <div style="font-size:20px;font-weight:800;color:#22c55e">USINA ERP</div>
+                <div style="font-size:16px;font-weight:700;color:#e2e8f0;margin-top:4px">Relatório de Entrada de Insumos</div>
+                <div id="ins-filtro-label" style="font-size:13px;color:#94a3b8;margin-top:2px"></div>
+                <div id="ins-periodo-label" style="font-size:12px;color:#64748b;margin-top:2px"></div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-outline" onclick="window.print()">&#128424; Imprimir</button>
+                <button class="btn btn-primary" onclick="window.print()">&#128196; Gerar PDF</button>
+              </div>
+            </div>
+            <div class="kpi-row" id="ins-kpis" style="margin-bottom:0"></div>
+          </div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title-lg" style="margin-bottom:14px">Entradas de Insumos no Período</div>
+            <div class="table-wrap">
+              <table id="ins-tab-entradas" style="font-size:13px">
+                <tr><th>Data</th><th>Hora</th><th>Insumo</th><th>Tipo</th><th>Fornecedor</th><th>Quantidade</th><th>Unidade</th><th>Placa</th><th>NF</th><th>Operador</th></tr>
+              </table>
+            </div>
+            <div id="ins-totais" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+          </div>
+          <div class="card">
+            <div class="card-title-lg" style="margin-bottom:14px">Consumo por Insumo no Período</div>
+            <div class="table-wrap">
+              <table id="ins-tab-resumo" style="font-size:13px">
+                <tr><th>Insumo</th><th>Tipo</th><th>Total Entrado</th><th>Total Consumido</th><th>Saldo em Estoque</th><th>Unidade</th><th>Valor Total NF</th></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             BLOCO 3 — MANUTENÇÃO E PEÇAS
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <div class="card" style="margin-bottom:20px;border-left:4px solid #a78bfa">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer" onclick="toggleRelBloco('bloco-manut')">
+            <span style="font-size:20px">&#128295;</span>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;color:#a78bfa">Manutenção e Peças</div>
+              <div style="font-size:12px;color:#64748b">Compra de peças, profissionais contratados e locação de equipamentos</div>
+            </div>
+            <span id="icon-bloco-manut" style="color:#64748b;font-size:18px">&#9660;</span>
+          </div>
+          <div id="bloco-manut">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px">
+              <div class="form-group">
+                <label>Data Início</label>
+                <input type="date" id="man-dt-ini" value="2026-03-01" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Data Fim</label>
+                <input type="date" id="man-dt-fim" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group" style="align-self:flex-end">
+                <button class="btn btn-primary" style="width:100%;padding:11px;background:#7c3aed;border-color:#7c3aed" onclick="gerarRelManut()">&#128295; Gerar Relatório</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;padding-top:8px;border-top:1px solid #1e3a5f">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+                <input type="checkbox" id="man-chk-pecas" checked style="accent-color:#a78bfa;width:15px;height:15px"> Compra de Peças
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+                <input type="checkbox" id="man-chk-prof" checked style="accent-color:#a78bfa;width:15px;height:15px"> Profissionais Contratados
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+                <input type="checkbox" id="man-chk-loc" checked style="accent-color:#a78bfa;width:15px;height:15px"> Locação de Equipamentos
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- Resultado manutenção -->
+        <div id="man-resultado" style="display:none;margin-bottom:24px">
+          <div class="card" style="margin-bottom:16px;border:1px solid #a78bfa44">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+              <div>
+                <div style="font-size:20px;font-weight:800;color:#a78bfa">USINA ERP</div>
+                <div style="font-size:16px;font-weight:700;color:#e2e8f0;margin-top:4px">Relatório de Manutenção e Peças</div>
+                <div id="man-periodo-label" style="font-size:12px;color:#64748b;margin-top:2px"></div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-outline" onclick="window.print()">&#128424; Imprimir</button>
+                <button class="btn btn-primary" onclick="window.print()">&#128196; Gerar PDF</button>
+              </div>
+            </div>
+            <div class="kpi-row" id="man-kpis" style="margin-bottom:0"></div>
+          </div>
+          <!-- Compra de peças -->
+          <div id="man-card-pecas" class="card" style="margin-bottom:16px">
             <div class="card-title-lg" style="margin-bottom:14px">&#128295; Compra de Peças</div>
             <div class="table-wrap">
-              <table id="rel2-tab-compras" style="font-size:13px">
+              <table id="man-tab-pecas" style="font-size:13px">
                 <tr><th>Data</th><th>Peça / Descrição</th><th>Categoria</th><th>Fornecedor</th><th>Qtd</th><th>Valor Unit.</th><th>Total</th><th>NF</th><th>Solicitante</th></tr>
               </table>
             </div>
-            <div id="rel2-totais-compras" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+            <div id="man-total-pecas" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
           </div>
-          <div id="rel2-card-profissionais" class="card" style="margin-bottom:16px">
+          <!-- Profissionais -->
+          <div id="man-card-prof" class="card" style="margin-bottom:16px">
             <div class="card-title-lg" style="margin-bottom:14px">&#128104;&#8205;&#128295; Profissionais Contratados</div>
             <div class="table-wrap">
-              <table id="rel2-tab-profissionais" style="font-size:13px">
+              <table id="man-tab-prof" style="font-size:13px">
                 <tr><th>Nome</th><th>Especialidade</th><th>Empresa / PJ</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Status</th></tr>
               </table>
             </div>
-            <div id="rel2-totais-prof" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+            <div id="man-total-prof" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+          </div>
+          <!-- Locação de equipamentos -->
+          <div id="man-card-loc" class="card">
+            <div class="card-title-lg" style="margin-bottom:14px">&#127959; Locação de Equipamentos</div>
+            <div class="table-wrap">
+              <table id="man-tab-loc" style="font-size:13px">
+                <tr><th>Equipamento</th><th>Empresa Locadora</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Finalidade</th><th>Status</th></tr>
+              </table>
+            </div>
+            <div id="man-total-loc" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
           </div>
         </div>
-        <div id="rel2-vazio" style="text-align:center;padding:48px;color:#475569">
-          <div style="font-size:40px;margin-bottom:12px">&#128202;</div>
-          <div style="font-size:16px;font-weight:600;color:#64748b">Selecione um cliente e o período para gerar o relatório</div>
-        </div>
+
       </div>
       <div id="page-usuarios" class="page-content">
         <div class="page-header">
@@ -2379,32 +2547,21 @@ window.onload = function() {
   simulate();
 };
 
-// ── DADOS DE COMPRAS DE PEÇAS ──────────────────────────────────────────
-var dadosCompras = [
-  { data:'01/03/2026', peca:'Correia transportadora 800mm', cat:'Mecânica', forn:'Distribuidora Norte Ltda', qtd:'4 un', unit:'R$ 1.250,00', total:'R$ 5.000,00', nf:'NF-00891', sol:'Carlos M.' },
-  { data:'03/03/2026', peca:'Rolamento SKF 6310',           cat:'Mecânica', forn:'Rolamentos Sul ME',        qtd:'10 un', unit:'R$ 320,00',   total:'R$ 3.200,00', nf:'NF-00312', sol:'Ana P.' },
-  { data:'05/03/2026', peca:'Óleo lubrificante ISO 220',    cat:'Lubrificação', forn:'Química Industrial SP', qtd:'200 L',  unit:'R$ 18,50',    total:'R$ 3.700,00', nf:'NF-02145', sol:'Carlos M.' },
-  { data:'07/03/2026', peca:'Filtro hidráulico HY 10-20',   cat:'Hidráulica', forn:'Hidráulica Total ME',    qtd:'6 un',  unit:'R$ 480,00',   total:'R$ 2.880,00', nf:'NF-00567', sol:'João R.' },
-  { data:'10/03/2026', peca:'Eletrodo de solda E6013 3,25', cat:'Elétrica',  forn:'Ferram. Central SP',     qtd:'50 kg', unit:'R$ 42,00',    total:'R$ 2.100,00', nf:'NF-01023', sol:'Pedro S.' },
-  { data:'12/03/2026', peca:'Parafuso sextavado M16 x 60',  cat:'Fixação',   forn:'Fixadores Brasil Ltda',  qtd:'500 un', unit:'R$ 1,90',     total:'R$ 950,00',  nf:'NF-00748', sol:'Ana P.' }
-];
+// ── ACCORDION TOGGLE ───────────────────────────────────────────────────
+function toggleRelBloco(id) {
+  var el = document.getElementById(id);
+  var icon = document.getElementById('icon-' + id);
+  if (!el) return;
+  var open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (icon) icon.innerHTML = open ? '&#9654;' : '&#9660;';
+}
 
-// ── DADOS DE PROFISSIONAIS CONTRATADOS ─────────────────────────────────
-var dadosProfissionais = [
-  { nome:'Ricardo Souza',   esp:'Mecânico Industrial',   emp:'RS Manutenção ME',       ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:'R$ 350,00', total:'R$ 7.700,00', status:'Ativo' },
-  { nome:'Fernanda Lima',   esp:'Eletricista de Manutenção', emp:'FL Serviços Elétricos', ini:'01/03/2026', fim:'15/03/2026', dias:11, diaria:'R$ 420,00', total:'R$ 4.620,00', status:'Ativo' },
-  { nome:'Paulo Henrique',  esp:'Soldador Certificado',  emp:'PH Soldagem Ltda',       ini:'05/03/2026', fim:'20/03/2026', dias:12, diaria:'R$ 390,00', total:'R$ 4.680,00', status:'Ativo' },
-  { nome:'Marcos Oliveira', esp:'Técnico Hidráulico',    emp:'Hidro Tech ME',          ini:'08/03/2026', fim:'12/03/2026', dias: 5, diaria:'R$ 480,00', total:'R$ 2.400,00', status:'Concluído' },
-  { nome:'Ana Beatriz',     esp:'Técnica em Segurança do Trabalho', emp:'Segur Max Ltda', ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:'R$ 300,00', total:'R$ 6.600,00', status:'Ativo' }
-];
-
+// ── BLOCO 1: PRODUÇÃO E ESTOQUE POR CLIENTE ─────────────────────────────
 function gerarRelatorio2() {
-  var cliVal     = document.getElementById('rel2-cliente').value;
-  var dtIni      = document.getElementById('rel2-dt-ini').value;
-  var dtFim      = document.getElementById('rel2-dt-fim').value;
-  var chkProd    = document.getElementById('chk-producao').checked;
-  var chkComp    = document.getElementById('chk-compras').checked;
-  var chkProf    = document.getElementById('chk-profissionais').checked;
+  var cliVal = document.getElementById('rel2-cliente').value;
+  var dtIni  = document.getElementById('rel2-dt-ini').value;
+  var dtFim  = document.getElementById('rel2-dt-fim').value;
   if (!cliVal) { alert('Selecione um cliente'); return; }
   var dados = dadosClientes[cliVal];
   if (!dados) return;
@@ -2412,98 +2569,226 @@ function gerarRelatorio2() {
   document.getElementById('rel2-nome-cli').textContent = 'Cliente: ' + dados.nome;
   document.getElementById('rel2-periodo').textContent = 'Período: ' + dtIni + ' a ' + dtFim;
 
-  // KPIs base
   var kpisEl = document.getElementById('rel2-kpis');
-  var kpiHtml =
+  kpisEl.innerHTML =
     '<div class="kpi-card"><div class="kpi-label">Total Pedido</div><div class="kpi-value" style="color:#60a5fa">' + dados.totalPedido + '</div></div>' +
     '<div class="kpi-card"><div class="kpi-label">Total Produzido</div><div class="kpi-value" style="color:#22c55e">' + dados.totalProduzido + '</div></div>' +
     '<div class="kpi-card"><div class="kpi-label">Saldo do Pedido</div><div class="kpi-value" style="color:#f59e0b">' + dados.saldoPedido + '</div></div>';
 
-  // KPI compras
-  if (chkComp) {
-    var totalComp = 0;
-    dadosCompras.forEach(function(c) { totalComp += parseFloat(c.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0; });
-    kpiHtml += '<div class="kpi-card"><div class="kpi-label">Gasto Compras</div><div class="kpi-value" style="color:#a78bfa">R$ ' + totalComp.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</div></div>';
-  }
-  // KPI profissionais
-  if (chkProf) {
-    var totalProf = 0;
-    dadosProfissionais.forEach(function(p) { totalProf += parseFloat(p.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0; });
-    kpiHtml += '<div class="kpi-card"><div class="kpi-label">Custo Profissionais</div><div class="kpi-value" style="color:#f472b6">R$ ' + totalProf.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</div></div>';
-  }
-  kpisEl.innerHTML = kpiHtml;
+  var tabMat = document.getElementById('rel2-tab-materiais');
+  tabMat.innerHTML = '<tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>';
+  dados.materiais.forEach(function(m) {
+    var cor = m.status === 'OK' ? '#22c55e' : m.status === 'Atenção' ? '#f59e0b' : '#ef4444';
+    tabMat.innerHTML += '<tr><td>' + m.mat + '</td><td>' + m.tipo + '</td><td>' + m.por + '</td><td>' + m.contratado + '</td><td>' + m.consumido + '</td><td>' + m.saldoPed + '</td><td>' + m.saldoEst + '</td><td>' + m.pct + '</td><td style="color:' + cor + ';font-weight:700">' + m.status + '</td></tr>';
+  });
 
-  // ── Produção e estoque
-  var secProd = document.querySelector('#rel2-resultado .card:nth-child(2)');
-  var secProdProd = document.querySelector('#rel2-resultado .card:nth-child(3)');
-  var secMov = document.querySelector('#rel2-resultado .card:nth-child(4)');
-  if (secProd) secProd.style.display = chkProd ? 'block' : 'none';
-  if (secProdProd) secProdProd.style.display = chkProd ? 'block' : 'none';
-  if (secMov) secMov.style.display = chkProd ? 'block' : 'none';
+  var tabProd = document.getElementById('rel2-tab-producao');
+  tabProd.innerHTML = '<tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>';
+  dados.producao.forEach(function(p) {
+    tabProd.innerHTML += '<tr><td>' + p.data + '</td><td>' + p.op + '</td><td>' + p.produto + '</td><td>' + p.qtd + '</td><td>' + p.cap + '</td><td>' + p.temp + '</td><td>' + p.resp + '</td></tr>';
+  });
 
-  if (chkProd) {
-    var tabMat = document.getElementById('rel2-tab-materiais');
-    tabMat.innerHTML = '<tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>';
-    dados.materiais.forEach(function(m) {
-      var cor = m.status === 'OK' ? '#22c55e' : m.status === 'Atenção' ? '#f59e0b' : '#ef4444';
-      tabMat.innerHTML += '<tr><td>' + m.mat + '</td><td>' + m.tipo + '</td><td>' + m.por + '</td><td>' + m.contratado + '</td><td>' + m.consumido + '</td><td>' + m.saldoPed + '</td><td>' + m.saldoEst + '</td><td>' + m.pct + '</td><td style="color:' + cor + ';font-weight:700">' + m.status + '</td></tr>';
+  var tabMov = document.getElementById('rel2-tab-mov');
+  tabMov.innerHTML = '<tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>';
+  dados.movimentacoes.forEach(function(mv) {
+    var cor = mv.tipo === 'Entrada' ? '#22c55e' : '#f59e0b';
+    tabMov.innerHTML += '<tr><td>' + mv.data + '</td><td>' + mv.hora + '</td><td>' + mv.placa + '</td><td>' + mv.motorista + '</td><td style="color:' + cor + ';font-weight:600">' + mv.tipo + '</td><td>' + mv.material + '</td><td>' + mv.qtd + '</td><td>' + mv.doc + '</td><td>' + mv.operador + '</td></tr>';
+  });
+
+  var totalEnt = 0, totalSai = 0;
+  dados.movimentacoes.forEach(function(mv) {
+    var n = parseFloat(mv.qtd.replace(/[^\d,]/g,'').replace(',','.')) || 0;
+    if (mv.tipo === 'Entrada') totalEnt += n; else totalSai += n;
+  });
+  document.getElementById('rel2-totais').innerHTML =
+    '<span style="color:#22c55e;font-weight:700">Total Entradas: ' + totalEnt.toFixed(1) + ' ton</span>' +
+    '<span style="color:#f59e0b;font-weight:700">Total Saídas: ' + totalSai.toFixed(1) + ' ton</span>';
+
+  document.getElementById('rel2-resultado').style.display = 'block';
+  document.getElementById('rel2-resultado').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── BLOCO 2: ENTRADA DE INSUMOS ─────────────────────────────────────────
+var dadosInsumos = [
+  { data:'01/03/2026', hora:'07:12', insumo:'CAP 50/70',         tipo:'Ligante Asfáltico', forn:'Petrobras Distribuidora', qtd:'28,5',  un:'ton', placa:'ABC-1234', nf:'NF-45210' },
+  { data:'01/03/2026', hora:'09:45', insumo:'Brita 0 (4,75–9,5mm)', tipo:'Agregado Miúdo',    forn:'Pedreira Vale Verde',   qtd:'120,0', un:'ton', placa:'DEF-5678', nf:'NF-00891' },
+  { data:'02/03/2026', hora:'08:00', insumo:'Brita 1 (9,5–19mm)', tipo:'Agregado Graúdo',    forn:'Pedreira Vale Verde',   qtd:'200,0', un:'ton', placa:'GHI-9012', nf:'NF-00892' },
+  { data:'03/03/2026', hora:'10:30', insumo:'Pó-de-pedra / Fíler', tipo:'Fíler',             forn:'Pedreira Vale Verde',   qtd:'80,0',  un:'ton', placa:'JKL-3456', nf:'NF-00893' },
+  { data:'04/03/2026', hora:'07:55', insumo:'Areia Natural',      tipo:'Agregado Miúdo',     forn:'Pedreira Vale Verde',   qtd:'60,0',  un:'ton', placa:'MNO-7890', nf:'NF-01002' },
+  { data:'05/03/2026', hora:'06:40', insumo:'CAP 50/70',          tipo:'Ligante Asfáltico',  forn:'Petrobras Distribuidora', qtd:'25,0', un:'ton', placa:'PQR-2345', nf:'NF-45680' },
+  { data:'06/03/2026', hora:'14:20', insumo:'Óleo BPF',           tipo:'Combustível',        forn:'Química Industrial SP',  qtd:'5,0',  un:'ton', placa:'STU-6789', nf:'NF-02145' },
+  { data:'07/03/2026', hora:'11:10', insumo:'Cal Hidratada',       tipo:'Aditivo',            forn:'Calcário Norte ME',      qtd:'12,0', un:'ton', placa:'VWX-0123', nf:'NF-00312' },
+  { data:'08/03/2026', hora:'07:30', insumo:'Brita 2 (19–25mm)',   tipo:'Agregado Graúdo',    forn:'Pedreira Vale Verde',   qtd:'150,0', un:'ton', placa:'YZA-4567', nf:'NF-00894' },
+  { data:'10/03/2026', hora:'09:00', insumo:'Diesel S-10',         tipo:'Combustível',        forn:'Posto Rota 45',          qtd:'3000', un:'L',   placa:'—',        nf:'NF-10045' },
+  { data:'11/03/2026', hora:'08:20', insumo:'CAP 50/70',           tipo:'Ligante Asfáltico',  forn:'Petrobras Distribuidora', qtd:'30,0', un:'ton', placa:'BCD-8901', nf:'NF-45890' },
+  { data:'12/03/2026', hora:'13:45', insumo:'Brita 0 (4,75–9,5mm)', tipo:'Agregado Miúdo',   forn:'Pedreira Vale Verde',   qtd:'100,0', un:'ton', placa:'EFG-2345', nf:'NF-00895' }
+];
+
+function gerarRelInsumos() {
+  var filtroTipo = document.getElementById('ins-tipo').value;
+  var filtroForn = document.getElementById('ins-forn').value;
+  var dtIni = document.getElementById('ins-dt-ini').value;
+  var dtFim = document.getElementById('ins-dt-fim').value;
+
+  var linhas = dadosInsumos.filter(function(r) {
+    var ok = true;
+    if (filtroTipo) {
+      var mapa = { cap:'CAP', brita0:'Brita 0', brita1:'Brita 1', brita2:'Brita 2',
+                   po:'Pó-de-pedra', areia:'Areia', cal:'Cal', oleo:'Óleo BPF', diesel:'Diesel', desmold:'Desmold' };
+      ok = ok && r.insumo.toLowerCase().includes((mapa[filtroTipo]||filtroTipo).toLowerCase());
+    }
+    if (filtroForn) {
+      var mapaf = { petrobras:'Petrobras', pedreira:'Pedreira', quimica:'Química', calcario:'Calcário', posto:'Posto' };
+      ok = ok && r.forn.toLowerCase().includes((mapaf[filtroForn]||filtroForn).toLowerCase());
+    }
+    return ok;
+  });
+
+  var nomeInsumo = filtroTipo ? document.getElementById('ins-tipo').options[document.getElementById('ins-tipo').selectedIndex].text : 'Todos os insumos';
+  var nomeForn   = filtroForn ? document.getElementById('ins-forn').options[document.getElementById('ins-forn').selectedIndex].text : 'Todos os fornecedores';
+  document.getElementById('ins-filtro-label').textContent = nomeInsumo + ' · ' + nomeForn;
+  document.getElementById('ins-periodo-label').textContent = 'Período: ' + dtIni + ' a ' + dtFim;
+
+  // Tabela entradas
+  var tabEnt = document.getElementById('ins-tab-entradas');
+  tabEnt.innerHTML = '<tr><th>Data</th><th>Hora</th><th>Insumo</th><th>Tipo</th><th>Fornecedor</th><th>Quantidade</th><th>Unidade</th><th>Placa</th><th>NF</th></tr>';
+  linhas.forEach(function(r) {
+    tabEnt.innerHTML += '<tr><td>' + r.data + '</td><td>' + r.hora + '</td><td style="font-weight:600;color:#22c55e">' + r.insumo + '</td><td>' + r.tipo + '</td><td>' + r.forn + '</td><td style="font-weight:700">' + r.qtd + '</td><td>' + r.un + '</td><td style="font-family:monospace;color:#60a5fa">' + r.placa + '</td><td style="font-size:11px;color:#64748b">' + r.nf + '</td></tr>';
+  });
+
+  // Resumo por insumo
+  var resumo = {};
+  linhas.forEach(function(r) {
+    if (!resumo[r.insumo]) resumo[r.insumo] = { tipo: r.tipo, entrado: 0, un: r.un };
+    resumo[r.insumo].entrado += parseFloat(r.qtd.replace(',','.')) || 0;
+  });
+  var consumoMap = { 'CAP 50/70': 83.5, 'Brita 0 (4,75–9,5mm)': 198.0, 'Brita 1 (9,5–19mm)': 175.0, 'Brita 2 (19–25mm)': 130.0, 'Pó-de-pedra / Fíler': 62.0, 'Areia Natural': 45.0, 'Cal Hidratada': 9.5, 'Óleo BPF': 4.2, 'Diesel S-10': 2400, 'Desmoldante / Óleo': 0 };
+  var tabRes = document.getElementById('ins-tab-resumo');
+  tabRes.innerHTML = '<tr><th>Insumo</th><th>Tipo</th><th>Total Entrado</th><th>Total Consumido</th><th>Saldo em Estoque</th><th>Unidade</th><th>Valor Total NF</th></tr>';
+  var precos = { 'CAP 50/70': 6200, 'Brita 0 (4,75–9,5mm)': 95, 'Brita 1 (9,5–19mm)': 90, 'Brita 2 (19–25mm)': 88, 'Pó-de-pedra / Fíler': 70, 'Areia Natural': 55, 'Cal Hidratada': 280, 'Óleo BPF': 3800, 'Diesel S-10': 6.2 };
+  var totalValor = 0;
+  Object.keys(resumo).forEach(function(ins) {
+    var r = resumo[ins];
+    var cons = consumoMap[ins] || 0;
+    var saldo = r.entrado - cons;
+    var preco = precos[ins] || 0;
+    var valor = r.entrado * preco;
+    totalValor += valor;
+    tabRes.innerHTML += '<tr><td style="font-weight:600;color:#22c55e">' + ins + '</td><td>' + r.tipo + '</td><td style="font-weight:700">' + r.entrado.toFixed(1) + '</td><td>' + cons.toFixed(1) + '</td><td style="color:' + (saldo>=0?'#22c55e':'#ef4444') + ';font-weight:700">' + saldo.toFixed(1) + '</td><td>' + r.un + '</td><td style="color:#a78bfa">R$ ' + valor.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</td></tr>';
+  });
+
+  var totalQtd = linhas.reduce(function(s,r){ return s + (parseFloat(r.qtd.replace(',','.')) || 0); }, 0);
+  document.getElementById('ins-totais').innerHTML =
+    '<span style="color:#22c55e;font-weight:700">Total Entradas: ' + linhas.length + ' notas · ' + totalQtd.toFixed(1) + ' (unid. mistas)</span>' +
+    '<span style="color:#a78bfa;font-weight:700">Valor Total: R$ ' + totalValor.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>';
+
+  // KPIs
+  var kpisEl = document.getElementById('ins-kpis');
+  kpisEl.innerHTML =
+    '<div class="kpi-card"><div class="kpi-label">Notas Fiscais</div><div class="kpi-value" style="color:#22c55e">' + linhas.length + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Tipos de Insumo</div><div class="kpi-value" style="color:#60a5fa">' + Object.keys(resumo).length + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Valor Total</div><div class="kpi-value" style="color:#a78bfa">R$ ' + totalValor.toLocaleString('pt-BR',{minimumFractionDigits:0}) + '</div></div>';
+
+  document.getElementById('ins-resultado').style.display = 'block';
+  document.getElementById('ins-resultado').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── BLOCO 3: MANUTENÇÃO E PEÇAS ─────────────────────────────────────────
+var dadosPecas = [
+  { data:'01/03/2026', peca:'Correia transportadora 800mm', cat:'Mecânica',    forn:'Distribuidora Norte Ltda', qtd:'4 un',   unit:'R$ 1.250,00', total: 5000,  nf:'NF-00891', sol:'Carlos M.' },
+  { data:'03/03/2026', peca:'Rolamento SKF 6310',           cat:'Mecânica',    forn:'Rolamentos Sul ME',        qtd:'10 un',  unit:'R$ 320,00',   total: 3200,  nf:'NF-00312', sol:'Ana P.' },
+  { data:'05/03/2026', peca:'Óleo lubrificante ISO 220',    cat:'Lubrificação',forn:'Química Industrial SP',    qtd:'200 L',  unit:'R$ 18,50',    total: 3700,  nf:'NF-02145', sol:'Carlos M.' },
+  { data:'07/03/2026', peca:'Filtro hidráulico HY 10-20',   cat:'Hidráulica',  forn:'Hidráulica Total ME',      qtd:'6 un',   unit:'R$ 480,00',   total: 2880,  nf:'NF-00567', sol:'João R.' },
+  { data:'10/03/2026', peca:'Eletrodo de solda E6013 3,25', cat:'Elétrica',    forn:'Ferram. Central SP',       qtd:'50 kg',  unit:'R$ 42,00',    total: 2100,  nf:'NF-01023', sol:'Pedro S.' },
+  { data:'12/03/2026', peca:'Parafuso sextavado M16 x 60',  cat:'Fixação',     forn:'Fixadores Brasil Ltda',    qtd:'500 un', unit:'R$ 1,90',     total:  950,  nf:'NF-00748', sol:'Ana P.' }
+];
+
+var dadosProfissionais = [
+  { nome:'Ricardo Souza',   esp:'Mecânico Industrial',            emp:'RS Manutenção ME',          ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:350,  total: 7700, status:'Ativo' },
+  { nome:'Fernanda Lima',   esp:'Eletricista de Manutenção',      emp:'FL Serviços Elétricos',     ini:'01/03/2026', fim:'15/03/2026', dias:11, diaria:420,  total: 4620, status:'Ativo' },
+  { nome:'Paulo Henrique',  esp:'Soldador Certificado',           emp:'PH Soldagem Ltda',          ini:'05/03/2026', fim:'20/03/2026', dias:12, diaria:390,  total: 4680, status:'Ativo' },
+  { nome:'Marcos Oliveira', esp:'Técnico Hidráulico',             emp:'Hidro Tech ME',             ini:'08/03/2026', fim:'12/03/2026', dias: 5, diaria:480,  total: 2400, status:'Concluído' },
+  { nome:'Ana Beatriz',     esp:'Técnica em Segurança do Trabalho', emp:'Segur Max Ltda',          ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:300,  total: 6600, status:'Ativo' }
+];
+
+var dadosLocacao = [
+  { equip:'Caminhão Basculante 14 m³',     loc:'Transportes Alvorada Ltda', ini:'01/03/2026', fim:'20/03/2026', dias:15, diaria:1200, total:18000, fin:'Transporte de agregados',       status:'Ativo' },
+  { equip:'Rolo Compactador Vibratório',   loc:'Máquinas Silva ME',         ini:'03/03/2026', fim:'10/03/2026', dias: 6, diaria:950,  total: 5700, fin:'Compactação de pátio',          status:'Concluído' },
+  { equip:'Retroescavadeira JD 310SL',     loc:'Locadora Norte Equipamentos', ini:'05/03/2026', fim:'31/03/2026', dias:20, diaria:1500, total:30000, fin:'Movimentação de materiais',   status:'Ativo' },
+  { equip:'Munck / Caminhão Guindaste',    loc:'Içamento Brasil Ltda',      ini:'10/03/2026', fim:'12/03/2026', dias: 3, diaria:1800, total: 5400, fin:'Instalação de equipamentos',    status:'Concluído' },
+  { equip:'Gerador 150 kVA',               loc:'Energia Backup Locadora',   ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:600,  total:13200, fin:'Contingência elétrica',         status:'Ativo' }
+];
+
+function gerarRelManut() {
+  var dtIni  = document.getElementById('man-dt-ini').value;
+  var dtFim  = document.getElementById('man-dt-fim').value;
+  var chkP   = document.getElementById('man-chk-pecas').checked;
+  var chkPro = document.getElementById('man-chk-prof').checked;
+  var chkL   = document.getElementById('man-chk-loc').checked;
+
+  if (!chkP && !chkPro && !chkL) { alert('Selecione ao menos uma categoria'); return; }
+
+  document.getElementById('man-periodo-label').textContent = 'Período: ' + dtIni + ' a ' + dtFim;
+
+  var totalPecas = 0, totalProf = 0, totalLoc = 0;
+
+  // Peças
+  var cardP = document.getElementById('man-card-pecas');
+  cardP.style.display = chkP ? 'block' : 'none';
+  if (chkP) {
+    var tabP = document.getElementById('man-tab-pecas');
+    tabP.innerHTML = '<tr><th>Data</th><th>Peça / Descrição</th><th>Categoria</th><th>Fornecedor</th><th>Qtd</th><th>Valor Unit.</th><th>Total</th><th>NF</th><th>Solicitante</th></tr>';
+    dadosPecas.forEach(function(p) {
+      totalPecas += p.total;
+      tabP.innerHTML += '<tr><td>' + p.data + '</td><td style="font-weight:600">' + p.peca + '</td><td>' + p.cat + '</td><td>' + p.forn + '</td><td>' + p.qtd + '</td><td>' + p.unit + '</td><td style="color:#a78bfa;font-weight:700">R$ ' + p.total.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</td><td style="font-size:11px;color:#64748b">' + p.nf + '</td><td>' + p.sol + '</td></tr>';
     });
-    var tabProd = document.getElementById('rel2-tab-producao');
-    tabProd.innerHTML = '<tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>';
-    dados.producao.forEach(function(p) {
-      tabProd.innerHTML += '<tr><td>' + p.data + '</td><td>' + p.op + '</td><td>' + p.produto + '</td><td>' + p.qtd + '</td><td>' + p.cap + '</td><td>' + p.temp + '</td><td>' + p.resp + '</td></tr>';
-    });
-    var tabMov = document.getElementById('rel2-tab-mov');
-    tabMov.innerHTML = '<tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>';
-    dados.movimentacoes.forEach(function(mv) {
-      var cor = mv.tipo === 'Entrada' ? '#22c55e' : '#f59e0b';
-      tabMov.innerHTML += '<tr><td>' + mv.data + '</td><td>' + mv.hora + '</td><td>' + mv.placa + '</td><td>' + mv.motorista + '</td><td style="color:' + cor + ';font-weight:600">' + mv.tipo + '</td><td>' + mv.material + '</td><td>' + mv.qtd + '</td><td>' + mv.doc + '</td><td>' + mv.operador + '</td></tr>';
-    });
-    var totalEnt = 0, totalSai = 0;
-    dados.movimentacoes.forEach(function(mv) {
-      var n = parseFloat(mv.qtd.replace(/[^\d,]/g,'').replace(',','.')) || 0;
-      if (mv.tipo === 'Entrada') totalEnt += n; else totalSai += n;
-    });
-    document.getElementById('rel2-totais').innerHTML =
-      '<span style="color:#22c55e;font-weight:700">Total Entradas: ' + totalEnt.toFixed(1) + ' ton</span>' +
-      '<span style="color:#f59e0b;font-weight:700">Total Saídas: ' + totalSai.toFixed(1) + ' ton</span>';
+    document.getElementById('man-total-pecas').innerHTML =
+      '<span style="color:#a78bfa;font-weight:700">Total Peças: R$ ' + totalPecas.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
+      '<span style="color:#94a3b8">Itens: ' + dadosPecas.length + '</span>';
   }
 
-  // ── Compras
-  var cardComp = document.getElementById('rel2-card-compras');
-  cardComp.style.display = chkComp ? 'block' : 'none';
-  if (chkComp) {
-    var tabComp = document.getElementById('rel2-tab-compras');
-    tabComp.innerHTML = '<tr><th>Data</th><th>Peça / Descrição</th><th>Categoria</th><th>Fornecedor</th><th>Qtd</th><th>Valor Unit.</th><th>Total</th><th>NF</th><th>Solicitante</th></tr>';
-    var somaComp = 0;
-    dadosCompras.forEach(function(c) {
-      tabComp.innerHTML += '<tr><td>' + c.data + '</td><td>' + c.peca + '</td><td>' + c.cat + '</td><td>' + c.forn + '</td><td>' + c.qtd + '</td><td>' + c.unit + '</td><td style="color:#a78bfa;font-weight:600">' + c.total + '</td><td>' + c.nf + '</td><td>' + c.sol + '</td></tr>';
-      somaComp += parseFloat(c.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0;
-    });
-    document.getElementById('rel2-totais-compras').innerHTML =
-      '<span style="color:#a78bfa;font-weight:700">Total em Compras: R$ ' + somaComp.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
-      '<span style="color:#94a3b8">Itens: ' + dadosCompras.length + '</span>';
-  }
-
-  // ── Profissionais
-  var cardProf = document.getElementById('rel2-card-profissionais');
-  cardProf.style.display = chkProf ? 'block' : 'none';
-  if (chkProf) {
-    var tabProf = document.getElementById('rel2-tab-profissionais');
-    tabProf.innerHTML = '<tr><th>Nome</th><th>Especialidade</th><th>Empresa / PJ</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Status</th></tr>';
-    var somaProf = 0;
+  // Profissionais
+  var cardPro = document.getElementById('man-card-prof');
+  cardPro.style.display = chkPro ? 'block' : 'none';
+  if (chkPro) {
+    var tabPro = document.getElementById('man-tab-prof');
+    tabPro.innerHTML = '<tr><th>Nome</th><th>Especialidade</th><th>Empresa / PJ</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Status</th></tr>';
     dadosProfissionais.forEach(function(p) {
+      totalProf += p.total;
       var cor = p.status === 'Ativo' ? '#22c55e' : '#64748b';
-      tabProf.innerHTML += '<tr><td>' + p.nome + '</td><td>' + p.esp + '</td><td>' + p.emp + '</td><td>' + p.ini + '</td><td>' + p.fim + '</td><td>' + p.dias + '</td><td>' + p.diaria + '</td><td style="color:#f472b6;font-weight:600">' + p.total + '</td><td style="color:' + cor + ';font-weight:700">' + p.status + '</td></tr>';
-      somaProf += parseFloat(p.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0;
+      tabPro.innerHTML += '<tr><td style="font-weight:600">' + p.nome + '</td><td>' + p.esp + '</td><td>' + p.emp + '</td><td>' + p.ini + '</td><td>' + p.fim + '</td><td>' + p.dias + '</td><td>R$ ' + p.diaria.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</td><td style="color:#f472b6;font-weight:700">R$ ' + p.total.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</td><td style="color:' + cor + ';font-weight:700">' + p.status + '</td></tr>';
     });
-    document.getElementById('rel2-totais-prof').innerHTML =
-      '<span style="color:#f472b6;font-weight:700">Custo Total: R$ ' + somaProf.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
+    document.getElementById('man-total-prof').innerHTML =
+      '<span style="color:#f472b6;font-weight:700">Total Profissionais: R$ ' + totalProf.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
       '<span style="color:#94a3b8">Profissionais: ' + dadosProfissionais.length + '</span>';
   }
 
-  document.getElementById('rel2-vazio').style.display = 'none';
-  document.getElementById('rel2-resultado').style.display = 'block';
+  // Locação
+  var cardL = document.getElementById('man-card-loc');
+  cardL.style.display = chkL ? 'block' : 'none';
+  if (chkL) {
+    var tabL = document.getElementById('man-tab-loc');
+    tabL.innerHTML = '<tr><th>Equipamento</th><th>Empresa Locadora</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Finalidade</th><th>Status</th></tr>';
+    dadosLocacao.forEach(function(l) {
+      totalLoc += l.total;
+      var cor = l.status === 'Ativo' ? '#22c55e' : '#64748b';
+      tabL.innerHTML += '<tr><td style="font-weight:600">' + l.equip + '</td><td>' + l.loc + '</td><td>' + l.ini + '</td><td>' + l.fim + '</td><td>' + l.dias + '</td><td>R$ ' + l.diaria.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</td><td style="color:#60a5fa;font-weight:700">R$ ' + l.total.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</td><td style="font-size:12px;color:#94a3b8">' + l.fin + '</td><td style="color:' + cor + ';font-weight:700">' + l.status + '</td></tr>';
+    });
+    document.getElementById('man-total-loc').innerHTML =
+      '<span style="color:#60a5fa;font-weight:700">Total Locação: R$ ' + totalLoc.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
+      '<span style="color:#94a3b8">Equipamentos: ' + dadosLocacao.length + '</span>';
+  }
+
+  var totalGeral = totalPecas + totalProf + totalLoc;
+  var kpisEl = document.getElementById('man-kpis');
+  kpisEl.innerHTML = '';
+  if (chkP)   kpisEl.innerHTML += '<div class="kpi-card"><div class="kpi-label">Compra de Peças</div><div class="kpi-value" style="color:#a78bfa">R$ ' + totalPecas.toLocaleString('pt-BR',{minimumFractionDigits:0}) + '</div></div>';
+  if (chkPro) kpisEl.innerHTML += '<div class="kpi-card"><div class="kpi-label">Profissionais</div><div class="kpi-value" style="color:#f472b6">R$ ' + totalProf.toLocaleString('pt-BR',{minimumFractionDigits:0}) + '</div></div>';
+  if (chkL)   kpisEl.innerHTML += '<div class="kpi-card"><div class="kpi-label">Locação</div><div class="kpi-value" style="color:#60a5fa">R$ ' + totalLoc.toLocaleString('pt-BR',{minimumFractionDigits:0}) + '</div></div>';
+  kpisEl.innerHTML += '<div class="kpi-card"><div class="kpi-label">Custo Total</div><div class="kpi-value" style="color:#f59e0b">R$ ' + totalGeral.toLocaleString('pt-BR',{minimumFractionDigits:0}) + '</div></div>';
+
+  document.getElementById('man-resultado').style.display = 'block';
+  document.getElementById('man-resultado').scrollIntoView({behavior:'smooth', block:'start'});
 }
 </script>
 </body>
