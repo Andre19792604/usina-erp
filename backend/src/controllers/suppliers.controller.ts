@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
+import { qs } from '../utils/query'
 
 export async function list(req: Request, res: Response) {
-  const { search } = req.query
+  const search = qs(req.query.search)
   const suppliers = await prisma.supplier.findMany({
     where: {
       active: true,
@@ -20,7 +21,7 @@ export async function list(req: Request, res: Response) {
 }
 
 export async function getById(req: Request, res: Response) {
-  const s = await prisma.supplier.findUnique({ where: { id: req.params.id } })
+  const s = await prisma.supplier.findUnique({ where: { id: String(req.params.id) } })
   if (!s) throw new AppError('Fornecedor não encontrado', 404)
   res.json(s)
 }
@@ -35,13 +36,13 @@ export async function create(req: Request, res: Response) {
 
 export async function update(req: Request, res: Response) {
   const supplier = await prisma.supplier.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: req.body,
   })
   res.json(supplier)
 }
 
 export async function remove(req: Request, res: Response) {
-  await prisma.supplier.update({ where: { id: req.params.id }, data: { active: false } })
+  await prisma.supplier.update({ where: { id: String(req.params.id) }, data: { active: false } })
   res.json({ message: 'Fornecedor desativado' })
 }

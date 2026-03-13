@@ -1,26 +1,30 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
+import { qs } from '../utils/query'
 
 // NF-e status lifecycle: PENDENTE → EMITIDA → CANCELADA | DENEGADA
 // This controller manages the Invoice model (NF-e records) linked to SalesOrders
 
 export async function list(req: Request, res: Response) {
   try {
-    const { status, clientId, from, to } = req.query
+    const status = qs(req.query.status)
+    const clientId = qs(req.query.clientId)
+    const from = qs(req.query.from)
+    const to = qs(req.query.to)
 
     const where: any = {}
     if (status) where.status = status
     if (clientId) where.clientId = clientId
     if (from || to) {
       where.issueDate = {}
-      if (from) where.issueDate.gte = new Date(from as string)
-      if (to) where.issueDate.lte = new Date(to as string)
+      if (from) where.issueDate.gte = new Date(from)
+      if (to) where.issueDate.lte = new Date(to)
     }
 
     const invoices = await prisma.invoice.findMany({
       where,
       include: {
-        client: { select: { id: true, name: true, cnpj: true } },
+        client: { select: { id: true, name: true, cnpjCpf: true } },
         salesOrder: { select: { id: true, number: true } },
       },
       orderBy: { createdAt: 'desc' },
@@ -35,7 +39,7 @@ export async function list(req: Request, res: Response) {
 export async function getById(req: Request, res: Response) {
   try {
     const invoice = await prisma.invoice.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       include: {
         client: true,
         salesOrder: {
@@ -91,7 +95,7 @@ export async function create(req: Request, res: Response) {
         xmlContent: xmlContent || null,
       },
       include: {
-        client: { select: { id: true, name: true, cnpj: true } },
+        client: { select: { id: true, name: true, cnpjCpf: true } },
       },
     })
 
@@ -116,7 +120,7 @@ export async function updateStatus(req: Request, res: Response) {
     if (status === 'EMITIDA') data.issueDate = new Date()
 
     const invoice = await prisma.invoice.update({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       data,
       include: { client: { select: { id: true, name: true } } },
     })
@@ -152,10 +156,10 @@ export async function importXml(req: Request, res: Response) {
     // Find or create client by CNPJ
     let client = null
     if (cnpjEmitente) {
-      client = await prisma.client.findFirst({ where: { cnpj: cnpjEmitente } })
+      client = await prisma.client.findFirst({ where: { cnpjCpf: cnpjEmitente } })
       if (!client && nomeEmitente) {
         client = await prisma.client.create({
-          data: { name: nomeEmitente, cnpj: cnpjEmitente, active: true },
+          data: { name: nomeEmitente, cnpjCpf: cnpjEmitente, code: cnpjEmitente, active: true },
         })
       }
     }
@@ -190,7 +194,7 @@ export async function importXml(req: Request, res: Response) {
 export async function getXml(req: Request, res: Response) {
   try {
     const invoice = await prisma.invoice.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       select: { xmlContent: true, number: true },
     })
     if (!invoice) return res.status(404).json({ error: 'NF-e não encontrada' })

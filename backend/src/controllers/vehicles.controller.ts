@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
+import { qs } from '../utils/query'
 
 export async function list(req: Request, res: Response) {
-  const { type, search } = req.query
+  const type = qs(req.query.type)
+  const search = qs(req.query.search)
   const vehicles = await prisma.vehicle.findMany({
     where: {
       active: true,
@@ -22,7 +24,7 @@ export async function list(req: Request, res: Response) {
 }
 
 export async function getById(req: Request, res: Response) {
-  const v = await prisma.vehicle.findUnique({ where: { id: req.params.id } })
+  const v = await prisma.vehicle.findUnique({ where: { id: String(req.params.id) } })
   if (!v) throw new AppError('Veículo não encontrado', 404)
   res.json(v)
 }
@@ -39,20 +41,20 @@ export async function update(req: Request, res: Response) {
   const data = req.body
   if (data.plate) data.plate = data.plate.toUpperCase()
   const vehicle = await prisma.vehicle.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data,
   })
   res.json(vehicle)
 }
 
 export async function remove(req: Request, res: Response) {
-  await prisma.vehicle.update({ where: { id: req.params.id }, data: { active: false } })
+  await prisma.vehicle.update({ where: { id: String(req.params.id) }, data: { active: false } })
   res.json({ message: 'Veículo desativado' })
 }
 
 export async function getByPlate(req: Request, res: Response) {
   const vehicle = await prisma.vehicle.findUnique({
-    where: { plate: req.params.plate.toUpperCase() },
+    where: { plate: String(req.params.plate).toUpperCase() },
   })
   if (!vehicle) throw new AppError('Veículo não encontrado', 404)
   res.json(vehicle)

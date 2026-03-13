@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
 import { AuthRequest } from '../middleware/auth'
+import { qs } from '../utils/query'
 
 // ── Equipment ─────────────────────────────────────────────────
 
@@ -31,7 +32,7 @@ export async function createEquipment(req: Request, res: Response) {
 
 export async function updateEquipment(req: Request, res: Response) {
   const equipment = await prisma.equipment.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: req.body,
   })
   res.json(equipment)
@@ -40,7 +41,8 @@ export async function updateEquipment(req: Request, res: Response) {
 // ── Maintenance Orders ────────────────────────────────────────
 
 export async function listOrders(req: Request, res: Response) {
-  const { status, type } = req.query
+  const status = qs(req.query.status)
+  const type = qs(req.query.type)
   const orders = await prisma.maintenanceOrder.findMany({
     where: {
       status: status ? (status as any) : undefined,
@@ -58,7 +60,7 @@ export async function listOrders(req: Request, res: Response) {
 
 export async function getOrderById(req: Request, res: Response) {
   const order = await prisma.maintenanceOrder.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       equipment: true,
       vehicle: { select: { plate: true, brand: true, model: true } },
@@ -100,7 +102,7 @@ export async function updateOrderStatus(req: AuthRequest, res: Response) {
   }
 
   const order = await prisma.maintenanceOrder.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data,
   })
   res.json(order)

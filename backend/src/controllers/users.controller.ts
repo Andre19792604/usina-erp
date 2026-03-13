@@ -27,7 +27,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function update(req: Request, res: Response) {
-  const { id } = req.params
+  const id = String(req.params.id)
   const { name, email, role, active } = req.body
 
   const user = await prisma.user.update({
@@ -39,7 +39,7 @@ export async function update(req: Request, res: Response) {
 }
 
 export async function remove(req: Request, res: Response) {
-  const { id } = req.params
+  const id = String(req.params.id)
   await prisma.user.update({ where: { id }, data: { active: false } })
   res.json({ message: 'Usuário desativado' })
 }

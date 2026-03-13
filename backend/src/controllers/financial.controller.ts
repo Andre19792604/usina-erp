@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
+import { qs } from '../utils/query'
 
 export async function listPayable(req: Request, res: Response) {
-  const { status } = req.query
+  const status = qs(req.query.status)
   const items = await prisma.accountPayable.findMany({
     where: { status: status ? (status as any) : undefined },
     include: { supplier: { select: { name: true } } },
@@ -18,7 +19,7 @@ export async function createPayable(req: Request, res: Response) {
 
 export async function payPayable(req: Request, res: Response) {
   const { paidAmount, paymentMethod } = req.body
-  const { id } = req.params
+  const id = String(req.params.id)
   const current = await prisma.accountPayable.findUniqueOrThrow({ where: { id } })
   const newPaid = Number(current.paidAmount) + Number(paidAmount)
   const status = newPaid >= Number(current.amount) ? 'PAID' : 'PARTIAL'
@@ -31,7 +32,7 @@ export async function payPayable(req: Request, res: Response) {
 }
 
 export async function listReceivable(req: Request, res: Response) {
-  const { status } = req.query
+  const status = qs(req.query.status)
   const items = await prisma.accountReceivable.findMany({
     where: { status: status ? (status as any) : undefined },
     include: { salesOrder: { select: { number: true } } },
@@ -47,7 +48,7 @@ export async function createReceivable(req: Request, res: Response) {
 
 export async function receivePayment(req: Request, res: Response) {
   const { paidAmount, paymentMethod } = req.body
-  const { id } = req.params
+  const id = String(req.params.id)
   const current = await prisma.accountReceivable.findUniqueOrThrow({ where: { id } })
   const newPaid = Number(current.paidAmount) + Number(paidAmount)
   const status = newPaid >= Number(current.amount) ? 'PAID' : 'PARTIAL'

@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
+import { qs } from '../utils/query'
 
 export async function list(req: Request, res: Response) {
-  const { search, active } = req.query
+  const search = qs(req.query.search)
+  const active = qs(req.query.active)
   const clients = await prisma.client.findMany({
     where: {
       active: active === 'false' ? false : true,
@@ -21,7 +23,7 @@ export async function list(req: Request, res: Response) {
 }
 
 export async function getById(req: Request, res: Response) {
-  const client = await prisma.client.findUnique({ where: { id: req.params.id } })
+  const client = await prisma.client.findUnique({ where: { id: String(req.params.id) } })
   if (!client) throw new AppError('Cliente não encontrado', 404)
   res.json(client)
 }
@@ -37,13 +39,13 @@ export async function create(req: Request, res: Response) {
 
 export async function update(req: Request, res: Response) {
   const client = await prisma.client.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: req.body,
   })
   res.json(client)
 }
 
 export async function remove(req: Request, res: Response) {
-  await prisma.client.update({ where: { id: req.params.id }, data: { active: false } })
+  await prisma.client.update({ where: { id: String(req.params.id) }, data: { active: false } })
   res.json({ message: 'Cliente desativado' })
 }

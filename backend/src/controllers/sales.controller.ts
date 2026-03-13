@@ -2,11 +2,13 @@ import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
 import { AuthRequest } from '../middleware/auth'
+import { qs } from '../utils/query'
 
 // ── Quotes ────────────────────────────────────────────────────
 
 export async function listQuotes(req: Request, res: Response) {
-  const { status, clientId } = req.query
+  const status = qs(req.query.status)
+  const clientId = qs(req.query.clientId)
   const quotes = await prisma.quote.findMany({
     where: {
       status: status ? (status as any) : undefined,
@@ -23,7 +25,7 @@ export async function listQuotes(req: Request, res: Response) {
 
 export async function getQuoteById(req: Request, res: Response) {
   const quote = await prisma.quote.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       client: true,
       items: { include: { product: true } },
@@ -69,7 +71,7 @@ export async function createQuote(req: AuthRequest, res: Response) {
 export async function updateQuoteStatus(req: Request, res: Response) {
   const { status } = req.body
   const quote = await prisma.quote.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: { status },
   })
   res.json(quote)
@@ -78,7 +80,7 @@ export async function updateQuoteStatus(req: Request, res: Response) {
 // Convert approved quote → sales order
 export async function quoteToSalesOrder(req: AuthRequest, res: Response) {
   const quote = await prisma.quote.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: { items: true },
   })
   if (!quote) throw new AppError('Orçamento não encontrado', 404)
@@ -94,7 +96,7 @@ export async function quoteToSalesOrder(req: AuthRequest, res: Response) {
       totalAmount: quote.totalAmount,
       operatorId: req.user!.id,
       items: {
-        create: quote.items.map((i) => ({
+        create: quote.items.map((i: any) => ({
           productId: i.productId,
           quantity: i.quantity,
           unitPrice: i.unitPrice,
@@ -112,14 +114,17 @@ export async function quoteToSalesOrder(req: AuthRequest, res: Response) {
 // ── Sales Orders ──────────────────────────────────────────────
 
 export async function listSalesOrders(req: Request, res: Response) {
-  const { status, clientId, from, to } = req.query
+  const status = qs(req.query.status)
+  const clientId = qs(req.query.clientId)
+  const from = qs(req.query.from)
+  const to = qs(req.query.to)
   const orders = await prisma.salesOrder.findMany({
     where: {
       status: status ? (status as any) : undefined,
       clientId: clientId ? String(clientId) : undefined,
       createdAt: {
-        gte: from ? new Date(String(from)) : undefined,
-        lte: to ? new Date(String(to)) : undefined,
+        gte: from ? new Date(from) : undefined,
+        lte: to ? new Date(to) : undefined,
       },
     },
     include: {
@@ -135,14 +140,14 @@ export async function listSalesOrders(req: Request, res: Response) {
 
 export async function getSalesOrderById(req: Request, res: Response) {
   const order = await prisma.salesOrder.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       client: true,
       items: { include: { product: true } },
       operator: { select: { name: true } },
       productionOrders: { select: { number: true, status: true, producedQty: true } },
       weightTickets: { select: { number: true, netWeight: true, weighedAt: true } },
-      invoices: { select: { number: true, status: true, totalAmount: true } },
+      invoices: { select: { number: true, status: true, totalNfe: true } },
       accountsReceivable: { select: { amount: true, status: true, dueDate: true } },
     },
   })
@@ -187,7 +192,7 @@ export async function createSalesOrder(req: AuthRequest, res: Response) {
 export async function updateSalesOrderStatus(req: Request, res: Response) {
   const { status } = req.body
   const order = await prisma.salesOrder.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: { status },
   })
   res.json(order)

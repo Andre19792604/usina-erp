@@ -2,9 +2,11 @@ import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
 import { AuthRequest } from '../middleware/auth'
+import { qs } from '../utils/query'
 
 export async function list(req: Request, res: Response) {
-  const { status, supplierId } = req.query
+  const status = qs(req.query.status)
+  const supplierId = qs(req.query.supplierId)
   const orders = await prisma.purchaseOrder.findMany({
     where: {
       status: status ? (status as any) : undefined,
@@ -22,7 +24,7 @@ export async function list(req: Request, res: Response) {
 
 export async function getById(req: Request, res: Response) {
   const order = await prisma.purchaseOrder.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       supplier: true,
       items: { include: { material: true } },
@@ -68,7 +70,7 @@ export async function create(req: AuthRequest, res: Response) {
 }
 
 export async function receiveItems(req: AuthRequest, res: Response) {
-  const { id } = req.params
+  const id = String(req.params.id)
   const { items, nfNumber } = req.body
   // items: [{ purchaseOrderItemId, receivedQty }]
 
@@ -80,7 +82,7 @@ export async function receiveItems(req: AuthRequest, res: Response) {
 
   await prisma.$transaction(async (tx) => {
     for (const recv of items) {
-      const item = order.items.find((i) => i.id === recv.purchaseOrderItemId)
+      const item = order.items.find((i: any) => i.id === recv.purchaseOrderItemId)
       if (!item) continue
 
       // Update received quantity on item
@@ -136,7 +138,7 @@ export async function receiveItems(req: AuthRequest, res: Response) {
 
 export async function cancel(req: Request, res: Response) {
   const order = await prisma.purchaseOrder.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: { status: 'CANCELLED' },
   })
   res.json(order)

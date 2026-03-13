@@ -2,15 +2,18 @@ import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
 import { AuthRequest } from '../middleware/auth'
+import { qs } from '../utils/query'
 
 export async function list(req: Request, res: Response) {
-  const { status, from, to } = req.query
+  const status = qs(req.query.status)
+  const from = qs(req.query.from)
+  const to = qs(req.query.to)
   const orders = await prisma.productionOrder.findMany({
     where: {
       status: status ? (status as any) : undefined,
       scheduledDate: {
-        gte: from ? new Date(String(from)) : undefined,
-        lte: to ? new Date(String(to)) : undefined,
+        gte: from ? new Date(from) : undefined,
+        lte: to ? new Date(to) : undefined,
       },
     },
     include: {
@@ -25,7 +28,7 @@ export async function list(req: Request, res: Response) {
 
 export async function getById(req: Request, res: Response) {
   const order = await prisma.productionOrder.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       product: true,
       formula: { include: { items: { include: { material: true } } } },
@@ -50,7 +53,7 @@ export async function create(req: AuthRequest, res: Response) {
 
 export async function updateStatus(req: AuthRequest, res: Response) {
   const { status, producedQty, temperature } = req.body
-  const { id } = req.params
+  const id = String(req.params.id)
 
   const data: Record<string, unknown> = { status }
   if (status === 'IN_PROGRESS') data.startedAt = new Date()
@@ -66,7 +69,7 @@ export async function updateStatus(req: AuthRequest, res: Response) {
 
 export async function addQualityControl(req: Request, res: Response) {
   const qc = await prisma.qualityControl.create({
-    data: { ...req.body, productionOrderId: req.params.id },
+    data: { ...req.body, productionOrderId: String(req.params.id) },
   })
   res.status(201).json(qc)
 }

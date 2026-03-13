@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
+import { qs } from '../utils/query'
 
 // ── Products ──────────────────────────────────────────────────
 
 export async function listProducts(req: Request, res: Response) {
-  const { search } = req.query
+  const search = qs(req.query.search)
   const products = await prisma.product.findMany({
     where: {
       active: true,
@@ -24,7 +25,7 @@ export async function listProducts(req: Request, res: Response) {
 
 export async function getProductById(req: Request, res: Response) {
   const product = await prisma.product.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       formulas: {
         where: { active: true },
@@ -48,7 +49,7 @@ export async function createProduct(req: Request, res: Response) {
 
 export async function updateProduct(req: Request, res: Response) {
   const product = await prisma.product.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: req.body,
   })
   res.json(product)
@@ -57,7 +58,7 @@ export async function updateProduct(req: Request, res: Response) {
 // ── Formulas (Traços) ─────────────────────────────────────────
 
 export async function listFormulas(req: Request, res: Response) {
-  const { productId } = req.query
+  const productId = qs(req.query.productId)
   const formulas = await prisma.formula.findMany({
     where: {
       active: true,
@@ -74,7 +75,7 @@ export async function listFormulas(req: Request, res: Response) {
 
 export async function getFormulaById(req: Request, res: Response) {
   const formula = await prisma.formula.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     include: {
       product: true,
       items: { include: { material: true } },
@@ -125,7 +126,7 @@ export async function createFormula(req: Request, res: Response) {
 
 export async function updateFormula(req: Request, res: Response) {
   const { name, notes, items } = req.body
-  const { id } = req.params
+  const id = String(req.params.id)
 
   if (items) {
     const totalPct = items.reduce((s: number, i: any) => s + Number(i.percentage), 0)

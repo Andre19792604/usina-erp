@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
 import { prisma } from '../utils/prisma'
 import { AppError } from '../middleware/errorHandler'
+import { qs } from '../utils/query'
 
 export async function list(req: Request, res: Response) {
-  const { search, category } = req.query
+  const search = qs(req.query.search)
+  const category = qs(req.query.category)
   const materials = await prisma.material.findMany({
     where: {
       active: true,
@@ -21,7 +23,7 @@ export async function list(req: Request, res: Response) {
 }
 
 export async function getById(req: Request, res: Response) {
-  const m = await prisma.material.findUnique({ where: { id: req.params.id } })
+  const m = await prisma.material.findUnique({ where: { id: String(req.params.id) } })
   if (!m) throw new AppError('Material não encontrado', 404)
   res.json(m)
 }
@@ -36,7 +38,7 @@ export async function create(req: Request, res: Response) {
 
 export async function update(req: Request, res: Response) {
   const material = await prisma.material.update({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
     data: req.body,
   })
   res.json(material)
@@ -44,7 +46,7 @@ export async function update(req: Request, res: Response) {
 
 export async function stockMovements(req: Request, res: Response) {
   const movements = await prisma.stockMovement.findMany({
-    where: { materialId: req.params.id },
+    where: { materialId: String(req.params.id) },
     orderBy: { occurredAt: 'desc' },
     take: 100,
   })
