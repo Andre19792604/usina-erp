@@ -354,9 +354,8 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
             <div class="kpi-change"><span style="color:#22c55e">▲ +0,5h</span> vs ontem</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-label">A Receber</div>
-            <div class="kpi-value" style="color:#22c55e">R$ 284k</div>
-            <div class="kpi-change"><span style="color:#22c55e">▲ +R$12k</span> vs ontem</div>
+            <div class="kpi-label">Produção do Mês</div>
+            <div class="kpi-value" style="color:#22c55e">14.820 ton</div>
           </div>
           <div class="kpi-card">
             <div class="kpi-label">Balança — Peso Atual</div>
@@ -411,11 +410,11 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
           <div class="card" style="flex:3">
             <div class="card-title-lg">Últimas Pesagens</div>
             <table>
-              <tr><th>Placa</th><th>Peso Líquido</th><th>Hora</th><th>Tipo</th></tr>
-              <tr><td style="font-family:monospace;color:#60a5fa">ABC-1234</td><td>15.240 kg</td><td style="color:#94a3b8">08:32</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
-              <tr><td style="font-family:monospace;color:#60a5fa">DEF-5678</td><td>14.890 kg</td><td style="color:#94a3b8">09:15</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
-              <tr><td style="font-family:monospace;color:#60a5fa">GHI-9012</td><td>16.100 kg</td><td style="color:#94a3b8">10:01</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
-              <tr><td style="font-family:monospace;color:#60a5fa">JKL-3456</td><td>13.750 kg</td><td style="color:#94a3b8">10:45</td><td><span class="badge badge-blue">ENTRADA</span></td></tr>
+              <tr><th>Placa</th><th>Peso Líquido</th><th>Hora</th><th>Tipo</th><th>Cliente</th><th>Endereço da Obra</th></tr>
+              <tr><td style="font-family:monospace;color:#60a5fa">ABC-1234</td><td>15.240 kg</td><td style="color:#94a3b8">08:32</td><td><span class="badge badge-green">SAÍDA</span></td><td>Prefeitura Mun. SP</td><td>Av. Paulista, 900 — SP</td></tr>
+              <tr><td style="font-family:monospace;color:#60a5fa">DEF-5678</td><td>14.890 kg</td><td style="color:#94a3b8">09:15</td><td><span class="badge badge-green">SAÍDA</span></td><td>Construtora Andrade Ltda</td><td>Rua das Flores, 250 — SP</td></tr>
+              <tr><td style="font-family:monospace;color:#60a5fa">GHI-9012</td><td>16.100 kg</td><td style="color:#94a3b8">10:01</td><td><span class="badge badge-green">SAÍDA</span></td><td>MRV Engenharia</td><td>Rod. Anhanguera, km 18 — SP</td></tr>
+              <tr><td style="font-family:monospace;color:#60a5fa">JKL-3456</td><td>13.750 kg</td><td style="color:#94a3b8">10:45</td><td><span class="badge badge-blue">ENTRADA</span></td><td>—</td><td>—</td></tr>
             </table>
           </div>
           <div class="card" style="flex:2">
@@ -431,8 +430,17 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
             </div>
             <div class="alert-item">
               <div class="alert-item-header">
-                <span class="alert-name">Cal Hidratada</span>
-                <span class="alert-values" style="color:#ef4444">12 ton <span style="color:#64748b">/ mín 20 ton</span></span>
+                <span class="alert-name">Diesel</span>
+                <span class="alert-values" style="color:#ef4444">3.200 L <span style="color:#64748b">/ mín 5.000 L</span></span>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-bar" style="width:64%;background:#ef4444"></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-item-header">
+                <span class="alert-name">Óleo BPF</span>
+                <span class="alert-values" style="color:#ef4444">1.800 L <span style="color:#64748b">/ mín 3.000 L</span></span>
               </div>
               <div class="progress-wrap">
                 <div class="progress-bar" style="width:60%;background:#ef4444"></div>
@@ -440,11 +448,29 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
             </div>
             <div class="alert-item">
               <div class="alert-item-header">
-                <span class="alert-name">Diesel</span>
-                <span class="alert-values" style="color:#ef4444">3.200 L <span style="color:#64748b">/ mín 5.000 L</span></span>
+                <span class="alert-name">Pedra 1</span>
+                <span class="alert-values" style="color:#ef4444">85 ton <span style="color:#64748b">/ mín 120 ton</span></span>
               </div>
               <div class="progress-wrap">
-                <div class="progress-bar" style="width:64%;background:#ef4444"></div>
+                <div class="progress-bar" style="width:71%;background:#ef4444"></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-item-header">
+                <span class="alert-name">Pedrisco</span>
+                <span class="alert-values" style="color:#f59e0b">55 ton <span style="color:#64748b">/ mín 60 ton</span></span>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-bar" style="width:92%;background:#f59e0b"></div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-item-header">
+                <span class="alert-name">Pó de Pedra</span>
+                <span class="alert-values" style="color:#f59e0b">38 ton <span style="color:#64748b">/ mín 40 ton</span></span>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-bar" style="width:95%;background:#f59e0b"></div>
               </div>
             </div>
           </div>
