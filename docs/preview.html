@@ -73,6 +73,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 }
 .menu-icon { font-size: 15px; width: 20px; text-align: center; }
 .menu-divider { border-top: 1px solid #1e3a5f; margin: 8px 0; }
+.co-input { background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:9px 11px;color:#e2e8f0;font-size:13px;width:100%;transition:border-color .2s }
+.co-input:focus { outline:none;border-color:#f59e0b }
+.co-tab-btn { background:#0f172a;border:1px solid #1e3a5f;border-radius:6px;padding:6px 14px;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s }
+.co-tab-btn:hover { border-color:#a78bfa;color:#a78bfa }
+.co-tab-btn.active { background:#a78bfa22;border-color:#a78bfa;color:#a78bfa }
+.res-prod-card { background:#0f172a;border:1px solid #1e3a5f;border-radius:10px;padding:14px }
+.res-linha { display:flex;justify-content:space-between;padding:3px 0;font-size:12px;border-bottom:1px solid #0f172a }
+
 
 /* MAIN */
 .main-area { margin-left: 240px; flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -259,6 +267,9 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
       </div>
       <div class="menu-item" data-page="perdas" onclick="showPage('perdas')">
         <span class="menu-icon">&#9888;</span> Perdas Operacionais
+      </div>
+      <div class="menu-item" data-page="custo-op" onclick="showPage('custo-op')">
+        <span class="menu-icon">&#127759;</span> Custo Operacional
       </div>
       <div class="menu-item" data-page="laboratorio" onclick="showPage('laboratorio')">
         <span class="menu-icon">&#128302;</span> Controle Tecnológico
@@ -715,6 +726,410 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
           </div>
         </div>
       </div>
+
+      <!-- ========== CUSTO OPERACIONAL ========== -->
+      <div id="page-custo-op" class="page-content">
+        <div class="page-header">
+          <div class="page-title">Custo Operacional</div>
+          <div class="page-subtitle">Custo por tonelada, margem por produto e ponto de equilíbrio</div>
+        </div>
+
+        <!-- ───── PARÂMETROS GERAIS ───── -->
+        <div class="card" style="margin-bottom:18px;border-left:4px solid #f59e0b">
+          <div class="card-title-lg" style="margin-bottom:14px">&#9881; Parâmetros Gerais</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px">
+            <div class="form-group">
+              <label>Mês de Referência</label>
+              <input type="month" id="co-mes" value="2026-03" oninput="calcCusto()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+            </div>
+            <div class="form-group">
+              <label>Produção Prevista Total (ton/mês)</label>
+              <input type="number" id="co-prod-total" value="15000" oninput="calcCusto()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+            </div>
+            <div class="form-group">
+              <label>Dias de Operação / Mês</label>
+              <input type="number" id="co-dias" value="22" oninput="calcCusto()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+            </div>
+            <div class="form-group">
+              <label>Horas / Dia</label>
+              <input type="number" id="co-horas" value="8" oninput="calcCusto()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+            </div>
+            <div class="form-group">
+              <label>Regime Tributário</label>
+              <select id="co-regime" oninput="calcCusto()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                <option value="presumido">Lucro Presumido</option>
+                <option value="real">Lucro Real</option>
+                <option value="simples">Simples Nacional</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="align-items:flex-start;gap:16px;flex-wrap:wrap">
+          <!-- ═══ COLUNA ESQUERDA: INPUTS ═══ -->
+          <div style="flex:2;min-width:320px;display:flex;flex-direction:column;gap:16px">
+
+            <!-- ── CUSTOS FIXOS ── -->
+            <div class="card" style="border-left:4px solid #60a5fa">
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px" onclick="toggleCo('co-fixos')">
+                <span style="font-size:16px">&#128176;</span>
+                <div style="flex:1;font-size:14px;font-weight:700;color:#60a5fa">Custos Fixos Mensais</div>
+                <span id="co-fixos-icon" style="color:#64748b">&#9660;</span>
+              </div>
+              <div id="co-fixos">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="form-group">
+                    <label>Folha Salarial Bruta (R$)</label>
+                    <input type="number" id="co-folha" value="85000" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">Salários + 13º + férias proporcionais</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Encargos Sociais — FGTS+INSS (R$)</label>
+                    <input type="number" id="co-encargos" value="32000" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">~37% sobre folha</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Aluguel / Arrendamento (R$)</label>
+                    <input type="number" id="co-aluguel" value="18000" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Depreciação de Equipamentos (R$)</label>
+                    <input type="number" id="co-deprec" value="22000" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">Usina, balança, correias, silos…</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Energia Elétrica — Demanda Fixa (R$)</label>
+                    <input type="number" id="co-en-fixa" value="8500" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">Parcela fixa da fatura (demanda contratada)</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Manutenção Preventiva (R$)</label>
+                    <input type="number" id="co-manut" value="12000" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Seguros e Taxas (R$)</label>
+                    <input type="number" id="co-seguros" value="4500" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Locação de Equipamentos (R$)</label>
+                    <input type="number" id="co-locacao" value="15000" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Outros Custos Fixos (R$)</label>
+                    <input type="number" id="co-outros-fixos" value="6000" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group" style="background:rgba(96,165,250,0.06);border-radius:8px;padding:10px">
+                    <div style="font-size:12px;color:#94a3b8">Total Fixo / Mês</div>
+                    <div id="co-total-fixo" style="font-size:20px;font-weight:800;color:#60a5fa">R$ 203.000</div>
+                    <div id="co-fixo-por-ton" style="font-size:12px;color:#64748b">R$ 13,53/ton</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── CARGA TRIBUTÁRIA ── -->
+            <div class="card" style="border-left:4px solid #ef4444">
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px" onclick="toggleCo('co-tributos')">
+                <span style="font-size:16px">&#128203;</span>
+                <div style="flex:1;font-size:14px;font-weight:700;color:#ef4444">Carga Tributária (% sobre receita bruta)</div>
+                <span id="co-tributos-icon" style="color:#64748b">&#9660;</span>
+              </div>
+              <div id="co-tributos">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+                  <div class="form-group">
+                    <label>PIS (%)</label>
+                    <input type="number" id="co-pis" value="1.65" step="0.01" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>COFINS (%)</label>
+                    <input type="number" id="co-cofins" value="7.60" step="0.01" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>ISS (%)</label>
+                    <input type="number" id="co-iss" value="0" step="0.01" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>ICMS (%)</label>
+                    <input type="number" id="co-icms" value="12.00" step="0.01" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">Verificar substituição tributária</small>
+                  </div>
+                  <div class="form-group">
+                    <label>IRPJ (%)</label>
+                    <input type="number" id="co-irpj" value="4.80" step="0.01" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">8% base × 15% alíquota</small>
+                  </div>
+                  <div class="form-group">
+                    <label>CSLL (%)</label>
+                    <input type="number" id="co-csll" value="2.88" step="0.01" oninput="calcCusto()" class="co-input">
+                    <small style="color:#64748b;font-size:11px">12% base × 9% alíquota</small>
+                  </div>
+                </div>
+                <div style="background:rgba(239,68,68,0.08);border-radius:8px;padding:10px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+                  <div style="font-size:13px;color:#94a3b8">Carga tributária total (sobre receita)</div>
+                  <div id="co-carga-total" style="font-size:18px;font-weight:800;color:#ef4444">28,93%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── COMBUSTÍVEIS E UTILIDADES ── -->
+            <div class="card" style="border-left:4px solid #f59e0b">
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px" onclick="toggleCo('co-comb')">
+                <span style="font-size:16px">&#9981;</span>
+                <div style="flex:1;font-size:14px;font-weight:700;color:#f59e0b">Combustíveis e Utilidades</div>
+                <span id="co-comb-icon" style="color:#64748b">&#9660;</span>
+              </div>
+              <div id="co-comb">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                  <div class="form-group" style="grid-column:1/-1">
+                    <div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:8px">Diesel S-10 (consumo da usina e equipamentos)</div>
+                  </div>
+                  <div class="form-group">
+                    <label>Consumo (L/ton produzida)</label>
+                    <input type="number" id="co-diesel-lton" value="3.2" step="0.1" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Preço do Diesel (R$/L)</label>
+                    <input type="number" id="co-diesel-preco" value="6.40" step="0.01" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group" style="background:rgba(245,158,11,0.08);border-radius:8px;padding:10px">
+                    <div style="font-size:11px;color:#64748b">Custo Diesel/ton</div>
+                    <div id="co-diesel-resultado" style="font-weight:700;color:#f59e0b">R$ 20,48</div>
+                  </div>
+
+                  <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                    <div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:8px">Óleo BPF (queimador do tambor secador)</div>
+                  </div>
+                  <div class="form-group">
+                    <label>Consumo (L/ton produzida)</label>
+                    <input type="number" id="co-bpf-lton" value="4.5" step="0.1" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Preço do BPF (R$/L)</label>
+                    <input type="number" id="co-bpf-preco" value="3.80" step="0.01" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group" style="background:rgba(245,158,11,0.08);border-radius:8px;padding:10px">
+                    <div style="font-size:11px;color:#64748b">Custo BPF/ton</div>
+                    <div id="co-bpf-resultado" style="font-weight:700;color:#f59e0b">R$ 17,10</div>
+                  </div>
+
+                  <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                    <div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:8px">Energia Elétrica — Consumo Variável</div>
+                  </div>
+                  <div class="form-group">
+                    <label>Consumo (kWh/ton produzida)</label>
+                    <input type="number" id="co-en-kwh" value="9.8" step="0.1" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Tarifa (R$/kWh)</label>
+                    <input type="number" id="co-en-tarifa" value="0.775" step="0.001" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group" style="background:rgba(245,158,11,0.08);border-radius:8px;padding:10px">
+                    <div style="font-size:11px;color:#64748b">Custo Energia/ton</div>
+                    <div id="co-en-resultado" style="font-weight:700;color:#f59e0b">R$ 7,60</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── PREÇOS DE INSUMOS ── -->
+            <div class="card" style="border-left:4px solid #22c55e">
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px" onclick="toggleCo('co-insumos-preco')">
+                <span style="font-size:16px">&#127981;</span>
+                <div style="flex:1;font-size:14px;font-weight:700;color:#22c55e">Preços dos Insumos (R$/ton)</div>
+                <span id="co-insumos-preco-icon" style="color:#64748b">&#9660;</span>
+              </div>
+              <div id="co-insumos-preco">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="form-group">
+                    <label>CAP 50/70 (R$/ton)</label>
+                    <input type="number" id="co-preco-cap" value="6200" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>CAP 30/45 (R$/ton)</label>
+                    <input type="number" id="co-preco-cap30" value="6500" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Brita 0 — 4,75~9,5mm (R$/ton)</label>
+                    <input type="number" id="co-preco-brita0" value="95" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Brita 1 — 9,5~19mm (R$/ton)</label>
+                    <input type="number" id="co-preco-brita1" value="90" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Brita 2 — 19~25mm (R$/ton)</label>
+                    <input type="number" id="co-preco-brita2" value="88" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Pó-de-pedra / Fíler (R$/ton)</label>
+                    <input type="number" id="co-preco-po" value="70" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Areia Natural (R$/ton)</label>
+                    <input type="number" id="co-preco-areia" value="55" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Cal Hidratada CH-I (R$/ton)</label>
+                    <input type="number" id="co-preco-cal" value="280" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Emulsão Asfáltica RL-1C (R$/ton)</label>
+                    <input type="number" id="co-preco-emulsao" value="2800" oninput="calcCusto()" class="co-input">
+                  </div>
+                  <div class="form-group">
+                    <label>Pó Mineral / Calcário (R$/ton)</label>
+                    <input type="number" id="co-preco-calc" value="120" oninput="calcCusto()" class="co-input">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── TRAÇOS POR PRODUTO ── -->
+            <div class="card" style="border-left:4px solid #a78bfa">
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px" onclick="toggleCo('co-tracoes')">
+                <span style="font-size:16px">&#128200;</span>
+                <div style="flex:1;font-size:14px;font-weight:700;color:#a78bfa">Composição dos Traços (% em massa)</div>
+                <span id="co-tracoes-icon" style="color:#64748b">&#9660;</span>
+              </div>
+              <div id="co-tracoes">
+                <!-- Tabs dos produtos -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+                  <button id="tab-btn-cbuq-bc" class="co-tab-btn active" onclick="showTraco('cbuq-bc')">CBUQ BC</button>
+                  <button id="tab-btn-cbuq-cr" class="co-tab-btn" onclick="showTraco('cbuq-cr')">CBUQ CR</button>
+                  <button id="tab-btn-pmf" class="co-tab-btn" onclick="showTraco('pmf')">PMF I</button>
+                  <button id="tab-btn-tsd" class="co-tab-btn" onclick="showTraco('tsd')">TSD</button>
+                  <button id="tab-btn-micro" class="co-tab-btn" onclick="showTraco('micro')">Microrev.</button>
+                  <button id="tab-btn-pavi" class="co-tab-btn" onclick="showTraco('pavi')">CBUQ CF</button>
+                </div>
+
+                <!-- CBUQ BC -->
+                <div id="traco-cbuq-bc" class="traco-panel">
+                  <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Concreto Betuminoso Usinado a Quente — Binder Course (camada intermediária)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                    <div class="form-group"><label>CAP 50/70 (%)</label><input type="number" id="bc-cap" value="5.5" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 1 (%)</label><input type="number" id="bc-brita1" value="30.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 2 (%)</label><input type="number" id="bc-brita2" value="28.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 0 (%)</label><input type="number" id="bc-brita0" value="20.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pó-de-pedra (%)</label><input type="number" id="bc-po" value="13.5" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="bc-cal" value="1.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Areia (%)</label><input type="number" id="bc-areia" value="2.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="bc-producao" value="7000" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="bc-preco-venda" value="620" oninput="calcCusto()" class="co-input"></div>
+                  </div>
+                  <div id="bc-soma-aviso" style="font-size:11px;margin-top:4px"></div>
+                </div>
+
+                <!-- CBUQ CR -->
+                <div id="traco-cbuq-cr" class="traco-panel" style="display:none">
+                  <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Concreto Betuminoso Usinado a Quente — Camada de Rolamento (camada de superfície)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                    <div class="form-group"><label>CAP 50/70 (%)</label><input type="number" id="cr-cap" value="5.8" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 0 (%)</label><input type="number" id="cr-brita0" value="35.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 1 (%)</label><input type="number" id="cr-brita1" value="20.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pó-de-pedra (%)</label><input type="number" id="cr-po" value="28.2" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Areia (%)</label><input type="number" id="cr-areia" value="8.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="cr-cal" value="1.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 2 (%)</label><input type="number" id="cr-brita2" value="2.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="cr-producao" value="6000" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="cr-preco-venda" value="640" oninput="calcCusto()" class="co-input"></div>
+                  </div>
+                  <div id="cr-soma-aviso" style="font-size:11px;margin-top:4px"></div>
+                </div>
+
+                <!-- PMF I -->
+                <div id="traco-pmf" class="traco-panel" style="display:none">
+                  <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Pré-Misturado a Frio Tipo I (serviços de conservação e remendos)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                    <div class="form-group"><label>Emulsão RL-1C (%)</label><input type="number" id="pmf-emulsao" value="4.5" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 0 (%)</label><input type="number" id="pmf-brita0" value="50.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pó-de-pedra (%)</label><input type="number" id="pmf-po" value="35.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Areia (%)</label><input type="number" id="pmf-areia" value="8.5" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="pmf-cal" value="2.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="pmf-producao" value="1200" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="pmf-preco-venda" value="480" oninput="calcCusto()" class="co-input"></div>
+                  </div>
+                  <div id="pmf-soma-aviso" style="font-size:11px;margin-top:4px"></div>
+                </div>
+
+                <!-- TSD -->
+                <div id="traco-tsd" class="traco-panel" style="display:none">
+                  <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Tratamento Superficial Duplo (camada de proteção e impermeabilização)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                    <div class="form-group"><label>Emulsão RR-2C (%) — 1ª capa</label><input type="number" id="tsd-emulsao1" value="8.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pedrisco / Brita 0 (%) — 1ª capa</label><input type="number" id="tsd-brita0-1" value="52.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Emulsão RR-2C (%) — 2ª capa</label><input type="number" id="tsd-emulsao2" value="6.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pedrisco / Pó-de-pedra (%) — 2ª capa</label><input type="number" id="tsd-po-2" value="34.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="tsd-producao" value="400" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="tsd-preco-venda" value="520" oninput="calcCusto()" class="co-input"></div>
+                  </div>
+                  <div id="tsd-soma-aviso" style="font-size:11px;margin-top:4px"></div>
+                </div>
+
+                <!-- Microrevestimento -->
+                <div id="traco-micro" class="traco-panel" style="display:none">
+                  <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Microrevestimento Asfáltico a Frio — MRAF (camada delgada de manutenção)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                    <div class="form-group"><label>Emulsão modificada RL-1C (%) </label><input type="number" id="micro-emulsao" value="10.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Areia Graduada (%)</label><input type="number" id="micro-areia" value="62.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pó-de-pedra (%)</label><input type="number" id="micro-po" value="22.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pó Mineral / Calcário (%)</label><input type="number" id="micro-calc" value="3.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="micro-cal" value="1.5" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Água (%)</label><input type="number" id="micro-agua" value="1.5" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="micro-producao" value="200" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="micro-preco-venda" value="900" oninput="calcCusto()" class="co-input"></div>
+                  </div>
+                  <div id="micro-soma-aviso" style="font-size:11px;margin-top:4px"></div>
+                </div>
+
+                <!-- CBUQ CF -->
+                <div id="traco-pavi" class="traco-panel" style="display:none">
+                  <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">CBUQ Camada de Fundação (base asfáltica — substitui base de brita graduada)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                    <div class="form-group"><label>CAP 30/45 (%)</label><input type="number" id="pavi-cap" value="4.8" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 2 (%)</label><input type="number" id="pavi-brita2" value="35.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 1 (%)</label><input type="number" id="pavi-brita1" value="25.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Brita 0 (%)</label><input type="number" id="pavi-brita0" value="15.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Pó-de-pedra (%)</label><input type="number" id="pavi-po" value="18.2" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="pavi-cal" value="1.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Areia (%)</label><input type="number" id="pavi-areia" value="1.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="pavi-producao" value="200" oninput="calcCusto()" class="co-input"></div>
+                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="pavi-preco-venda" value="580" oninput="calcCusto()" class="co-input"></div>
+                  </div>
+                  <div id="pavi-soma-aviso" style="font-size:11px;margin-top:4px"></div>
+                </div>
+              </div>
+            </div>
+          </div><!-- /coluna esquerda -->
+
+          <!-- ═══ COLUNA DIREITA: RESULTADOS ═══ -->
+          <div style="flex:1;min-width:280px;position:sticky;top:16px;display:flex;flex-direction:column;gap:14px">
+
+            <!-- Custo total mensal -->
+            <div class="card" style="border:1px solid #f59e0b44;background:rgba(245,158,11,0.05)">
+              <div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Total Custos / Mês</div>
+              <div id="res-total-mes" style="font-size:26px;font-weight:900;color:#f59e0b">R$ —</div>
+              <div id="res-prod-total" style="font-size:12px;color:#64748b;margin-top:4px"></div>
+            </div>
+
+            <!-- Por produto -->
+            <div id="res-produtos" style="display:flex;flex-direction:column;gap:10px"></div>
+
+            <!-- Ponto de equilíbrio -->
+            <div class="card" style="border:1px solid #a78bfa44;background:rgba(167,139,250,0.05)">
+              <div style="font-size:13px;font-weight:700;color:#a78bfa;margin-bottom:10px">&#9889; Ponto de Equilíbrio Operacional</div>
+              <div id="res-break-even" style="display:flex;flex-direction:column;gap:6px;font-size:13px"></div>
+            </div>
+
+            <!-- Resumo de insumos -->
+            <div class="card" style="border:1px solid #22c55e44;background:rgba(34,197,94,0.04)">
+              <div style="font-size:13px;font-weight:700;color:#22c55e;margin-bottom:10px">&#127981; Consumo Mensal de Insumos</div>
+              <div id="res-insumos" style="display:flex;flex-direction:column;gap:5px;font-size:12px"></div>
+            </div>
+
+            <button class="btn btn-primary" style="padding:12px" onclick="exportarCusto()">&#128196; Exportar / Imprimir Relatório</button>
+          </div>
+        </div><!-- /row -->
+      </div><!-- /page-custo-op -->
 
       <!-- ========== PERDAS OPERACIONAIS ========== -->
       <div id="page-perdas" class="page-content">
@@ -1958,6 +2373,7 @@ function showPage(pageId) {
     dashboard: 'Dashboard',
     producao: 'Produção',
     balanca: 'Balança / Pesagem',
+    'custo-op': 'Custo Operacional',
     perdas: 'Perdas Operacionais',
     laboratorio: 'Controle Tecnológico',
     estoque: 'Estoque da Usina',
@@ -2812,6 +3228,239 @@ function gerarRelManut() {
   document.getElementById('man-resultado').style.display = 'block';
   document.getElementById('man-resultado').scrollIntoView({behavior:'smooth', block:'start'});
 }
+
+// ── CUSTO OPERACIONAL ────────────────────────────────────────────────────
+function toggleCo(id) {
+  var el = document.getElementById(id);
+  var icon = document.getElementById(id + '-icon');
+  if (!el) return;
+  var open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (icon) icon.innerHTML = open ? '&#9654;' : '&#9660;';
+}
+
+function showTraco(name) {
+  var panels = document.querySelectorAll('.traco-panel');
+  panels.forEach(function(p) { p.style.display = 'none'; });
+  var btns = document.querySelectorAll('.co-tab-btn');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('traco-' + name).style.display = 'block';
+  document.getElementById('tab-btn-' + name).classList.add('active');
+}
+
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function fmt(n) { return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtK(n) { return 'R$ ' + (n/1000).toFixed(1) + 'k'; }
+
+var PRODUTOS = [
+  { id:'bc',    nome:'CBUQ BC',             cor:'#f59e0b',
+    insumos: function(p) {
+      return v('bc-cap')/100*v('co-preco-cap') + v('bc-brita0')/100*v('co-preco-brita0') +
+             v('bc-brita1')/100*v('co-preco-brita1') + v('bc-brita2')/100*v('co-preco-brita2') +
+             v('bc-po')/100*v('co-preco-po') + v('bc-cal')/100*v('co-preco-cal') +
+             v('bc-areia')/100*v('co-preco-areia'); },
+    soma: function() { return v('bc-cap')+v('bc-brita1')+v('bc-brita2')+v('bc-brita0')+v('bc-po')+v('bc-cal')+v('bc-areia'); },
+    prod: function() { return v('bc-producao'); },
+    venda: function() { return v('bc-preco-venda'); }
+  },
+  { id:'cr',    nome:'CBUQ CR',             cor:'#60a5fa',
+    insumos: function(p) {
+      return v('cr-cap')/100*v('co-preco-cap') + v('cr-brita0')/100*v('co-preco-brita0') +
+             v('cr-brita1')/100*v('co-preco-brita1') + v('cr-brita2')/100*v('co-preco-brita2') +
+             v('cr-po')/100*v('co-preco-po') + v('cr-cal')/100*v('co-preco-cal') +
+             v('cr-areia')/100*v('co-preco-areia'); },
+    soma: function() { return v('cr-cap')+v('cr-brita0')+v('cr-brita1')+v('cr-brita2')+v('cr-po')+v('cr-cal')+v('cr-areia'); },
+    prod: function() { return v('cr-producao'); },
+    venda: function() { return v('cr-preco-venda'); }
+  },
+  { id:'pmf',   nome:'PMF I',               cor:'#22c55e',
+    insumos: function(p) {
+      return v('pmf-emulsao')/100*v('co-preco-emulsao') + v('pmf-brita0')/100*v('co-preco-brita0') +
+             v('pmf-po')/100*v('co-preco-po') + v('pmf-areia')/100*v('co-preco-areia') +
+             v('pmf-cal')/100*v('co-preco-cal'); },
+    soma: function() { return v('pmf-emulsao')+v('pmf-brita0')+v('pmf-po')+v('pmf-areia')+v('pmf-cal'); },
+    prod: function() { return v('pmf-producao'); },
+    venda: function() { return v('pmf-preco-venda'); }
+  },
+  { id:'tsd',   nome:'TSD',                 cor:'#fb923c',
+    insumos: function(p) {
+      return (v('tsd-emulsao1')+v('tsd-emulsao2'))/100*v('co-preco-emulsao') +
+             v('tsd-brita0-1')/100*v('co-preco-brita0') + v('tsd-po-2')/100*v('co-preco-po'); },
+    soma: function() { return v('tsd-emulsao1')+v('tsd-brita0-1')+v('tsd-emulsao2')+v('tsd-po-2'); },
+    prod: function() { return v('tsd-producao'); },
+    venda: function() { return v('tsd-preco-venda'); }
+  },
+  { id:'micro', nome:'Microrevestimento',   cor:'#f472b6',
+    insumos: function(p) {
+      return v('micro-emulsao')/100*v('co-preco-emulsao') + v('micro-areia')/100*v('co-preco-areia') +
+             v('micro-po')/100*v('co-preco-po') + v('micro-calc')/100*v('co-preco-calc') +
+             v('micro-cal')/100*v('co-preco-cal'); },
+    soma: function() { return v('micro-emulsao')+v('micro-areia')+v('micro-po')+v('micro-calc')+v('micro-cal')+v('micro-agua'); },
+    prod: function() { return v('micro-producao'); },
+    venda: function() { return v('micro-preco-venda'); }
+  },
+  { id:'pavi',  nome:'CBUQ CF',             cor:'#94a3b8',
+    insumos: function(p) {
+      return v('pavi-cap')/100*v('co-preco-cap30') + v('pavi-brita0')/100*v('co-preco-brita0') +
+             v('pavi-brita1')/100*v('co-preco-brita1') + v('pavi-brita2')/100*v('co-preco-brita2') +
+             v('pavi-po')/100*v('co-preco-po') + v('pavi-cal')/100*v('co-preco-cal') +
+             v('pavi-areia')/100*v('co-preco-areia'); },
+    soma: function() { return v('pavi-cap')+v('pavi-brita2')+v('pavi-brita1')+v('pavi-brita0')+v('pavi-po')+v('pavi-cal')+v('pavi-areia'); },
+    prod: function() { return v('pavi-producao'); },
+    venda: function() { return v('pavi-preco-venda'); }
+  }
+];
+
+function calcCusto() {
+  // Custos fixos
+  var fixo = v('co-folha') + v('co-encargos') + v('co-aluguel') + v('co-deprec') +
+             v('co-en-fixa') + v('co-manut') + v('co-seguros') + v('co-locacao') + v('co-outros-fixos');
+  var prodTotal = v('co-prod-total') || 1;
+
+  document.getElementById('co-total-fixo').textContent = fmt(fixo);
+  document.getElementById('co-fixo-por-ton').textContent = fmt(fixo / prodTotal) + '/ton';
+
+  // Carga tributária
+  var cargaTrib = v('co-pis') + v('co-cofins') + v('co-iss') + v('co-icms') + v('co-irpj') + v('co-csll');
+  document.getElementById('co-carga-total').textContent = cargaTrib.toFixed(2).replace('.',',') + '%';
+
+  // Combustíveis/utilidades por ton
+  var custoDiesel = v('co-diesel-lton') * v('co-diesel-preco');
+  var custoBPF    = v('co-bpf-lton')   * v('co-bpf-preco');
+  var custoEn     = v('co-en-kwh')     * v('co-en-tarifa');
+  document.getElementById('co-diesel-resultado').textContent = fmt(custoDiesel);
+  document.getElementById('co-bpf-resultado').textContent    = fmt(custoBPF);
+  document.getElementById('co-en-resultado').textContent     = fmt(custoEn);
+  var custoUtil = custoDiesel + custoBPF + custoEn;
+
+  // Calcular prod total a partir dos traços
+  var prodSoma = PRODUTOS.reduce(function(s,p){ return s + p.prod(); }, 0);
+
+  // Somas de traços e avisos
+  PRODUTOS.forEach(function(p) {
+    var avEl = document.getElementById(p.id + '-soma-aviso');
+    if (avEl) {
+      var soma = p.soma();
+      var diff = Math.abs(soma - 100);
+      if (diff > 0.1) {
+        avEl.innerHTML = '<span style="color:#ef4444">&#9888; Soma dos componentes: ' + soma.toFixed(1) + '% (diferença de ' + (soma-100).toFixed(1) + '% em relação a 100%)</span>';
+      } else {
+        avEl.innerHTML = '<span style="color:#22c55e">&#10003; Soma: ' + soma.toFixed(1) + '% — OK</span>';
+      }
+    }
+  });
+
+  // Rateio de fixos por produto (proporcional à produção)
+  var totalFixoRateado = fixo;
+
+  // Resultados por produto
+  var resProdEl = document.getElementById('res-produtos');
+  resProdEl.innerHTML = '';
+  var totalReceitaMes = 0, totalCustoMes = 0;
+  var breakEvenLinhas = '';
+
+  // Consumo de insumos agregados
+  var totalCap=0, totalBrita0=0, totalBrita1=0, totalBrita2=0,
+      totalPo=0, totalAreia=0, totalCal=0, totalEmulsao=0;
+
+  PRODUTOS.forEach(function(p) {
+    var prod = p.prod();
+    if (prod <= 0) return;
+
+    var custoInsumo = p.insumos();
+    var fixoRateado = (prod / (prodSoma || 1)) * totalFixoRateado / (prod || 1);
+    var custoVariavel = custoInsumo + custoUtil;
+    var custoBase = custoVariavel + fixoRateado;
+    var precoV = p.venda();
+    var custoTrib = precoV * cargaTrib / 100;
+    var custoTotal = custoBase + custoTrib;
+    var margem = precoV > 0 ? ((precoV - custoTotal) / precoV * 100) : 0;
+    var mc = precoV > 0 ? ((precoV - custoVariavel - custoTrib) / precoV * 100) : 0;
+    var receitaMes = prod * precoV;
+    var custoMes   = prod * custoTotal;
+    totalReceitaMes += receitaMes;
+    totalCustoMes   += custoMes;
+
+    var corMargem = margem >= 20 ? '#22c55e' : margem >= 10 ? '#f59e0b' : '#ef4444';
+    var corMC = mc >= 30 ? '#22c55e' : mc >= 15 ? '#f59e0b' : '#ef4444';
+
+    // Ponto de equilíbrio deste produto
+    var cvUnit = custoVariavel + custoTrib;
+    var fixoUnit = fixoRateado;
+    var peq = cvUnit < precoV ? fixoUnit * prod / (precoV - cvUnit) : Infinity;
+    breakEvenLinhas += '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;border-bottom:1px solid #1e3a5f">' +
+      '<span style="color:#94a3b8">' + p.nome + '</span>' +
+      '<span style="color:#a78bfa;font-weight:700">' + (isFinite(peq) ? peq.toFixed(0) + ' ton' : 'inviável') + '</span></div>';
+
+    // Consumo de insumos (aproximado)
+    totalCap      += prod * v(p.id === 'pavi' ? 'pavi-cap' : (p.id + '-cap'))  / 100 * (p.id === 'pmf'||p.id === 'tsd'||p.id === 'micro' ? 0 : 1);
+    totalEmulsao  += prod * (p.id === 'pmf' ? v('pmf-emulsao') : p.id === 'tsd' ? v('tsd-emulsao1')+v('tsd-emulsao2') : p.id === 'micro' ? v('micro-emulsao') : 0) / 100;
+
+    resProdEl.innerHTML += '<div class="res-prod-card" style="border-left:3px solid ' + p.cor + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+        '<div style="font-weight:700;font-size:14px;color:' + p.cor + '">' + p.nome + '</div>' +
+        '<div style="font-size:11px;color:#64748b">' + prod.toLocaleString('pt-BR') + ' ton/mês</div>' +
+      '</div>' +
+      '<div class="res-linha"><span style="color:#94a3b8">Custo insumos/ton</span><span>' + fmt(custoInsumo) + '</span></div>' +
+      '<div class="res-linha"><span style="color:#94a3b8">Combustíveis/ton</span><span>' + fmt(custoUtil) + '</span></div>' +
+      '<div class="res-linha"><span style="color:#94a3b8">Custo fixo rateado/ton</span><span>' + fmt(fixoRateado) + '</span></div>' +
+      '<div class="res-linha"><span style="color:#94a3b8">Tributos/ton</span><span>' + fmt(custoTrib) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-weight:700;border-bottom:1px solid #1e3a5f">' +
+        '<span>Custo Total / ton</span><span style="color:#ef4444">' + fmt(custoTotal) + '</span>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">' +
+        '<span style="color:#94a3b8">Preço de venda / ton</span><span style="font-weight:700">' + fmt(precoV) + '</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">' +
+        '<div style="flex:1;background:rgba(34,197,94,0.08);border-radius:6px;padding:8px;text-align:center">' +
+          '<div style="font-size:10px;color:#64748b">Margem Bruta</div>' +
+          '<div style="font-size:18px;font-weight:800;color:' + corMargem + '">' + margem.toFixed(1) + '%</div>' +
+        '</div>' +
+        '<div style="flex:1;background:rgba(167,139,250,0.08);border-radius:6px;padding:8px;text-align:center">' +
+          '<div style="font-size:10px;color:#64748b">Margem Contrib.</div>' +
+          '<div style="font-size:18px;font-weight:800;color:' + corMC + '">' + mc.toFixed(1) + '%</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="margin-top:8px;display:flex;justify-content:space-between;font-size:12px;color:#64748b">' +
+        '<span>Receita mês</span><span style="color:#22c55e;font-weight:600">' + fmtK(receitaMes) + '</span>' +
+        '<span style="margin-left:12px">Custo mês</span><span style="color:#ef4444;font-weight:600">' + fmtK(custoMes) + '</span>' +
+      '</div>' +
+    '</div>';
+  });
+
+  // Resultado total
+  var margemGeral = totalReceitaMes > 0 ? ((totalReceitaMes - totalCustoMes) / totalReceitaMes * 100) : 0;
+  document.getElementById('res-total-mes').textContent = fmt(totalCustoMes);
+  document.getElementById('res-prod-total').innerHTML =
+    'Receita prevista: <strong style="color:#22c55e">' + fmt(totalReceitaMes) + '</strong> — ' +
+    'Resultado: <strong style="color:' + (margemGeral>=0?'#22c55e':'#ef4444') + '">' + fmt(totalReceitaMes - totalCustoMes) + '</strong>' +
+    ' (' + margemGeral.toFixed(1) + '%)';
+
+  document.getElementById('res-break-even').innerHTML = breakEvenLinhas;
+
+  // Resumo insumos
+  var custoCapTon = v('co-preco-cap');
+  document.getElementById('res-insumos').innerHTML =
+    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Diesel S-10</span><span>' + (prodSoma * v('co-diesel-lton')).toFixed(0) + ' L</span></div>' +
+    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Óleo BPF</span><span>' + (prodSoma * v('co-bpf-lton')).toFixed(0) + ' L</span></div>' +
+    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Energia elétrica</span><span>' + (prodSoma * v('co-en-kwh')).toFixed(0) + ' kWh</span></div>' +
+    '<div style="display:flex;justify-content:space-between;border-top:1px solid #1e3a5f;padding-top:4px;margin-top:4px"><span style="color:#94a3b8">Produção total prevista</span><span style="font-weight:700">' + prodSoma.toLocaleString('pt-BR') + ' ton</span></div>';
+}
+
+function exportarCusto() { window.print(); }
+
+// Registrar página no showPage
+var _origShowPage = showPage;
+showPage = function(page) {
+  _origShowPage(page);
+  if (page === 'custo-op') { setTimeout(calcCusto, 50); }
+};
+
+// Inicializar na carga
+document.addEventListener('DOMContentLoaded', function() {
+  calcCusto();
+});
+
 </script>
 </body>
 </html>
