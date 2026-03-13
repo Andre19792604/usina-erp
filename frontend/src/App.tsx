@@ -21,6 +21,7 @@ import MaterialsPage from './pages/MaterialsPage'
 import VehiclesPage from './pages/VehiclesPage'
 import UsersPage from './pages/UsersPage'
 import NfePage from './pages/NfePage'
+import CustoOperacionalPage from './pages/CustoOperacionalPage'
 
 function PrivateRoute({ children }: { children: React.ReactElement }) {
   const { isAuthenticated, loading } = useAuth()
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Route path="estoque" element={<StockPage />} />
         <Route path="estoque-clientes" element={<ClientStockPage />} />
         <Route path="perdas" element={<LossPage />} />
+        <Route path="custo-operacional" element={<CustoOperacionalPage />} />
         <Route path="laboratorio" element={<LabTestPage />} />
         <Route path="vendas" element={<SalesPage />} />
         <Route path="compras" element={<PurchasePage />} />

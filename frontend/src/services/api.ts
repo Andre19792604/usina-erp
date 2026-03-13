@@ -176,3 +176,19 @@ export const userService = {
   update: (id: string, data: any) => api.put(`/users/${id}`, data).then(r => r.data),
   remove: (id: string) => api.delete(`/users/${id}`).then(r => r.data),
 }
+
+// ── Custo Operacional ─────────────────────────────────────────
+export const custoOpService = {
+  list: () =>
+    api.get('/custo-operacional').then(r => r.data),
+  getOrCreateMes: (ano: number, mes: number) =>
+    api.get(`/custo-operacional/mes/${ano}/${mes}`).then(r => r.data),
+  getById: (id: string) =>
+    api.get(`/custo-operacional/${id}`).then(r => r.data),
+  calcular: (id: string) =>
+    api.get(`/custo-operacional/${id}/calcular`).then(r => r.data),
+  create: (data: any) =>
+    api.post('/custo-operacional', data).then(r => r.data),
+  update: (id: string, data: any) =>
+    api.put(`/custo-operacional/${id}`, data).then(r => r.data),
+}

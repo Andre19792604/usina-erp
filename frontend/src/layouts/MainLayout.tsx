@@ -32,6 +32,7 @@ const menuItems: MenuProps['items'] = [
       { key: '/producao', icon: <ExperimentOutlined />, label: 'Produção' },
       { key: '/balanca', icon: <BarChartOutlined />, label: 'Balança / Pesagem' },
       { key: '/perdas', icon: <AlertOutlined />, label: 'Perdas Operacionais' },
+      { key: '/custo-operacional', icon: <BarChartOutlined />, label: 'Custo Operacional' },
       { key: '/laboratorio', icon: <FileTextOutlined />, label: 'Controle Tecnológico' },
     ],
   },

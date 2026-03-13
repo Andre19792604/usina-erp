@@ -65,6 +65,7 @@ model Client {
   quotes       Quote[]
   contracts    Contract[]
   invoices     Invoice[]
+  clientStocks ClientStock[]
 
   @@map("clients")
 }
@@ -187,6 +188,7 @@ model Material {
   stockMovements    StockMovement[]
   formulaItems      FormulaItem[]
   purchaseOrderItems PurchaseOrderItem[]
+  clientStocks       ClientStock[]
 
   @@map("materials")
 }
@@ -213,10 +215,11 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  formulas        Formula[]
-  salesOrderItems SalesOrderItem[]
-  quoteItems      QuoteItem[]
+  formulas         Formula[]
+  salesOrderItems  SalesOrderItem[]
+  quoteItems       QuoteItem[]
   productionOrders ProductionOrder[]
+  labTests         LabTest[]
 
   @@map("products")
 }
@@ -284,8 +287,11 @@ model ProductionOrder {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  qualityControls QualityControl[]
-  stockMovements  StockMovement[]
+  qualityControls   QualityControl[]
+  stockMovements    StockMovement[]
+  operationalLosses OperationalLoss[]
+  labTests          LabTest[]
+  mx3000Readings    Mx3000Reading[]
 
   @@map("production_orders")
 }
@@ -542,7 +548,8 @@ model SalesOrder {
   productionOrders ProductionOrder[]
   weightTickets    WeightTicket[]
   invoices         Invoice[]
-  accountsReceivable AccountReceivable[]
+  accountsReceivable      AccountReceivable[]
+  clientStockMovements    ClientStockMovement[]
 
   @@map("sales_orders")
 }
@@ -824,4 +831,80 @@ model Mx3000Reading {
   readAt              DateTime @default(now())
 
   @@map("mx3000_readings")
+}
+
+// ─── CUSTO OPERACIONAL ───────────────────────────────────────
+
+enum RegimeTrib {
+  PRESUMIDO
+  REAL
+  SIMPLES
+}
+
+enum TipoFornecimento {
+  COMPLETO       // CAP + agregados + BPF
+  SEM_CAP        // cliente fornece o CAP/emulsão
+  SEM_CAP_PEDRA  // cliente fornece CAP e agregados
+  SO_USINAGEM    // só usinagem (cliente fornece tudo)
+}
+
+model CustoOpConfig {
+  id              String    @id @default(cuid())
+  mesReferencia   DateTime  // 1º dia do mês — único por mês
+  regimeTrib      RegimeTrib @default(PRESUMIDO)
+  prodPrevistaTon Decimal   @db.Decimal(10, 2)
+  diasOperacao    Int       @default(22)
+  horasPorDia     Int       @default(8)
+
+  // Custos fixos mensais (R$)
+  folhaSalarial   Decimal   @default(0) @db.Decimal(14, 2)
+  encargos        Decimal   @default(0) @db.Decimal(14, 2)
+  aluguel         Decimal   @default(0) @db.Decimal(14, 2)
+  depreciacao     Decimal   @default(0) @db.Decimal(14, 2)
+  energiaFixa     Decimal   @default(0) @db.Decimal(14, 2)
+  manutencao      Decimal   @default(0) @db.Decimal(14, 2)
+  seguros         Decimal   @default(0) @db.Decimal(14, 2)
+  locacaoEquip    Decimal   @default(0) @db.Decimal(14, 2)
+  outrosFixos     Decimal   @default(0) @db.Decimal(14, 2)
+
+  // Carga tributária (% sobre receita bruta)
+  pis             Decimal   @default(1.65)  @db.Decimal(6, 4)
+  cofins          Decimal   @default(7.60)  @db.Decimal(6, 4)
+  iss             Decimal   @default(0)     @db.Decimal(6, 4)
+  icms            Decimal   @default(12.00) @db.Decimal(6, 4)
+  irpj            Decimal   @default(4.80)  @db.Decimal(6, 4)
+  csll            Decimal   @default(2.88)  @db.Decimal(6, 4)
+
+  // Combustíveis e utilidades
+  dieselLTon      Decimal   @default(3.2)   @db.Decimal(8, 4)
+  dieselPreco     Decimal   @default(6.40)  @db.Decimal(8, 4)
+  bpfLTon         Decimal   @default(4.5)   @db.Decimal(8, 4)
+  bpfPreco        Decimal   @default(3.80)  @db.Decimal(8, 4)
+  energiaKwhTon   Decimal   @default(9.8)   @db.Decimal(8, 4)
+  energiaTarifa   Decimal   @default(0.775) @db.Decimal(8, 4)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  previsoes       CustoOpPrevisao[]
+
+  @@unique([mesReferencia])
+  @@map("custo_op_configs")
+}
+
+model CustoOpPrevisao {
+  id            String        @id @default(cuid())
+  configId      String
+  config        CustoOpConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+  tipoProduto   MixtureType
+  producaoTon   Decimal       @default(0) @db.Decimal(10, 2)
+
+  // Preços de venda por modo de fornecimento (R$/ton)
+  precoVendaC   Decimal?      @db.Decimal(10, 2)  // Fornecimento Completo
+  precoVendaSc  Decimal?      @db.Decimal(10, 2)  // Sem CAP
+  precoVendaSp  Decimal?      @db.Decimal(10, 2)  // Sem CAP + Pedra
+  precoVendaSb  Decimal?      @db.Decimal(10, 2)  // Só Usinagem
+
+  @@unique([configId, tipoProduto])
+  @@map("custo_op_previsoes")
 }

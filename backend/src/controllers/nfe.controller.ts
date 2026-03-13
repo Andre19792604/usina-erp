@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { prisma } from '../lib/prisma'
+import { prisma } from '../utils/prisma'
 
 // NF-e status lifecycle: PENDENTE → EMITIDA → CANCELADA | DENEGADA
 // This controller manages the Invoice model (NF-e records) linked to SalesOrders

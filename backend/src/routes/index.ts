@@ -14,6 +14,7 @@ import * as products from '../controllers/products.controller'
 import * as vehicles from '../controllers/vehicles.controller'
 import * as maintenance from '../controllers/maintenance.controller'
 import * as nfe from '../controllers/nfe.controller'
+import * as custoOp from '../controllers/custo-operacional.controller'
 
 export const router = Router()
 
@@ -121,3 +122,11 @@ router.get('/nfe/:id/xml', authenticate, nfe.getXml)
 router.post('/nfe', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO', 'VENDAS'), nfe.create)
 router.post('/nfe/import-xml', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), nfe.importXml)
 router.put('/nfe/:id/status', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), nfe.updateStatus)
+
+// ── Custo Operacional ─────────────────────────────────────────
+router.get('/custo-operacional', authenticate, custoOp.list)
+router.get('/custo-operacional/mes/:ano/:mes', authenticate, custoOp.getOrCreateMes)
+router.get('/custo-operacional/:id', authenticate, custoOp.getById)
+router.get('/custo-operacional/:id/calcular', authenticate, custoOp.calcular)
+router.post('/custo-operacional', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), custoOp.create)
+router.put('/custo-operacional/:id', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), custoOp.update)
