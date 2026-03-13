@@ -306,6 +306,9 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
       <div class="menu-item" data-page="veiculos" onclick="showPage('veiculos')">
         <span class="menu-icon">&#128667;</span> Veículos
       </div>
+      <div class="menu-item" data-page="relatorios" onclick="showPage('relatorios')">
+        <span class="menu-icon">&#128202;</span> Relatórios
+      </div>
       <div class="menu-item" data-page="usuarios" onclick="showPage('usuarios')">
         <span class="menu-icon">&#128100;</span> Usuários
       </div>
@@ -1585,6 +1588,86 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
       </div>
 
       <!-- ========== USUÁRIOS ========== -->
+      <div id="page-relatorios" class="page-content">
+        <div class="page-header">
+          <div class="page-title">Relatórios</div>
+          <div class="page-subtitle">Relatórios de produção e estoque por cliente</div>
+        </div>
+        <!-- Filtros -->
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-title-lg" style="margin-bottom:14px">Gerar Relatório de Produção e Estoque por Cliente</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px">
+            <div class="form-group">
+              <label>Cliente</label>
+              <select id="rel2-cliente" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                <option value="">— Selecione o cliente —</option>
+                <option value="prefeitura">Prefeitura Municipal SP</option>
+                <option value="rodovias">Rodovias do Brasil S.A.</option>
+                <option value="abc">Construtora ABC Ltda</option>
+                <option value="rapida">Engenharia Rápida ME</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Data Início</label>
+              <input type="date" id="rel2-dt-ini" value="2026-03-01" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+            </div>
+            <div class="form-group">
+              <label>Data Fim</label>
+              <input type="date" id="rel2-dt-fim" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+            </div>
+            <div class="form-group" style="align-self:flex-end">
+              <button class="btn btn-primary" style="width:100%;padding:11px" onclick="gerarRelatorio2()">&#128202; Gerar Relatório</button>
+            </div>
+          </div>
+        </div>
+        <!-- Resultado -->
+        <div id="rel2-resultado" style="display:none">
+          <div class="card" style="margin-bottom:16px;border:1px solid #1e3a5f">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+              <div>
+                <div style="font-size:20px;font-weight:800;color:#f59e0b">USINA ERP</div>
+                <div style="font-size:16px;font-weight:700;color:#e2e8f0;margin-top:4px">Relatório de Produção e Estoque</div>
+                <div id="rel2-nome-cli" style="font-size:13px;color:#94a3b8;margin-top:2px"></div>
+                <div id="rel2-periodo" style="font-size:12px;color:#64748b;margin-top:2px"></div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-outline" onclick="window.print()">&#128424; Imprimir</button>
+                <button class="btn btn-primary" onclick="window.print()">&#128196; Gerar PDF</button>
+              </div>
+            </div>
+            <div class="kpi-row" id="rel2-kpis" style="margin-bottom:0"></div>
+          </div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title-lg" style="margin-bottom:14px">Materiais Contratados — Saldo Pedido e Estoque</div>
+            <div class="table-wrap">
+              <table id="rel2-tab-materiais" style="font-size:13px">
+                <tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>
+              </table>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title-lg" style="margin-bottom:14px">Produção por Tipo de Material</div>
+            <div class="table-wrap">
+              <table id="rel2-tab-producao" style="font-size:13px">
+                <tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title-lg" style="margin-bottom:14px">Movimentações — Entradas e Saídas de Material</div>
+            <div class="table-wrap">
+              <table id="rel2-tab-mov" style="font-size:13px">
+                <tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>
+              </table>
+            </div>
+            <div id="rel2-totais" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+          </div>
+        </div>
+        <div id="rel2-vazio" style="text-align:center;padding:48px;color:#475569">
+          <div style="font-size:40px;margin-bottom:12px">&#128202;</div>
+          <div style="font-size:16px;font-weight:600;color:#64748b">Selecione um cliente e o período para gerar o relatório</div>
+        </div>
+      </div>
       <div id="page-usuarios" class="page-content">
         <div class="page-header">
           <div class="page-title">Usuários</div>
@@ -1674,7 +1757,8 @@ function showPage(pageId) {
     fornecedores: 'Fornecedores',
     materiais: 'Materiais',
     veiculos: 'Veículos',
-    usuarios: 'Usuários'
+    usuarios: 'Usuários',
+    relatorios: 'Relatórios'
   };
   var titleEl = document.getElementById('current-page-title');
   if (titleEl) titleEl.textContent = titles[pageId] || pageId;
@@ -2261,6 +2345,56 @@ function imprimirRelatorio() {
 window.onload = function() {
   simulate();
 };
+
+function gerarRelatorio2() {
+  var cliVal = document.getElementById('rel2-cliente').value;
+  var dtIni  = document.getElementById('rel2-dt-ini').value;
+  var dtFim  = document.getElementById('rel2-dt-fim').value;
+  if (!cliVal) { alert('Selecione um cliente'); return; }
+  var dados = dadosClientes[cliVal];
+  if (!dados) return;
+
+  document.getElementById('rel2-nome-cli').textContent = 'Cliente: ' + dados.nome;
+  document.getElementById('rel2-periodo').textContent = 'Período: ' + dtIni + ' a ' + dtFim;
+
+  var kpisEl = document.getElementById('rel2-kpis');
+  kpisEl.innerHTML =
+    '<div class="kpi-card"><div class="kpi-label">Total Pedido</div><div class="kpi-value" style="color:#60a5fa">' + dados.totalPedido + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Total Produzido</div><div class="kpi-value" style="color:#22c55e">' + dados.totalProduzido + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Saldo do Pedido</div><div class="kpi-value" style="color:#f59e0b">' + dados.saldoPedido + '</div></div>';
+
+  var tabMat = document.getElementById('rel2-tab-materiais');
+  tabMat.innerHTML = '<tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>';
+  dados.materiais.forEach(function(m) {
+    var cor = m.status === 'OK' ? '#22c55e' : m.status === 'Atenção' ? '#f59e0b' : '#ef4444';
+    tabMat.innerHTML += '<tr><td>' + m.mat + '</td><td>' + m.tipo + '</td><td>' + m.por + '</td><td>' + m.contratado + '</td><td>' + m.consumido + '</td><td>' + m.saldoPed + '</td><td>' + m.saldoEst + '</td><td>' + m.pct + '</td><td style="color:' + cor + ';font-weight:700">' + m.status + '</td></tr>';
+  });
+
+  var tabProd = document.getElementById('rel2-tab-producao');
+  tabProd.innerHTML = '<tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>';
+  dados.producao.forEach(function(p) {
+    tabProd.innerHTML += '<tr><td>' + p.data + '</td><td>' + p.op + '</td><td>' + p.produto + '</td><td>' + p.qtd + '</td><td>' + p.cap + '</td><td>' + p.temp + '</td><td>' + p.resp + '</td></tr>';
+  });
+
+  var tabMov = document.getElementById('rel2-tab-mov');
+  tabMov.innerHTML = '<tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>';
+  dados.movimentacoes.forEach(function(mv) {
+    var cor = mv.tipo === 'Entrada' ? '#22c55e' : '#f59e0b';
+    tabMov.innerHTML += '<tr><td>' + mv.data + '</td><td>' + mv.hora + '</td><td>' + mv.placa + '</td><td>' + mv.motorista + '</td><td style="color:' + cor + ';font-weight:600">' + mv.tipo + '</td><td>' + mv.material + '</td><td>' + mv.qtd + '</td><td>' + mv.doc + '</td><td>' + mv.operador + '</td></tr>';
+  });
+
+  var totalEnt = 0, totalSai = 0;
+  dados.movimentacoes.forEach(function(mv) {
+    var n = parseFloat(mv.qtd.replace(/[^\d,]/g,'').replace(',','.')) || 0;
+    if (mv.tipo === 'Entrada') totalEnt += n; else totalSai += n;
+  });
+  document.getElementById('rel2-totais').innerHTML =
+    '<span style="color:#22c55e;font-weight:700">Total Entradas: ' + totalEnt.toFixed(1) + ' ton</span>' +
+    '<span style="color:#f59e0b;font-weight:700">Total Saídas: ' + totalSai.toFixed(1) + ' ton</span>';
+
+  document.getElementById('rel2-vazio').style.display = 'none';
+  document.getElementById('rel2-resultado').style.display = 'block';
+}
 </script>
 </body>
 </html>
