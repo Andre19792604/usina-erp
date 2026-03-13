@@ -664,6 +664,27 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
               <div id="m-res-badge" style="font-size:14px"></div>
             </div>
           </div>
+          <!-- ── Pré-visualização gráfica ── -->
+          <div id="m-chart-section" style="display:none;margin-bottom:16px">
+            <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Pré-visualização Gráfica — Ensaio Marshall</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <!-- Radar / Spider chart -->
+              <div style="flex:0 0 auto;background:#0a0f1a;border:1px solid #1e3a5f;border-radius:8px;padding:16px;text-align:center">
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Diagrama Marshall</div>
+                <canvas id="m-radar" width="260" height="250"></canvas>
+                <div style="display:flex;gap:14px;justify-content:center;margin-top:8px;font-size:11px;color:#64748b">
+                  <span><span style="display:inline-block;width:12px;height:3px;background:rgba(34,197,94,0.5);vertical-align:middle;margin-right:4px"></span>Zona ideal</span>
+                  <span id="m-radar-legend-color" style="color:#64748b"><span id="m-radar-legend-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#64748b;vertical-align:middle;margin-right:4px"></span>Resultado</span>
+                </div>
+              </div>
+              <!-- Gauge bars -->
+              <div style="flex:1;min-width:260px;background:#0a0f1a;border:1px solid #1e3a5f;border-radius:8px;padding:16px">
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:14px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Parâmetros vs Limites Normativos</div>
+                <div id="m-gauges" style="display:flex;flex-direction:column;gap:14px"></div>
+              </div>
+            </div>
+          </div>
+
           <div style="display:flex;gap:12px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="salvarEnsaio()">&#10003; Salvar Ensaio</button>
             <button class="btn btn-outline" onclick="gerarPDFLab()">&#128196; Gerar PDF do Controle</button>
@@ -1752,7 +1773,7 @@ function calcMarshall() {
   var flu   = parseFloat(document.getElementById('m-flu').value)   || 0;
   if (!gmb || !gmm) return;
   var vv  = (1 - gmb / gmm) * 100;
-  var Gse = 2.65; // densidade efetiva dos agregados (típico)
+  var Gse = 2.65;
   var vam = (1 - (gmb * (1 - cap / 100)) / Gse) * 100;
   var rbv = vam > 0 ? ((vam - vv) / vam) * 100 : 0;
   var vvOk    = vv >= 3 && vv <= 5;
@@ -1767,6 +1788,163 @@ function calcMarshall() {
   document.getElementById('m-res-badge').innerHTML = ok
     ? '<span class="badge badge-green" style="font-size:14px;padding:6px 14px">APROVADO</span>'
     : '<span class="badge badge-red" style="font-size:14px;padding:6px 14px">REPROVADO</span>';
+  // Atualiza gráficos
+  updateMarshallCharts(vv, vam, rbv, estab, flu, vvOk, vamOk, rbvOk, estabOk, fluOk, ok);
+}
+
+// ── GRÁFICOS MARSHALL ────────────────────────────────────────
+function updateMarshallCharts(vv, vam, rbv, estab, flu, vvOk, vamOk, rbvOk, estabOk, fluOk, ok) {
+  document.getElementById('m-chart-section').style.display = 'block';
+  var clr = ok ? '#22c55e' : '#ef4444';
+  var leg = document.getElementById('m-radar-legend-dot');
+  if (leg) { leg.style.background = clr; }
+  drawMarshallRadar(vv, vam, rbv, estab, flu, ok);
+  drawMarshallGauges(vv, vam, rbv, estab, flu, vvOk, vamOk, rbvOk, estabOk, fluOk);
+}
+
+function drawMarshallRadar(vv, vam, rbv, estab, flu, allOk) {
+  var canvas = document.getElementById('m-radar');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var cx = W / 2, cy = H / 2 + 8;
+  var R  = Math.min(W, H) / 2 - 40;
+  var N  = 5;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Angles: start from top (-90°), clockwise
+  var angles = [];
+  for (var i = 0; i < N; i++) angles.push((2 * Math.PI * i / N) - Math.PI / 2);
+
+  var labels    = ['VV', 'VAM', 'RBV', 'Estab.', 'Fluênc.'];
+  var sublabels = ['3–5%', '≥15%', '65–75%', '≥500', '2–4,5mm'];
+
+  // Normalize 0-1 against practical range per axis
+  var norms = [
+    Math.min(Math.max(vv  / 10,          0), 1),
+    Math.min(Math.max(vam / 25,          0), 1),
+    Math.min(Math.max((rbv  - 50) / 50,  0), 1),
+    Math.min(Math.max(estab / 1500,      0), 1),
+    Math.min(Math.max(flu  / 8,          0), 1)
+  ];
+
+  // Ideal zone min/max (normalized)
+  var refMin = [3/10,  15/25, (65-50)/50, 500/1500,  2/8  ];
+  var refMax = [5/10,  1,     (75-50)/50, 1,          4.5/8];
+
+  // ── Grid rings ──
+  [0.25, 0.5, 0.75, 1.0].forEach(function(ring) {
+    ctx.beginPath();
+    for (var i = 0; i <= N; i++) {
+      var a = angles[i % N];
+      var x = cx + Math.cos(a) * R * ring;
+      var y = cy + Math.sin(a) * R * ring;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = ring === 1.0 ? '#2d4a6a' : '#162032';
+    ctx.lineWidth   = ring === 1.0 ? 1.5 : 0.8;
+    ctx.stroke();
+    ctx.font = '9px Arial'; ctx.fillStyle = '#334155'; ctx.textAlign = 'left';
+    ctx.fillText((ring * 100 | 0) + '%', cx + 3, cy - R * ring + 4);
+  });
+
+  // ── Axis lines ──
+  for (var i = 0; i < N; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(angles[i]) * R, cy + Math.sin(angles[i]) * R);
+    ctx.strokeStyle = '#2d4a6a'; ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // ── Ideal zone (min polygon filled, max polygon outline) ──
+  function drawPoly(rArr, fill, stroke, dash, lw) {
+    ctx.beginPath();
+    for (var i = 0; i <= N; i++) {
+      var idx = i % N;
+      var x = cx + Math.cos(angles[idx]) * R * rArr[idx];
+      var y = cy + Math.sin(angles[idx]) * R * rArr[idx];
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    if (fill)   { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) {
+      ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1;
+      if (dash) ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+  drawPoly(refMin, 'rgba(34,197,94,0.10)', 'rgba(34,197,94,0.45)', [5, 3], 1.5);
+  drawPoly(refMax, null,                   'rgba(34,197,94,0.20)', [3, 4], 1.0);
+
+  // ── Actual values polygon ──
+  var polyClr  = allOk ? '#22c55e' : '#ef4444';
+  var polyFill = allOk ? 'rgba(34,197,94,0.22)' : 'rgba(239,68,68,0.20)';
+  drawPoly(norms, polyFill, polyClr, null, 2.5);
+
+  // ── Vertex dots ──
+  for (var i = 0; i < N; i++) {
+    var vx = cx + Math.cos(angles[i]) * R * norms[i];
+    var vy = cy + Math.sin(angles[i]) * R * norms[i];
+    ctx.beginPath();
+    ctx.arc(vx, vy, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = polyClr; ctx.fill();
+    ctx.strokeStyle = '#0a0f1a'; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+
+  // ── Axis labels ──
+  for (var i = 0; i < N; i++) {
+    var lx = cx + Math.cos(angles[i]) * (R + 26);
+    var ly = cy + Math.sin(angles[i]) * (R + 26);
+    var ca = Math.cos(angles[i]);
+    ctx.textAlign = Math.abs(ca) < 0.15 ? 'center' : (ca > 0 ? 'left' : 'right');
+    ctx.font = 'bold 11px Arial'; ctx.fillStyle = '#e2e8f0';
+    ctx.fillText(labels[i], lx, ly);
+    ctx.font = '9px Arial'; ctx.fillStyle = '#64748b';
+    ctx.fillText(sublabels[i], lx, ly + 12);
+  }
+}
+
+function drawMarshallGauges(vv, vam, rbv, estab, flu, vvOk, vamOk, rbvOk, estabOk, fluOk) {
+  var params = [
+    { name:'VV',           val:vv,    unit:'%',    min:0,  max:10,   refMin:3,   refMax:5,    ok:vvOk,    disp:vv.toFixed(2)    },
+    { name:'VAM',          val:vam,   unit:'%',    min:0,  max:25,   refMin:15,  refMax:25,   ok:vamOk,   disp:vam.toFixed(2)   },
+    { name:'RBV',          val:rbv,   unit:'%',    min:50, max:100,  refMin:65,  refMax:75,   ok:rbvOk,   disp:rbv.toFixed(2)   },
+    { name:'Estabilidade', val:estab, unit:' kgf', min:0,  max:1500, refMin:500, refMax:1500, ok:estabOk, disp:estab.toFixed(0) },
+    { name:'Fluência',     val:flu,   unit:' mm',  min:0,  max:8,    refMin:2,   refMax:4.5,  ok:fluOk,   disp:flu.toFixed(1)   }
+  ];
+  var html = '';
+  params.forEach(function(p) {
+    var range     = p.max - p.min;
+    var valPct    = Math.min(Math.max((p.val   - p.min) / range, 0), 1) * 100;
+    var rMinPct   = ((p.refMin - p.min) / range) * 100;
+    var rMaxPct   = ((p.refMax - p.min) / range) * 100;
+    var refW      = rMaxPct - rMinPct;
+    var clr       = p.ok ? '#22c55e' : '#ef4444';
+    var fillAlpha = p.ok ? '0.30' : '0.28';
+    html +=
+      '<div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">' +
+          '<span style="font-size:12px;font-weight:700;color:#e2e8f0">' + p.name + '</span>' +
+          '<span style="font-size:13px;font-weight:700;color:' + clr + '">' + p.disp + p.unit + ' ' + (p.ok ? '✓' : '✗') + '</span>' +
+        '</div>' +
+        '<div style="position:relative;height:22px;background:#162032;border-radius:5px;overflow:hidden">' +
+          // Green zone band
+          '<div style="position:absolute;top:0;left:' + rMinPct + '%;width:' + refW + '%;height:100%;background:rgba(34,197,94,0.15);border-left:2px solid rgba(34,197,94,0.5)' + (p.refMax < p.max ? ';border-right:2px solid rgba(34,197,94,0.5)' : '') + '"></div>' +
+          // Value fill bar
+          '<div style="position:absolute;top:0;left:0;width:' + valPct + '%;height:100%;background:rgba(' + (p.ok?'34,197,94':'239,68,68') + ',' + fillAlpha + ');transition:width .25s ease"></div>' +
+          // Value marker line
+          '<div style="position:absolute;top:0;left:' + valPct + '%;width:3px;height:100%;background:' + clr + ';transform:translateX(-50%);border-radius:2px;box-shadow:0 0 4px ' + clr + '"></div>' +
+          // Scale labels
+          '<span style="position:absolute;bottom:2px;left:4px;font-size:9px;color:#334155">' + p.min + p.unit + '</span>' +
+          '<span style="position:absolute;bottom:2px;right:4px;font-size:9px;color:#334155">' + p.max + p.unit + '</span>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;margin-top:2px;font-size:9px;color:#475569">' +
+          '<span>ref. mín: ' + p.refMin + p.unit + '</span>' +
+          (p.refMax < p.max ? '<span>ref. máx: ' + p.refMax + p.unit + '</span>' : '<span>sem máx. normativo</span>') +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('m-gauges').innerHTML = html;
 }
 
 function salvarEnsaio() {
