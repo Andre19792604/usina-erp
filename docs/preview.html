@@ -1014,7 +1014,31 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
                     <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="bc-cal" value="1.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Areia (%)</label><input type="number" id="bc-areia" value="2.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="bc-producao" value="7000" oninput="calcCusto()" class="co-input"></div>
-                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="bc-preco-venda" value="620" oninput="calcCusto()" class="co-input"></div>
+                                        <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                      <div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px">&#127981; Preços de Venda por Modo de Fornecimento (R$/ton)</div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                        <div>
+                          <div style="font-size:10px;color:#22c55e;margin-bottom:4px">&#11044; Fornecimento Completo</div>
+                          <input type="number" id="bc-venda-c" value="620" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">CAP + pedra + BPF</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#f59e0b;margin-bottom:4px">&#9680; Sem CAP</div>
+                          <input type="number" id="bc-venda-sc" value="285" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#60a5fa;margin-bottom:4px">&#9684; Sem CAP + Pedra</div>
+                          <input type="number" id="bc-venda-sp" value="95" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP e agregados</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#a78bfa;margin-bottom:4px">&#9711; Só Usinagem</div>
+                          <input type="number" id="bc-venda-sb" value="72" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Sem CAP, pedra e BPF</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div id="bc-soma-aviso" style="font-size:11px;margin-top:4px"></div>
                 </div>
@@ -1031,7 +1055,31 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
                     <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="cr-cal" value="1.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Brita 2 (%)</label><input type="number" id="cr-brita2" value="2.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="cr-producao" value="6000" oninput="calcCusto()" class="co-input"></div>
-                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="cr-preco-venda" value="640" oninput="calcCusto()" class="co-input"></div>
+                                        <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                      <div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px">&#127981; Preços de Venda por Modo de Fornecimento (R$/ton)</div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                        <div>
+                          <div style="font-size:10px;color:#22c55e;margin-bottom:4px">&#11044; Fornecimento Completo</div>
+                          <input type="number" id="cr-venda-c" value="640" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">CAP + pedra + BPF</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#f59e0b;margin-bottom:4px">&#9680; Sem CAP</div>
+                          <input type="number" id="cr-venda-sc" value="290" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#60a5fa;margin-bottom:4px">&#9684; Sem CAP + Pedra</div>
+                          <input type="number" id="cr-venda-sp" value="100" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP e agregados</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#a78bfa;margin-bottom:4px">&#9711; Só Usinagem</div>
+                          <input type="number" id="cr-venda-sb" value="75" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Sem CAP, pedra e BPF</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div id="cr-soma-aviso" style="font-size:11px;margin-top:4px"></div>
                 </div>
@@ -1046,7 +1094,31 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
                     <div class="form-group"><label>Areia (%)</label><input type="number" id="pmf-areia" value="8.5" step="0.5" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="pmf-cal" value="2.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="pmf-producao" value="1200" oninput="calcCusto()" class="co-input"></div>
-                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="pmf-preco-venda" value="480" oninput="calcCusto()" class="co-input"></div>
+                                        <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                      <div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px">&#127981; Preços de Venda por Modo de Fornecimento (R$/ton)</div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                        <div>
+                          <div style="font-size:10px;color:#22c55e;margin-bottom:4px">&#11044; Fornecimento Completo</div>
+                          <input type="number" id="pmf-venda-c" value="480" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">CAP + pedra + BPF</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#f59e0b;margin-bottom:4px">&#9680; Sem CAP</div>
+                          <input type="number" id="pmf-venda-sc" value="230" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#60a5fa;margin-bottom:4px">&#9684; Sem CAP + Pedra</div>
+                          <input type="number" id="pmf-venda-sp" value="85" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP e agregados</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#a78bfa;margin-bottom:4px">&#9711; Só Usinagem</div>
+                          <input type="number" id="pmf-venda-sb" value="60" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Sem CAP, pedra e BPF</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div id="pmf-soma-aviso" style="font-size:11px;margin-top:4px"></div>
                 </div>
@@ -1060,7 +1132,31 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
                     <div class="form-group"><label>Emulsão RR-2C (%) — 2ª capa</label><input type="number" id="tsd-emulsao2" value="6.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Pedrisco / Pó-de-pedra (%) — 2ª capa</label><input type="number" id="tsd-po-2" value="34.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="tsd-producao" value="400" oninput="calcCusto()" class="co-input"></div>
-                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="tsd-preco-venda" value="520" oninput="calcCusto()" class="co-input"></div>
+                                        <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                      <div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px">&#127981; Preços de Venda por Modo de Fornecimento (R$/ton)</div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                        <div>
+                          <div style="font-size:10px;color:#22c55e;margin-bottom:4px">&#11044; Fornecimento Completo</div>
+                          <input type="number" id="tsd-venda-c" value="520" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">CAP + pedra + BPF</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#f59e0b;margin-bottom:4px">&#9680; Sem CAP</div>
+                          <input type="number" id="tsd-venda-sc" value="255" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#60a5fa;margin-bottom:4px">&#9684; Sem CAP + Pedra</div>
+                          <input type="number" id="tsd-venda-sp" value="90" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP e agregados</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#a78bfa;margin-bottom:4px">&#9711; Só Usinagem</div>
+                          <input type="number" id="tsd-venda-sb" value="65" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Sem CAP, pedra e BPF</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div id="tsd-soma-aviso" style="font-size:11px;margin-top:4px"></div>
                 </div>
@@ -1076,7 +1172,31 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
                     <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="micro-cal" value="1.5" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Água (%)</label><input type="number" id="micro-agua" value="1.5" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="micro-producao" value="200" oninput="calcCusto()" class="co-input"></div>
-                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="micro-preco-venda" value="900" oninput="calcCusto()" class="co-input"></div>
+                                        <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                      <div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px">&#127981; Preços de Venda por Modo de Fornecimento (R$/ton)</div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                        <div>
+                          <div style="font-size:10px;color:#22c55e;margin-bottom:4px">&#11044; Fornecimento Completo</div>
+                          <input type="number" id="micro-venda-c" value="900" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">CAP + pedra + BPF</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#f59e0b;margin-bottom:4px">&#9680; Sem CAP</div>
+                          <input type="number" id="micro-venda-sc" value="480" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#60a5fa;margin-bottom:4px">&#9684; Sem CAP + Pedra</div>
+                          <input type="number" id="micro-venda-sp" value="150" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP e agregados</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#a78bfa;margin-bottom:4px">&#9711; Só Usinagem</div>
+                          <input type="number" id="micro-venda-sb" value="115" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Sem CAP, pedra e BPF</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div id="micro-soma-aviso" style="font-size:11px;margin-top:4px"></div>
                 </div>
@@ -1093,7 +1213,31 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
                     <div class="form-group"><label>Cal Hidratada (%)</label><input type="number" id="pavi-cal" value="1.0" step="0.1" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Areia (%)</label><input type="number" id="pavi-areia" value="1.0" step="0.5" oninput="calcCusto()" class="co-input"></div>
                     <div class="form-group"><label>Previsão produção (ton/mês)</label><input type="number" id="pavi-producao" value="200" oninput="calcCusto()" class="co-input"></div>
-                    <div class="form-group"><label>Preço de venda (R$/ton)</label><input type="number" id="pavi-preco-venda" value="580" oninput="calcCusto()" class="co-input"></div>
+                                        <div class="form-group" style="grid-column:1/-1;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
+                      <div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px">&#127981; Preços de Venda por Modo de Fornecimento (R$/ton)</div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                        <div>
+                          <div style="font-size:10px;color:#22c55e;margin-bottom:4px">&#11044; Fornecimento Completo</div>
+                          <input type="number" id="pavi-venda-c" value="580" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">CAP + pedra + BPF</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#f59e0b;margin-bottom:4px">&#9680; Sem CAP</div>
+                          <input type="number" id="pavi-venda-sc" value="270" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#60a5fa;margin-bottom:4px">&#9684; Sem CAP + Pedra</div>
+                          <input type="number" id="pavi-venda-sp" value="92" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Cliente fornece CAP e agregados</div>
+                        </div>
+                        <div>
+                          <div style="font-size:10px;color:#a78bfa;margin-bottom:4px">&#9711; Só Usinagem</div>
+                          <input type="number" id="pavi-venda-sb" value="70" oninput="calcCusto()" class="co-input">
+                          <div style="font-size:9px;color:#475569;margin-top:2px">Sem CAP, pedra e BPF</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div id="pavi-soma-aviso" style="font-size:11px;margin-top:4px"></div>
                 </div>
@@ -3252,200 +3396,192 @@ function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
 function fmt(n) { return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 function fmtK(n) { return 'R$ ' + (n/1000).toFixed(1) + 'k'; }
 
+var MODOS = [
+  { id:'c',  label:'Fornecimento Completo', short:'Completo',    cor:'#22c55e', semBPF:false, desc:'CAP + agregados + BPF incluídos' },
+  { id:'sc', label:'Sem CAP',              short:'Sem CAP',      cor:'#f59e0b', semBPF:false, desc:'Cliente fornece o CAP / emulsão' },
+  { id:'sp', label:'Sem CAP + Pedra',      short:'Sem CAP+Pedra',cor:'#60a5fa', semBPF:false, desc:'Cliente fornece CAP e todos os agregados' },
+  { id:'sb', label:'Só Usinagem',          short:'Só Usinagem',  cor:'#a78bfa', semBPF:true,  desc:'Cliente fornece CAP, pedra e BPF — só usinagem' },
+];
+
 var PRODUTOS = [
-  { id:'bc',    nome:'CBUQ BC',             cor:'#f59e0b',
-    insumos: function(p) {
-      return v('bc-cap')/100*v('co-preco-cap') + v('bc-brita0')/100*v('co-preco-brita0') +
-             v('bc-brita1')/100*v('co-preco-brita1') + v('bc-brita2')/100*v('co-preco-brita2') +
-             v('bc-po')/100*v('co-preco-po') + v('bc-cal')/100*v('co-preco-cal') +
-             v('bc-areia')/100*v('co-preco-areia'); },
-    soma: function() { return v('bc-cap')+v('bc-brita1')+v('bc-brita2')+v('bc-brita0')+v('bc-po')+v('bc-cal')+v('bc-areia'); },
-    prod: function() { return v('bc-producao'); },
-    venda: function() { return v('bc-preco-venda'); }
+  { id:'bc', nome:'CBUQ BC', cor:'#f59e0b',
+    ins: {
+      c:  function(){ return v('bc-cap')/100*v('co-preco-cap')+v('bc-brita0')/100*v('co-preco-brita0')+v('bc-brita1')/100*v('co-preco-brita1')+v('bc-brita2')/100*v('co-preco-brita2')+v('bc-po')/100*v('co-preco-po')+v('bc-cal')/100*v('co-preco-cal')+v('bc-areia')/100*v('co-preco-areia'); },
+      sc: function(){ return v('bc-brita0')/100*v('co-preco-brita0')+v('bc-brita1')/100*v('co-preco-brita1')+v('bc-brita2')/100*v('co-preco-brita2')+v('bc-po')/100*v('co-preco-po')+v('bc-cal')/100*v('co-preco-cal')+v('bc-areia')/100*v('co-preco-areia'); },
+      sp: function(){ return v('bc-cal')/100*v('co-preco-cal'); },
+      sb: function(){ return v('bc-cal')/100*v('co-preco-cal'); }
+    },
+    soma: function(){ return v('bc-cap')+v('bc-brita1')+v('bc-brita2')+v('bc-brita0')+v('bc-po')+v('bc-cal')+v('bc-areia'); },
+    prod: function(){ return v('bc-producao'); }, venda:function(m){ return v('bc-venda-'+m); }
   },
-  { id:'cr',    nome:'CBUQ CR',             cor:'#60a5fa',
-    insumos: function(p) {
-      return v('cr-cap')/100*v('co-preco-cap') + v('cr-brita0')/100*v('co-preco-brita0') +
-             v('cr-brita1')/100*v('co-preco-brita1') + v('cr-brita2')/100*v('co-preco-brita2') +
-             v('cr-po')/100*v('co-preco-po') + v('cr-cal')/100*v('co-preco-cal') +
-             v('cr-areia')/100*v('co-preco-areia'); },
-    soma: function() { return v('cr-cap')+v('cr-brita0')+v('cr-brita1')+v('cr-brita2')+v('cr-po')+v('cr-cal')+v('cr-areia'); },
-    prod: function() { return v('cr-producao'); },
-    venda: function() { return v('cr-preco-venda'); }
+  { id:'cr', nome:'CBUQ CR', cor:'#60a5fa',
+    ins: {
+      c:  function(){ return v('cr-cap')/100*v('co-preco-cap')+v('cr-brita0')/100*v('co-preco-brita0')+v('cr-brita1')/100*v('co-preco-brita1')+v('cr-brita2')/100*v('co-preco-brita2')+v('cr-po')/100*v('co-preco-po')+v('cr-cal')/100*v('co-preco-cal')+v('cr-areia')/100*v('co-preco-areia'); },
+      sc: function(){ return v('cr-brita0')/100*v('co-preco-brita0')+v('cr-brita1')/100*v('co-preco-brita1')+v('cr-brita2')/100*v('co-preco-brita2')+v('cr-po')/100*v('co-preco-po')+v('cr-cal')/100*v('co-preco-cal')+v('cr-areia')/100*v('co-preco-areia'); },
+      sp: function(){ return v('cr-cal')/100*v('co-preco-cal'); },
+      sb: function(){ return v('cr-cal')/100*v('co-preco-cal'); }
+    },
+    soma: function(){ return v('cr-cap')+v('cr-brita0')+v('cr-brita1')+v('cr-brita2')+v('cr-po')+v('cr-cal')+v('cr-areia'); },
+    prod: function(){ return v('cr-producao'); }, venda:function(m){ return v('cr-venda-'+m); }
   },
-  { id:'pmf',   nome:'PMF I',               cor:'#22c55e',
-    insumos: function(p) {
-      return v('pmf-emulsao')/100*v('co-preco-emulsao') + v('pmf-brita0')/100*v('co-preco-brita0') +
-             v('pmf-po')/100*v('co-preco-po') + v('pmf-areia')/100*v('co-preco-areia') +
-             v('pmf-cal')/100*v('co-preco-cal'); },
-    soma: function() { return v('pmf-emulsao')+v('pmf-brita0')+v('pmf-po')+v('pmf-areia')+v('pmf-cal'); },
-    prod: function() { return v('pmf-producao'); },
-    venda: function() { return v('pmf-preco-venda'); }
+  { id:'pmf', nome:'PMF I', cor:'#22c55e',
+    ins: {
+      c:  function(){ return v('pmf-emulsao')/100*v('co-preco-emulsao')+v('pmf-brita0')/100*v('co-preco-brita0')+v('pmf-po')/100*v('co-preco-po')+v('pmf-areia')/100*v('co-preco-areia')+v('pmf-cal')/100*v('co-preco-cal'); },
+      sc: function(){ return v('pmf-brita0')/100*v('co-preco-brita0')+v('pmf-po')/100*v('co-preco-po')+v('pmf-areia')/100*v('co-preco-areia')+v('pmf-cal')/100*v('co-preco-cal'); },
+      sp: function(){ return v('pmf-cal')/100*v('co-preco-cal'); },
+      sb: function(){ return v('pmf-cal')/100*v('co-preco-cal'); }
+    },
+    soma: function(){ return v('pmf-emulsao')+v('pmf-brita0')+v('pmf-po')+v('pmf-areia')+v('pmf-cal'); },
+    prod: function(){ return v('pmf-producao'); }, venda:function(m){ return v('pmf-venda-'+m); }
   },
-  { id:'tsd',   nome:'TSD',                 cor:'#fb923c',
-    insumos: function(p) {
-      return (v('tsd-emulsao1')+v('tsd-emulsao2'))/100*v('co-preco-emulsao') +
-             v('tsd-brita0-1')/100*v('co-preco-brita0') + v('tsd-po-2')/100*v('co-preco-po'); },
-    soma: function() { return v('tsd-emulsao1')+v('tsd-brita0-1')+v('tsd-emulsao2')+v('tsd-po-2'); },
-    prod: function() { return v('tsd-producao'); },
-    venda: function() { return v('tsd-preco-venda'); }
+  { id:'tsd', nome:'TSD', cor:'#fb923c',
+    ins: {
+      c:  function(){ return (v('tsd-emulsao1')+v('tsd-emulsao2'))/100*v('co-preco-emulsao')+v('tsd-brita0-1')/100*v('co-preco-brita0')+v('tsd-po-2')/100*v('co-preco-po'); },
+      sc: function(){ return v('tsd-brita0-1')/100*v('co-preco-brita0')+v('tsd-po-2')/100*v('co-preco-po'); },
+      sp: function(){ return 0; },
+      sb: function(){ return 0; }
+    },
+    soma: function(){ return v('tsd-emulsao1')+v('tsd-brita0-1')+v('tsd-emulsao2')+v('tsd-po-2'); },
+    prod: function(){ return v('tsd-producao'); }, venda:function(m){ return v('tsd-venda-'+m); }
   },
-  { id:'micro', nome:'Microrevestimento',   cor:'#f472b6',
-    insumos: function(p) {
-      return v('micro-emulsao')/100*v('co-preco-emulsao') + v('micro-areia')/100*v('co-preco-areia') +
-             v('micro-po')/100*v('co-preco-po') + v('micro-calc')/100*v('co-preco-calc') +
-             v('micro-cal')/100*v('co-preco-cal'); },
-    soma: function() { return v('micro-emulsao')+v('micro-areia')+v('micro-po')+v('micro-calc')+v('micro-cal')+v('micro-agua'); },
-    prod: function() { return v('micro-producao'); },
-    venda: function() { return v('micro-preco-venda'); }
+  { id:'micro', nome:'Microrevestimento', cor:'#f472b6',
+    ins: {
+      c:  function(){ return v('micro-emulsao')/100*v('co-preco-emulsao')+v('micro-areia')/100*v('co-preco-areia')+v('micro-po')/100*v('co-preco-po')+v('micro-calc')/100*v('co-preco-calc')+v('micro-cal')/100*v('co-preco-cal'); },
+      sc: function(){ return v('micro-areia')/100*v('co-preco-areia')+v('micro-po')/100*v('co-preco-po')+v('micro-calc')/100*v('co-preco-calc')+v('micro-cal')/100*v('co-preco-cal'); },
+      sp: function(){ return v('micro-calc')/100*v('co-preco-calc')+v('micro-cal')/100*v('co-preco-cal'); },
+      sb: function(){ return v('micro-calc')/100*v('co-preco-calc')+v('micro-cal')/100*v('co-preco-cal'); }
+    },
+    soma: function(){ return v('micro-emulsao')+v('micro-areia')+v('micro-po')+v('micro-calc')+v('micro-cal')+v('micro-agua'); },
+    prod: function(){ return v('micro-producao'); }, venda:function(m){ return v('micro-venda-'+m); }
   },
-  { id:'pavi',  nome:'CBUQ CF',             cor:'#94a3b8',
-    insumos: function(p) {
-      return v('pavi-cap')/100*v('co-preco-cap30') + v('pavi-brita0')/100*v('co-preco-brita0') +
-             v('pavi-brita1')/100*v('co-preco-brita1') + v('pavi-brita2')/100*v('co-preco-brita2') +
-             v('pavi-po')/100*v('co-preco-po') + v('pavi-cal')/100*v('co-preco-cal') +
-             v('pavi-areia')/100*v('co-preco-areia'); },
-    soma: function() { return v('pavi-cap')+v('pavi-brita2')+v('pavi-brita1')+v('pavi-brita0')+v('pavi-po')+v('pavi-cal')+v('pavi-areia'); },
-    prod: function() { return v('pavi-producao'); },
-    venda: function() { return v('pavi-preco-venda'); }
+  { id:'pavi', nome:'CBUQ CF', cor:'#94a3b8',
+    ins: {
+      c:  function(){ return v('pavi-cap')/100*v('co-preco-cap30')+v('pavi-brita0')/100*v('co-preco-brita0')+v('pavi-brita1')/100*v('co-preco-brita1')+v('pavi-brita2')/100*v('co-preco-brita2')+v('pavi-po')/100*v('co-preco-po')+v('pavi-cal')/100*v('co-preco-cal')+v('pavi-areia')/100*v('co-preco-areia'); },
+      sc: function(){ return v('pavi-brita0')/100*v('co-preco-brita0')+v('pavi-brita1')/100*v('co-preco-brita1')+v('pavi-brita2')/100*v('co-preco-brita2')+v('pavi-po')/100*v('co-preco-po')+v('pavi-cal')/100*v('co-preco-cal')+v('pavi-areia')/100*v('co-preco-areia'); },
+      sp: function(){ return v('pavi-cal')/100*v('co-preco-cal'); },
+      sb: function(){ return v('pavi-cal')/100*v('co-preco-cal'); }
+    },
+    soma: function(){ return v('pavi-cap')+v('pavi-brita2')+v('pavi-brita1')+v('pavi-brita0')+v('pavi-po')+v('pavi-cal')+v('pavi-areia'); },
+    prod: function(){ return v('pavi-producao'); }, venda:function(m){ return v('pavi-venda-'+m); }
   }
 ];
 
 function calcCusto() {
-  // Custos fixos
-  var fixo = v('co-folha') + v('co-encargos') + v('co-aluguel') + v('co-deprec') +
-             v('co-en-fixa') + v('co-manut') + v('co-seguros') + v('co-locacao') + v('co-outros-fixos');
+  var fixo = v('co-folha')+v('co-encargos')+v('co-aluguel')+v('co-deprec')+
+             v('co-en-fixa')+v('co-manut')+v('co-seguros')+v('co-locacao')+v('co-outros-fixos');
   var prodTotal = v('co-prod-total') || 1;
-
   document.getElementById('co-total-fixo').textContent = fmt(fixo);
-  document.getElementById('co-fixo-por-ton').textContent = fmt(fixo / prodTotal) + '/ton';
+  document.getElementById('co-fixo-por-ton').textContent = fmt(fixo/prodTotal)+'/ton';
 
-  // Carga tributária
-  var cargaTrib = v('co-pis') + v('co-cofins') + v('co-iss') + v('co-icms') + v('co-irpj') + v('co-csll');
-  document.getElementById('co-carga-total').textContent = cargaTrib.toFixed(2).replace('.',',') + '%';
+  var cargaTrib = v('co-pis')+v('co-cofins')+v('co-iss')+v('co-icms')+v('co-irpj')+v('co-csll');
+  document.getElementById('co-carga-total').textContent = cargaTrib.toFixed(2).replace('.',',')+' %';
 
-  // Combustíveis/utilidades por ton
-  var custoDiesel = v('co-diesel-lton') * v('co-diesel-preco');
-  var custoBPF    = v('co-bpf-lton')   * v('co-bpf-preco');
-  var custoEn     = v('co-en-kwh')     * v('co-en-tarifa');
+  var custoDiesel = v('co-diesel-lton')*v('co-diesel-preco');
+  var custoBPF    = v('co-bpf-lton')*v('co-bpf-preco');
+  var custoEn     = v('co-en-kwh')*v('co-en-tarifa');
   document.getElementById('co-diesel-resultado').textContent = fmt(custoDiesel);
   document.getElementById('co-bpf-resultado').textContent    = fmt(custoBPF);
   document.getElementById('co-en-resultado').textContent     = fmt(custoEn);
-  var custoUtil = custoDiesel + custoBPF + custoEn;
+  var custoUtilComBPF = custoDiesel + custoBPF + custoEn;
+  var custoUtilSemBPF = custoDiesel + custoEn;
 
-  // Calcular prod total a partir dos traços
-  var prodSoma = PRODUTOS.reduce(function(s,p){ return s + p.prod(); }, 0);
+  var prodSoma = PRODUTOS.reduce(function(s,p){ return s+p.prod(); }, 0);
 
-  // Somas de traços e avisos
-  PRODUTOS.forEach(function(p) {
-    var avEl = document.getElementById(p.id + '-soma-aviso');
-    if (avEl) {
-      var soma = p.soma();
-      var diff = Math.abs(soma - 100);
-      if (diff > 0.1) {
-        avEl.innerHTML = '<span style="color:#ef4444">&#9888; Soma dos componentes: ' + soma.toFixed(1) + '% (diferença de ' + (soma-100).toFixed(1) + '% em relação a 100%)</span>';
-      } else {
-        avEl.innerHTML = '<span style="color:#22c55e">&#10003; Soma: ' + soma.toFixed(1) + '% — OK</span>';
-      }
-    }
+  // Soma de traços
+  PRODUTOS.forEach(function(p){
+    var el = document.getElementById(p.id+'-soma-aviso');
+    if (!el) return;
+    var soma = p.soma();
+    var diff = Math.abs(soma-100);
+    el.innerHTML = diff > 0.1
+      ? '<span style="color:#ef4444">&#9888; Soma: '+soma.toFixed(1)+'% (diff: '+(soma-100).toFixed(1)+'%)</span>'
+      : '<span style="color:#22c55e">&#10003; Soma: '+soma.toFixed(1)+'% — OK</span>';
   });
 
-  // Rateio de fixos por produto (proporcional à produção)
-  var totalFixoRateado = fixo;
-
-  // Resultados por produto
   var resProdEl = document.getElementById('res-produtos');
   resProdEl.innerHTML = '';
   var totalReceitaMes = 0, totalCustoMes = 0;
   var breakEvenLinhas = '';
 
-  // Consumo de insumos agregados
-  var totalCap=0, totalBrita0=0, totalBrita1=0, totalBrita2=0,
-      totalPo=0, totalAreia=0, totalCal=0, totalEmulsao=0;
-
-  PRODUTOS.forEach(function(p) {
+  PRODUTOS.forEach(function(p){
     var prod = p.prod();
     if (prod <= 0) return;
 
-    var custoInsumo = p.insumos();
-    var fixoRateado = (prod / (prodSoma || 1)) * totalFixoRateado / (prod || 1);
-    var custoVariavel = custoInsumo + custoUtil;
-    var custoBase = custoVariavel + fixoRateado;
-    var precoV = p.venda();
-    var custoTrib = precoV * cargaTrib / 100;
-    var custoTotal = custoBase + custoTrib;
-    var margem = precoV > 0 ? ((precoV - custoTotal) / precoV * 100) : 0;
-    var mc = precoV > 0 ? ((precoV - custoVariavel - custoTrib) / precoV * 100) : 0;
-    var receitaMes = prod * precoV;
-    var custoMes   = prod * custoTotal;
-    totalReceitaMes += receitaMes;
-    totalCustoMes   += custoMes;
+    var fixoRateado = (prod/(prodSoma||1)) * fixo / (prod||1);
 
-    var corMargem = margem >= 20 ? '#22c55e' : margem >= 10 ? '#f59e0b' : '#ef4444';
-    var corMC = mc >= 30 ? '#22c55e' : mc >= 15 ? '#f59e0b' : '#ef4444';
+    // Build 4-mode result columns
+    var modoCols = '';
+    MODOS.forEach(function(modo){
+      var custoInsumo = p.ins[modo.id]();
+      var custoUtil   = modo.semBPF ? custoUtilSemBPF : custoUtilComBPF;
+      var custoVar    = custoInsumo + custoUtil;
+      var custoBase   = custoVar + fixoRateado;
+      var precoV      = p.venda(modo.id);
+      var custoTrib   = precoV * cargaTrib / 100;
+      var custoTotal  = custoBase + custoTrib;
+      var margem      = precoV > 0 ? ((precoV - custoTotal) / precoV * 100) : 0;
+      var mc          = precoV > 0 ? ((precoV - custoVar - custoTrib) / precoV * 100) : 0;
+      var corM = margem >= 20 ? '#22c55e' : margem >= 10 ? '#f59e0b' : '#ef4444';
+      var corMC= mc    >= 30 ? '#22c55e' : mc     >= 15 ? '#f59e0b' : '#ef4444';
 
-    // Ponto de equilíbrio deste produto
-    var cvUnit = custoVariavel + custoTrib;
-    var fixoUnit = fixoRateado;
-    var peq = cvUnit < precoV ? fixoUnit * prod / (precoV - cvUnit) : Infinity;
-    breakEvenLinhas += '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;border-bottom:1px solid #1e3a5f">' +
-      '<span style="color:#94a3b8">' + p.nome + '</span>' +
-      '<span style="color:#a78bfa;font-weight:700">' + (isFinite(peq) ? peq.toFixed(0) + ' ton' : 'inviável') + '</span></div>';
+      // Only accumulate totals for 'completo' mode
+      if (modo.id === 'c') {
+        totalReceitaMes += prod * precoV;
+        totalCustoMes   += prod * custoTotal;
+        var cvUnit = custoVar + custoTrib;
+        var peq = cvUnit < precoV ? fixoRateado * prod / (precoV - cvUnit) : Infinity;
+        breakEvenLinhas += '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;border-bottom:1px solid #1e3a5f">'+
+          '<span style="color:#94a3b8">'+p.nome+'</span>'+
+          '<span style="color:#a78bfa;font-weight:700">'+(isFinite(peq)?peq.toFixed(0)+' ton':'inviável')+'</span></div>';
+      }
 
-    // Consumo de insumos (aproximado)
-    totalCap      += prod * v(p.id === 'pavi' ? 'pavi-cap' : (p.id + '-cap'))  / 100 * (p.id === 'pmf'||p.id === 'tsd'||p.id === 'micro' ? 0 : 1);
-    totalEmulsao  += prod * (p.id === 'pmf' ? v('pmf-emulsao') : p.id === 'tsd' ? v('tsd-emulsao1')+v('tsd-emulsao2') : p.id === 'micro' ? v('micro-emulsao') : 0) / 100;
+      modoCols += '<div style="background:#070f1a;border:1px solid '+(modo.id==='c'?modo.cor+'66':'#1e3a5f')+';border-top:3px solid '+modo.cor+';border-radius:8px;padding:10px;min-width:0">'+
+        '<div style="font-size:10px;font-weight:700;color:'+modo.cor+';margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+modo.short+'</div>'+
+        '<div style="font-size:9px;color:#475569;margin-bottom:8px">'+modo.desc+'</div>'+
+        '<div style="font-size:10px;color:#64748b">Insumos/ton</div>'+
+        '<div style="font-size:13px;font-weight:700;color:#e2e8f0;margin-bottom:2px">'+fmt(custoInsumo)+'</div>'+
+        '<div style="font-size:10px;color:#64748b">Custo total/ton</div>'+
+        '<div style="font-size:13px;font-weight:700;color:#ef4444;margin-bottom:6px">'+fmt(custoTotal)+'</div>'+
+        '<div style="display:flex;gap:4px">'+
+          '<div style="flex:1;background:rgba(34,197,94,0.08);border-radius:5px;padding:5px;text-align:center">'+
+            '<div style="font-size:9px;color:#64748b">Margem</div>'+
+            '<div style="font-size:14px;font-weight:800;color:'+corM+'">'+margem.toFixed(1)+'%</div>'+
+          '</div>'+
+          '<div style="flex:1;background:rgba(167,139,250,0.08);border-radius:5px;padding:5px;text-align:center">'+
+            '<div style="font-size:9px;color:#64748b">MC</div>'+
+            '<div style="font-size:14px;font-weight:800;color:'+corMC+'">'+mc.toFixed(1)+'%</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    });
 
-    resProdEl.innerHTML += '<div class="res-prod-card" style="border-left:3px solid ' + p.cor + '">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
-        '<div style="font-weight:700;font-size:14px;color:' + p.cor + '">' + p.nome + '</div>' +
-        '<div style="font-size:11px;color:#64748b">' + prod.toLocaleString('pt-BR') + ' ton/mês</div>' +
-      '</div>' +
-      '<div class="res-linha"><span style="color:#94a3b8">Custo insumos/ton</span><span>' + fmt(custoInsumo) + '</span></div>' +
-      '<div class="res-linha"><span style="color:#94a3b8">Combustíveis/ton</span><span>' + fmt(custoUtil) + '</span></div>' +
-      '<div class="res-linha"><span style="color:#94a3b8">Custo fixo rateado/ton</span><span>' + fmt(fixoRateado) + '</span></div>' +
-      '<div class="res-linha"><span style="color:#94a3b8">Tributos/ton</span><span>' + fmt(custoTrib) + '</span></div>' +
-      '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-weight:700;border-bottom:1px solid #1e3a5f">' +
-        '<span>Custo Total / ton</span><span style="color:#ef4444">' + fmt(custoTotal) + '</span>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">' +
-        '<span style="color:#94a3b8">Preço de venda / ton</span><span style="font-weight:700">' + fmt(precoV) + '</span>' +
-      '</div>' +
-      '<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">' +
-        '<div style="flex:1;background:rgba(34,197,94,0.08);border-radius:6px;padding:8px;text-align:center">' +
-          '<div style="font-size:10px;color:#64748b">Margem Bruta</div>' +
-          '<div style="font-size:18px;font-weight:800;color:' + corMargem + '">' + margem.toFixed(1) + '%</div>' +
-        '</div>' +
-        '<div style="flex:1;background:rgba(167,139,250,0.08);border-radius:6px;padding:8px;text-align:center">' +
-          '<div style="font-size:10px;color:#64748b">Margem Contrib.</div>' +
-          '<div style="font-size:18px;font-weight:800;color:' + corMC + '">' + mc.toFixed(1) + '%</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="margin-top:8px;display:flex;justify-content:space-between;font-size:12px;color:#64748b">' +
-        '<span>Receita mês</span><span style="color:#22c55e;font-weight:600">' + fmtK(receitaMes) + '</span>' +
-        '<span style="margin-left:12px">Custo mês</span><span style="color:#ef4444;font-weight:600">' + fmtK(custoMes) + '</span>' +
-      '</div>' +
+    resProdEl.innerHTML += '<div style="background:#0d1929;border:1px solid #1e3a5f;border-left:4px solid '+p.cor+';border-radius:10px;padding:14px;margin-bottom:4px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+        '<div style="font-weight:800;font-size:15px;color:'+p.cor+'">'+p.nome+'</div>'+
+        '<div style="font-size:11px;color:#64748b">'+prod.toLocaleString('pt-BR')+' ton/mês</div>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'+
+        modoCols+
+      '</div>'+
     '</div>';
   });
 
-  // Resultado total
-  var margemGeral = totalReceitaMes > 0 ? ((totalReceitaMes - totalCustoMes) / totalReceitaMes * 100) : 0;
+  var margemGeral = totalReceitaMes > 0 ? ((totalReceitaMes-totalCustoMes)/totalReceitaMes*100) : 0;
   document.getElementById('res-total-mes').textContent = fmt(totalCustoMes);
   document.getElementById('res-prod-total').innerHTML =
-    'Receita prevista: <strong style="color:#22c55e">' + fmt(totalReceitaMes) + '</strong> — ' +
-    'Resultado: <strong style="color:' + (margemGeral>=0?'#22c55e':'#ef4444') + '">' + fmt(totalReceitaMes - totalCustoMes) + '</strong>' +
-    ' (' + margemGeral.toFixed(1) + '%)';
+    'Receita (compl.): <strong style="color:#22c55e">'+fmt(totalReceitaMes)+'</strong> — '+
+    'Resultado: <strong style="color:'+(margemGeral>=0?'#22c55e':'#ef4444')+'">'+fmt(totalReceitaMes-totalCustoMes)+'</strong>'+
+    ' ('+margemGeral.toFixed(1)+'%)';
 
   document.getElementById('res-break-even').innerHTML = breakEvenLinhas;
 
-  // Resumo insumos
-  var custoCapTon = v('co-preco-cap');
   document.getElementById('res-insumos').innerHTML =
-    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Diesel S-10</span><span>' + (prodSoma * v('co-diesel-lton')).toFixed(0) + ' L</span></div>' +
-    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Óleo BPF</span><span>' + (prodSoma * v('co-bpf-lton')).toFixed(0) + ' L</span></div>' +
-    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Energia elétrica</span><span>' + (prodSoma * v('co-en-kwh')).toFixed(0) + ' kWh</span></div>' +
-    '<div style="display:flex;justify-content:space-between;border-top:1px solid #1e3a5f;padding-top:4px;margin-top:4px"><span style="color:#94a3b8">Produção total prevista</span><span style="font-weight:700">' + prodSoma.toLocaleString('pt-BR') + ' ton</span></div>';
+    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Diesel S-10</span><span>'+(prodSoma*v('co-diesel-lton')).toFixed(0)+' L</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Óleo BPF</span><span>'+(prodSoma*v('co-bpf-lton')).toFixed(0)+' L</span></div>'+
+    '<div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">Energia elétrica</span><span>'+(prodSoma*v('co-en-kwh')).toFixed(0)+' kWh</span></div>'+
+    '<div style="display:flex;justify-content:space-between;border-top:1px solid #1e3a5f;padding-top:4px;margin-top:4px"><span style="color:#94a3b8">Produção total prevista</span><span style="font-weight:700">'+prodSoma.toLocaleString('pt-BR')+' ton</span></div>';
 }
+
 
 function exportarCusto() { window.print(); }
 
