@@ -562,22 +562,51 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
               <span>Placa: <span style="color:#60a5fa;font-family:monospace;font-weight:700">ABC-1234</span></span>
               <span>Tipo: <span class="badge badge-green">Saída</span></span>
             </div>
-            <button class="btn btn-primary" style="width:100%">&#10003; Registrar Pesagem</button>
+            <button class="btn btn-primary" style="width:100%" onclick="registrarPesagem()">&#10003; Registrar Pesagem</button>
+            <button class="btn btn-outline" style="width:100%;margin-top:8px" onclick="gerarTicket('ABC-1234','15.250','28.450','13.200','SAÍDA','CBUQ BC','Prefeitura Mun. SP')">&#128424; Gerar Ticket</button>
           </div>
           <!-- Tickets -->
           <div class="card" style="flex:1.5">
             <div class="card-title-lg">Tickets de Hoje — 11/03/2026</div>
             <table>
-              <tr><th>Ticket</th><th>Placa</th><th>Líquido</th><th>Hora</th><th>Tipo</th></tr>
-              <tr><td style="font-family:monospace;font-size:12px">PES00000001</td><td style="font-family:monospace;color:#60a5fa">ABC-1234</td><td>15.200 kg</td><td>08:32</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
-              <tr><td style="font-family:monospace;font-size:12px">PES00000002</td><td style="font-family:monospace;color:#60a5fa">DEF-5678</td><td>14.900 kg</td><td>09:15</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
-              <tr><td style="font-family:monospace;font-size:12px">PES00000003</td><td style="font-family:monospace;color:#60a5fa">GHI-9012</td><td>16.100 kg</td><td>10:01</td><td><span class="badge badge-green">SAÍDA</span></td></tr>
-              <tr><td style="font-family:monospace;font-size:12px">PES00000004</td><td style="font-family:monospace;color:#60a5fa">JKL-3456</td><td>13.750 kg</td><td>10:45</td><td><span class="badge badge-blue">ENTRADA</span></td></tr>
+              <tr><th>Ticket</th><th>Placa</th><th>Líquido</th><th>Hora</th><th>Tipo</th><th>Ação</th></tr>
+              <tr><td style="font-family:monospace;font-size:12px">PES00000001</td><td style="font-family:monospace;color:#60a5fa">ABC-1234</td><td>15.200 kg</td><td>08:32</td><td><span class="badge badge-green">SAÍDA</span></td><td><button class="btn btn-outline btn-sm" onclick="gerarTicket('ABC-1234','15.200','28.400','13.200','SAÍDA','CBUQ BC','Prefeitura Mun. SP')">&#128424; Ticket</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:12px">PES00000002</td><td style="font-family:monospace;color:#60a5fa">DEF-5678</td><td>14.900 kg</td><td>09:15</td><td><span class="badge badge-green">SAÍDA</span></td><td><button class="btn btn-outline btn-sm" onclick="gerarTicket('DEF-5678','14.900','32.000','17.100','SAÍDA','CBUQ CR','Construtora ABC')">&#128424; Ticket</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:12px">PES00000003</td><td style="font-family:monospace;color:#60a5fa">GHI-9012</td><td>16.100 kg</td><td>10:01</td><td><span class="badge badge-green">SAÍDA</span></td><td><button class="btn btn-outline btn-sm" onclick="gerarTicket('GHI-9012','16.100','45.300','29.200','SAÍDA','PMF I','MRV Engenharia')">&#128424; Ticket</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:12px">PES00000004</td><td style="font-family:monospace;color:#60a5fa">JKL-3456</td><td>13.750 kg</td><td>10:45</td><td><span class="badge badge-blue">ENTRADA</span></td><td><button class="btn btn-outline btn-sm" onclick="gerarTicket('JKL-3456','13.750','25.550','11.800','ENTRADA','CAP 50/70','—')">&#128424; Ticket</button></td></tr>
             </table>
             <div style="margin-top:16px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px">
               <span style="color:#94a3b8">4 Caminhões</span>
               <span style="color:#22c55e;font-weight:700">46.200 kg Total Saída</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL TICKET DE PESAGEM -->
+      <div id="modal-ticket" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center">
+        <div style="background:#fff;color:#111;width:380px;border-radius:8px;padding:0;font-family:monospace;font-size:13px;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+          <div id="ticket-content" style="padding:24px">
+            <div style="text-align:center;border-bottom:2px dashed #ccc;padding-bottom:12px;margin-bottom:12px">
+              <div style="font-size:18px;font-weight:900;letter-spacing:2px">USINA ERP</div>
+              <div style="font-size:11px;color:#555">Usina de Asfalto — Ticket de Pesagem</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Ticket Nº:</span><span id="tk-num" style="font-weight:700;color:#1a56db">PES00000005</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Data/Hora:</span><span id="tk-dt">11/03/2026 11:02</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Placa:</span><span id="tk-placa" style="font-weight:700"></span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Tipo:</span><span id="tk-tipo" style="font-weight:700"></span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Material:</span><span id="tk-mat"></span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Cliente:</span><span id="tk-cli"></span></div>
+            <div style="border-top:1px dashed #ccc;margin:10px 0;padding-top:10px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Peso Bruto:</span><span id="tk-bruto"></span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Tara:</span><span id="tk-tara"></span></div>
+              <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;border-top:2px solid #111;padding-top:8px;margin-top:8px"><span>PESO LÍQUIDO:</span><span id="tk-liq"></span></div>
+            </div>
+            <div style="text-align:center;margin-top:12px;font-size:11px;color:#555;border-top:1px dashed #ccc;padding-top:10px">Documento sem valor fiscal</div>
+          </div>
+          <div style="display:flex;gap:8px;padding:12px 16px;background:#f5f5f5;border-top:1px solid #ddd;border-radius:0 0 8px 8px">
+            <button onclick="imprimirTicket()" style="flex:1;background:#1a56db;color:#fff;border:none;padding:10px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px">&#128424; Imprimir</button>
+            <button onclick="document.getElementById('modal-ticket').style.display='none'" style="flex:1;background:#e5e7eb;color:#111;border:none;padding:10px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px">Fechar</button>
           </div>
         </div>
       </div>
@@ -595,7 +624,7 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
           <div class="kpi-card"><div class="kpi-label">Taxa de Aprovação</div><div class="kpi-value" style="color:#f59e0b">92,7%</div></div>
         </div>
         <div class="card" style="margin-bottom:20px">
-          <div class="card-title">Parâmetros Normativos</div>
+          <div class="card-title">Parâmetros Normativos — DNIT ES 031/2006</div>
           <div style="display:flex;gap:24px;flex-wrap:wrap">
             <div style="text-align:center"><div style="font-size:11px;color:#64748b;margin-bottom:4px">VV</div><div style="font-weight:700;color:#e2e8f0">3–5 %</div></div>
             <div style="text-align:center"><div style="font-size:11px;color:#64748b;margin-bottom:4px">VAM</div><div style="font-weight:700;color:#e2e8f0">≥ 15 %</div></div>
@@ -604,6 +633,43 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
             <div style="text-align:center"><div style="font-size:11px;color:#64748b;margin-bottom:4px">Fluência</div><div style="font-weight:700;color:#e2e8f0">2–4,5 mm</div></div>
           </div>
         </div>
+
+        <!-- FORMULÁRIO NOVO ENSAIO -->
+        <div class="card" style="margin-bottom:20px;border:1px solid #1e3a5f">
+          <div class="card-title-lg" style="margin-bottom:16px">&#43; Registrar Novo Ensaio Marshall</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
+            <div class="form-group">
+              <label>Produto / Traço</label>
+              <select style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                <option>CBUQ BC</option><option>CBUQ CR</option><option>PMF I</option><option>TSD</option><option>CAUQ</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Data</label><input type="date" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Nº OP / Lote</label><input type="text" placeholder="OP000000244" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Temperatura (°C)</label><input type="number" placeholder="148" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>% CAP</label><input type="number" id="m-cap" step="0.01" placeholder="5.50" oninput="calcMarshall()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Gmb (g/cm³)</label><input type="number" id="m-gmb" step="0.001" placeholder="2.380" oninput="calcMarshall()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Gmm (g/cm³)</label><input type="number" id="m-gmm" step="0.001" placeholder="2.485" oninput="calcMarshall()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Estabilidade (kgf)</label><input type="number" id="m-estab" placeholder="900" oninput="calcMarshall()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Fluência (mm)</label><input type="number" id="m-flu" step="0.1" placeholder="3.2" oninput="calcMarshall()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+          </div>
+
+          <!-- Resultados calculados -->
+          <div style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:16px;margin-bottom:16px">
+            <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Resultados Calculados Automaticamente</div>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+              <div id="m-res-vv"   style="font-size:14px">VV: <strong style="color:#64748b">—</strong> <small style="color:#475569">(ref: 3–5%)</small></div>
+              <div id="m-res-vam"  style="font-size:14px">VAM: <strong style="color:#64748b">—</strong> <small style="color:#475569">(ref: ≥15%)</small></div>
+              <div id="m-res-rbv"  style="font-size:14px">RBV: <strong style="color:#64748b">—</strong> <small style="color:#475569">(ref: 65–75%)</small></div>
+              <div id="m-res-badge" style="font-size:14px"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="salvarEnsaio()">&#10003; Salvar Ensaio</button>
+            <button class="btn btn-outline" onclick="gerarPDFLab()">&#128196; Gerar PDF do Controle</button>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-title-lg">Resultados de Ensaios</div>
           <div class="table-wrap">
@@ -638,6 +704,34 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
           <div class="kpi-card"><div class="kpi-label">Ocorrências</div><div class="kpi-value" style="color:#60a5fa">23</div></div>
           <div class="kpi-card"><div class="kpi-label">Custo Estimado</div><div class="kpi-value" style="color:#ef4444;font-size:22px">R$ 9.840</div><div class="kpi-change">@ R$534/ton</div></div>
         </div>
+        <!-- FORMULÁRIO REGISTRO MANUAL -->
+        <div class="card" style="margin-bottom:20px;border:1px solid #3f1515">
+          <div class="card-title-lg" style="margin-bottom:16px;color:#ef4444">&#43; Registrar Perda Manual</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
+            <div class="form-group"><label>Data</label><input type="date" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group">
+              <label>Material Perdido</label>
+              <select id="perda-mat" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                <option>CBUQ BC</option><option>CBUQ CR</option><option>PMF I</option><option>CAP 50/70</option><option>CAP 30/45</option><option>Pedrisco</option><option>Pó de Pedra</option><option>Pedra 1</option><option>Óleo BPF</option><option>Óleo Diesel</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tipo de Perda</label>
+              <select style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                <option>Descarte de Início</option><option>Reprovação Lab</option><option>Rejeito de Mistura</option><option>Parada de Emergência</option><option>Derramamento</option><option>Evaporação / Perda Operacional</option><option>Outro</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Quantidade (ton)</label><input type="number" id="perda-qtd" step="0.01" placeholder="0,00" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Nº Ordem (opcional)</label><input type="text" placeholder="OP000000244" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group"><label>Responsável</label><input type="text" placeholder="Nome do responsável" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            <div class="form-group" style="grid-column:span 2"><label>Causa / Observações</label><input type="text" placeholder="Descreva a causa da perda..." style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" style="background:#ef4444;border-color:#ef4444" onclick="registrarPerda()">&#9888; Registrar e Descontar do Estoque</button>
+            <span id="perda-feedback" style="font-size:13px;color:#22c55e;display:none">&#10003; Perda registrada e estoque atualizado.</span>
+          </div>
+        </div>
+
         <div class="row">
           <div class="card" style="flex:3">
             <div class="card-title-lg">Registro de Perdas</div>
@@ -885,26 +979,118 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
       <div id="page-vendas" class="page-content">
         <div class="page-header">
           <div class="page-title">Vendas / Pedidos</div>
-          <div class="page-subtitle">Gestão de pedidos e contratos de fornecimento</div>
+          <div class="page-subtitle">Orçamentos, pedidos de venda e controle de frete</div>
         </div>
         <div class="kpi-row">
           <div class="kpi-card"><div class="kpi-label">Pedidos no Mês</div><div class="kpi-value" style="color:#60a5fa">38</div></div>
           <div class="kpi-card"><div class="kpi-label">Faturamento Mês</div><div class="kpi-value" style="color:#22c55e;font-size:22px">R$ 2,84M</div></div>
-          <div class="kpi-card"><div class="kpi-label">Em Aberto</div><div class="kpi-value" style="color:#f59e0b">12</div></div>
-          <div class="kpi-card"><div class="kpi-label">Ticket Médio</div><div class="kpi-value" style="color:#e2e8f0;font-size:22px">R$ 74,7k</div></div>
+          <div class="kpi-card"><div class="kpi-label">Orçamentos Abertos</div><div class="kpi-value" style="color:#f59e0b">5</div></div>
+          <div class="kpi-card"><div class="kpi-label">Frete Total Mês</div><div class="kpi-value" style="color:#a78bfa;font-size:22px">R$ 184k</div></div>
         </div>
-        <div class="card">
+
+        <!-- ===== ORÇAMENTOS ===== -->
+        <div class="card" style="margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+            <div class="card-title-lg" style="margin:0">Orçamentos</div>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('form-orcamento').style.display=document.getElementById('form-orcamento').style.display==='none'?'block':'none'">+ Novo Orçamento</button>
+          </div>
+
+          <!-- Formulário novo orçamento (expandível) -->
+          <div id="form-orcamento" style="display:none;background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:16px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:#f59e0b;margin-bottom:12px">Novo Orçamento</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px">
+              <div class="form-group"><label>Cliente</label><input type="text" placeholder="Nome do cliente" style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+              <div class="form-group"><label>Produto / Traço</label>
+                <select style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                  <option>CBUQ BC</option><option>CBUQ CR</option><option>PMF I</option><option>TSD</option><option>CAUQ</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Tipo de Orçamento</label>
+                <select id="orc-tipo" onchange="calcOrcamento()" style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                  <option value="540">Massa Pronta (usina fornece tudo)</option>
+                  <option value="320">Usinagem c/ Agregados (cliente fornece pedra)</option>
+                  <option value="210">Usinagem — Pedra + CAP pela usina</option>
+                  <option value="95">Usinagem — Pedra + Óleo BPF + CAP pelo cliente</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Quantidade (ton)</label><input type="number" id="orc-qtd" placeholder="500" oninput="calcOrcamento()" style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+              <div class="form-group"><label>Preço Unit. (R$/ton)</label><input type="number" id="orc-preco" placeholder="auto" oninput="calcOrcamento()" style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+              <div class="form-group"><label>Frete (R$/ton)</label><input type="number" id="orc-frete" placeholder="0,00" oninput="calcOrcamento()" style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+              <div class="form-group"><label>Validade</label><input type="date" style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+              <div class="form-group" style="grid-column:span 2"><label>Observações</label><input type="text" placeholder="Condições comerciais, prazo de entrega..." style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%"></div>
+            </div>
+            <div style="background:#162032;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:12px;display:flex;gap:24px;flex-wrap:wrap">
+              <div style="font-size:13px">Preço c/ frete: <strong id="orc-res-unit" style="color:#f59e0b">—</strong></div>
+              <div style="font-size:13px">Total: <strong id="orc-res-total" style="color:#22c55e;font-size:16px">—</strong></div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="salvarOrcamento()">&#10003; Salvar Orçamento</button>
+              <button class="btn btn-outline" onclick="converterPedido('total')">&#8594; Converter em Pedido (Total)</button>
+              <button class="btn btn-outline" onclick="converterPedido('parcial')">&#8594; Converter Parcial</button>
+            </div>
+          </div>
+
+          <!-- Tabela de orçamentos -->
+          <table style="font-size:13px">
+            <tr><th>Nº Orç.</th><th>Cliente</th><th>Produto</th><th>Tipo</th><th>Qtd (ton)</th><th>Preço Unit.</th><th>Frete/ton</th><th>Total</th><th>Validade</th><th>Status</th><th>Ação</th></tr>
+            <tr>
+              <td style="font-family:monospace;font-size:11px;color:#60a5fa">ORC000005</td><td>MRV Engenharia</td><td>CBUQ BC</td>
+              <td style="font-size:11px">Massa Pronta</td><td>800</td><td>R$ 540</td><td style="color:#a78bfa">R$ 28</td><td style="font-weight:600">R$ 454.400</td><td style="color:#22c55e">20/03/2026</td>
+              <td><span class="badge badge-amber">Aguardando</span></td>
+              <td><button class="btn btn-green btn-sm" onclick="alert('Convertido em pedido!')">&#8594; Pedido</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:11px;color:#60a5fa">ORC000004</td><td>DER-SP</td><td>CBUQ CR</td>
+              <td style="font-size:11px">Usinagem c/ Agregados</td><td>1.200</td><td>R$ 320</td><td style="color:#a78bfa">R$ 22</td><td style="font-weight:600">R$ 410.400</td><td style="color:#22c55e">18/03/2026</td>
+              <td><span class="badge badge-amber">Aguardando</span></td>
+              <td><button class="btn btn-green btn-sm" onclick="alert('Convertido em pedido!')">&#8594; Pedido</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:11px;color:#60a5fa">ORC000003</td><td>Engenharia Rápida ME</td><td>PMF I</td>
+              <td style="font-size:11px">Usinagem — CAP pelo cliente</td><td>300</td><td>R$ 95</td><td style="color:#a78bfa">—</td><td style="font-weight:600">R$ 28.500</td><td style="color:#ef4444">13/03/2026</td>
+              <td><span class="badge badge-red">Vencendo</span></td>
+              <td><button class="btn btn-green btn-sm" onclick="alert('Convertido em pedido!')">&#8594; Pedido</button></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- ===== PEDIDOS DE VENDA ===== -->
+        <div class="card" style="margin-bottom:20px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
             <div class="card-title-lg" style="margin:0">Pedidos de Venda</div>
             <button class="btn btn-primary btn-sm">+ Novo Pedido</button>
           </div>
           <table>
-            <tr><th>Nº Pedido</th><th>Cliente</th><th>Produto</th><th>Qtd (ton)</th><th>Preço Unit.</th><th>Total</th><th>Data Entrega</th><th>Status</th></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000038</td><td>Prefeitura Municipal SP</td><td>CBUQ BC</td><td>500</td><td>R$ 534,00</td><td style="font-weight:600">R$ 267.000</td><td>15/03/2026</td><td><span class="badge badge-amber">Em Produção</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000037</td><td>Construtora ABC Ltda</td><td>CBUQ CR</td><td>300</td><td>R$ 548,00</td><td style="font-weight:600">R$ 164.400</td><td>12/03/2026</td><td><span class="badge badge-blue">Aguardando</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000036</td><td>Rodovias do Brasil S.A.</td><td>CBUQ BC</td><td>900</td><td>R$ 534,00</td><td style="font-weight:600">R$ 480.600</td><td>10/03/2026</td><td><span class="badge badge-green">Entregue</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000035</td><td>Engenharia Rápida ME</td><td>PMF I</td><td>150</td><td>R$ 520,00</td><td style="font-weight:600">R$ 78.000</td><td>08/03/2026</td><td><span class="badge badge-green">Entregue</span></td></tr>
+            <tr><th>Nº Pedido</th><th>Cliente</th><th>Produto</th><th>Qtd (ton)</th><th>Preço Unit.</th><th>Frete/ton</th><th>Total c/ Frete</th><th>Entrega</th><th>Status</th></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000038</td><td>Prefeitura Municipal SP</td><td>CBUQ BC</td><td>500</td><td>R$ 534</td><td style="color:#a78bfa">R$ 28</td><td style="font-weight:600">R$ 281.000</td><td>15/03/2026</td><td><span class="badge badge-amber">Em Produção</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000037</td><td>Construtora ABC Ltda</td><td>CBUQ CR</td><td>300</td><td>R$ 548</td><td style="color:#a78bfa">R$ 22</td><td style="font-weight:600">R$ 171.000</td><td>12/03/2026</td><td><span class="badge badge-blue">Aguardando</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000036</td><td>Rodovias do Brasil S.A.</td><td>CBUQ BC</td><td>900</td><td>R$ 534</td><td style="color:#a78bfa">R$ 30</td><td style="font-weight:600">R$ 507.600</td><td>10/03/2026</td><td><span class="badge badge-green">Entregue</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">PED000000035</td><td>Engenharia Rápida ME</td><td>PMF I</td><td>150</td><td>R$ 520</td><td style="color:#a78bfa">—</td><td style="font-weight:600">R$ 78.000</td><td>08/03/2026</td><td><span class="badge badge-green">Entregue</span></td></tr>
           </table>
+        </div>
+
+        <!-- ===== RELATÓRIO DE FRETE ===== -->
+        <div class="card">
+          <div class="card-title-lg" style="margin-bottom:16px">&#128665; Relatório de Frete — Março/2026</div>
+          <div class="kpi-row" style="margin-bottom:16px">
+            <div class="kpi-card"><div class="kpi-label">Total de Cargas</div><div class="kpi-value" style="color:#60a5fa">142</div></div>
+            <div class="kpi-card"><div class="kpi-label">Peso Total Transportado</div><div class="kpi-value" style="color:#f59e0b;font-size:20px">2.184 ton</div></div>
+            <div class="kpi-card"><div class="kpi-label">Valor Total Frete</div><div class="kpi-value" style="color:#a78bfa;font-size:20px">R$ 184k</div></div>
+            <div class="kpi-card"><div class="kpi-label">Frete Médio / ton</div><div class="kpi-value" style="color:#22c55e;font-size:20px">R$ 26,5</div></div>
+          </div>
+          <table style="font-size:13px">
+            <tr><th>Transportadora</th><th>Cargas</th><th>Peso Total (ton)</th><th>Frete Unit. (R$/ton)</th><th>Total Frete</th><th>Clientes Atendidos</th></tr>
+            <tr><td style="font-weight:600">Transportes Rápidos Ltda</td><td>58</td><td>892 ton</td><td style="color:#a78bfa">R$ 28</td><td style="font-weight:600;color:#22c55e">R$ 24.976</td><td>Prefeitura SP, MRV</td></tr>
+            <tr><td style="font-weight:600">Auto Frete Norte</td><td>42</td><td>686 ton</td><td style="color:#a78bfa">R$ 26</td><td style="font-weight:600;color:#22c55e">R$ 17.836</td><td>Construtora ABC, DER</td></tr>
+            <tr><td style="font-weight:600">Fretes SP S.A.</td><td>32</td><td>512 ton</td><td style="color:#a78bfa">R$ 24</td><td style="font-weight:600;color:#22c55e">R$ 12.288</td><td>Rodovias do Brasil</td></tr>
+            <tr><td style="font-weight:600">Proprietário Particular</td><td>10</td><td>94 ton</td><td style="color:#a78bfa">R$ 22</td><td style="font-weight:600;color:#22c55e">R$ 2.068</td><td>Engenharia Rápida</td></tr>
+            <tr style="background:rgba(167,139,250,0.06);font-weight:700">
+              <td>TOTAL</td><td>142</td><td>2.184 ton</td><td style="color:#a78bfa">R$ 26,5 (méd.)</td><td style="color:#a78bfa;font-size:15px">R$ 57.168</td><td>—</td>
+            </tr>
+          </table>
+          <div style="margin-top:12px">
+            <button class="btn btn-outline btn-sm">&#128196; Exportar Relatório PDF</button>
+          </div>
         </div>
       </div>
 
@@ -1187,11 +1373,15 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
           <table>
             <tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Unidade</th><th>Est. Mínimo</th><th>NCM</th><th>Status</th></tr>
             <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0001</td><td style="font-weight:600">CAP 50/70</td><td><span class="badge badge-amber">Ligante</span></td><td>ton</td><td>50 ton</td><td style="font-family:monospace;font-size:12px">27.13.20.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0002</td><td style="font-weight:600">Brita 0 — 4,8mm</td><td><span class="badge badge-blue">Agregado</span></td><td>ton</td><td>500 ton</td><td style="font-family:monospace;font-size:12px">25.17.10.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0003</td><td style="font-weight:600">Cal Hidratada CH-I</td><td><span class="badge badge-green">Fíler</span></td><td>ton</td><td>20 ton</td><td style="font-family:monospace;font-size:12px">25.22.10.00</td><td><span class="badge badge-green">Ativo</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0004</td><td style="font-weight:600">Brita 1 — 12,5mm</td><td><span class="badge badge-blue">Agregado</span></td><td>ton</td><td>500 ton</td><td style="font-family:monospace;font-size:12px">25.17.10.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0005</td><td style="font-weight:600">Pó de Calcário</td><td><span class="badge badge-green">Fíler</span></td><td>ton</td><td>30 ton</td><td style="font-family:monospace;font-size:12px">25.21.00.00</td><td><span class="badge badge-green">Ativo</span></td></tr>
-            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0010</td><td style="font-weight:600">CBUQ BC (Produto Acabado)</td><td><span class="badge badge-purple">Produto Final</span></td><td>ton</td><td>—</td><td style="font-family:monospace;font-size:12px">27.13.20.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0002</td><td style="font-weight:600">CAP 30/45</td><td><span class="badge badge-amber">Ligante</span></td><td>ton</td><td>30 ton</td><td style="font-family:monospace;font-size:12px">27.13.20.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0003</td><td style="font-weight:600">CAPFLEX 60/85</td><td><span class="badge badge-amber">Ligante</span></td><td>ton</td><td>20 ton</td><td style="font-family:monospace;font-size:12px">27.13.20.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0004</td><td style="font-weight:600">CAP Borracha</td><td><span class="badge badge-amber">Ligante</span></td><td>ton</td><td>15 ton</td><td style="font-family:monospace;font-size:12px">27.13.20.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0005</td><td style="font-weight:600">Pedrisco</td><td><span class="badge badge-blue">Agregado</span></td><td>ton</td><td>200 ton</td><td style="font-family:monospace;font-size:12px">25.17.10.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0006</td><td style="font-weight:600">Pó de Pedra</td><td><span class="badge badge-blue">Agregado</span></td><td>ton</td><td>150 ton</td><td style="font-family:monospace;font-size:12px">25.17.10.90</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0007</td><td style="font-weight:600">Pedra 1</td><td><span class="badge badge-blue">Agregado</span></td><td>ton</td><td>300 ton</td><td style="font-family:monospace;font-size:12px">25.17.10.10</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0008</td><td style="font-weight:600">Óleo Diesel</td><td><span class="badge badge-red">Combustível</span></td><td>L</td><td>5.000 L</td><td style="font-family:monospace;font-size:12px">27.10.19.21</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0009</td><td style="font-weight:600">Óleo BPF</td><td><span class="badge badge-red">Combustível</span></td><td>L</td><td>3.000 L</td><td style="font-family:monospace;font-size:12px">27.10.19.90</td><td><span class="badge badge-green">Ativo</span></td></tr>
+            <tr><td style="font-family:monospace;font-size:12px;color:#60a5fa">MAT0010</td><td style="font-weight:600">Emulsão Asfáltica</td><td><span class="badge badge-amber">Ligante</span></td><td>ton</td><td>20 ton</td><td style="font-family:monospace;font-size:12px">27.13.20.90</td><td><span class="badge badge-green">Ativo</span></td></tr>
           </table>
         </div>
       </div>
@@ -1381,6 +1571,114 @@ function simularLeitura() {
   if (elGross) elGross.textContent = w.toLocaleString('pt-BR');
   var elNet = document.getElementById('scale-net');
   if (elNet) elNet.textContent = (w - 13200).toLocaleString('pt-BR');
+}
+
+function registrarPesagem() {
+  alert('Pesagem registrada com sucesso!\nTicket PES00000005 gerado.');
+}
+
+// ── TICKET DE PESAGEM ───────────────────────────────────────
+function gerarTicket(placa, liq, bruto, tara, tipo, mat, cli) {
+  var now = new Date();
+  var dt = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('tk-placa').textContent = placa;
+  document.getElementById('tk-tipo').textContent  = tipo;
+  document.getElementById('tk-mat').textContent   = mat;
+  document.getElementById('tk-cli').textContent   = cli;
+  document.getElementById('tk-bruto').textContent = Number(bruto.replace('.','').replace(',','.')).toLocaleString('pt-BR') + ' kg';
+  document.getElementById('tk-tara').textContent  = Number(tara.replace('.','').replace(',','.')).toLocaleString('pt-BR') + ' kg';
+  document.getElementById('tk-liq').textContent   = Number(liq.replace('.','').replace(',','.')).toLocaleString('pt-BR') + ' kg';
+  document.getElementById('tk-dt').textContent    = dt;
+  var modal = document.getElementById('modal-ticket');
+  modal.style.display = 'flex';
+}
+
+function imprimirTicket() {
+  var conteudo = document.getElementById('ticket-content').innerHTML;
+  var janela = window.open('', '_blank', 'width=420,height=600');
+  janela.document.write('<html><head><title>Ticket de Pesagem</title><style>body{font-family:monospace;font-size:13px;color:#111;padding:24px}div{margin-bottom:4px}.row{display:flex;justify-content:space-between}.titulo{text-align:center;font-size:18px;font-weight:900;letter-spacing:2px}.sub{text-align:center;font-size:11px;color:#555;margin-bottom:12px}.sep{border-top:2px dashed #ccc;margin:10px 0}.liq{display:flex;justify-content:space-between;font-size:16px;font-weight:900;border-top:2px solid #111;padding-top:8px;margin-top:8px}.rodape{text-align:center;font-size:11px;color:#555;border-top:1px dashed #ccc;padding-top:10px;margin-top:12px}</style></head><body>' + conteudo + '</body></html>');
+  janela.document.close();
+  janela.focus();
+  janela.print();
+  janela.close();
+}
+
+// ── MARSHALL ────────────────────────────────────────────────
+function calcMarshall() {
+  var gmb   = parseFloat(document.getElementById('m-gmb').value)   || 0;
+  var gmm   = parseFloat(document.getElementById('m-gmm').value)   || 0;
+  var cap   = parseFloat(document.getElementById('m-cap').value)   || 0;
+  var estab = parseFloat(document.getElementById('m-estab').value) || 0;
+  var flu   = parseFloat(document.getElementById('m-flu').value)   || 0;
+  if (!gmb || !gmm) return;
+  var vv  = (1 - gmb / gmm) * 100;
+  var Gse = 2.65; // densidade efetiva dos agregados (típico)
+  var vam = (1 - (gmb * (1 - cap / 100)) / Gse) * 100;
+  var rbv = vam > 0 ? ((vam - vv) / vam) * 100 : 0;
+  var vvOk    = vv >= 3 && vv <= 5;
+  var vamOk   = vam >= 15;
+  var rbvOk   = rbv >= 65 && rbv <= 75;
+  var estabOk = estab >= 500;
+  var fluOk   = flu >= 2 && flu <= 4.5;
+  var ok = vvOk && vamOk && rbvOk && estabOk && fluOk;
+  document.getElementById('m-res-vv').innerHTML  = 'VV: <strong style="color:' + (vvOk?'#22c55e':'#ef4444') + '">' + vv.toFixed(2) + '% ' + (vvOk?'✓':'✗') + '</strong> <small style="color:#475569">(ref: 3–5%)</small>';
+  document.getElementById('m-res-vam').innerHTML = 'VAM: <strong style="color:' + (vamOk?'#22c55e':'#ef4444') + '">' + vam.toFixed(2) + '% ' + (vamOk?'✓':'✗') + '</strong> <small style="color:#475569">(ref: ≥15%)</small>';
+  document.getElementById('m-res-rbv').innerHTML = 'RBV: <strong style="color:' + (rbvOk?'#22c55e':'#ef4444') + '">' + rbv.toFixed(2) + '% ' + (rbvOk?'✓':'✗') + '</strong> <small style="color:#475569">(ref: 65–75%)</small>';
+  document.getElementById('m-res-badge').innerHTML = ok
+    ? '<span class="badge badge-green" style="font-size:14px;padding:6px 14px">APROVADO</span>'
+    : '<span class="badge badge-red" style="font-size:14px;padding:6px 14px">REPROVADO</span>';
+}
+
+function salvarEnsaio() {
+  alert('Ensaio salvo com sucesso!\nNº LAB00000042 gerado.');
+}
+
+function gerarPDFLab() {
+  alert('Gerando PDF do Controle Tecnológico...\n(Funcionalidade disponível na versão completa)');
+}
+
+// ── PERDAS ──────────────────────────────────────────────────
+function registrarPerda() {
+  var mat = document.getElementById('perda-mat').value;
+  var qtd = document.getElementById('perda-qtd').value;
+  if (!qtd || qtd <= 0) { alert('Informe a quantidade da perda.'); return; }
+  var fb = document.getElementById('perda-feedback');
+  fb.textContent = '✓ Perda registrada: ' + qtd + ' ton de ' + mat + ' descontado do estoque.';
+  fb.style.display = 'inline';
+  setTimeout(function() { fb.style.display = 'none'; }, 5000);
+}
+
+// ── ORÇAMENTO ───────────────────────────────────────────────
+function calcOrcamento() {
+  var sel   = document.getElementById('orc-tipo');
+  var preco = parseFloat(document.getElementById('orc-preco').value) || parseFloat(sel.value) || 0;
+  var frete = parseFloat(document.getElementById('orc-frete').value) || 0;
+  var qtd   = parseFloat(document.getElementById('orc-qtd').value)   || 0;
+  // Preenche preço sugerido pelo tipo quando campo vazio
+  if (!document.getElementById('orc-preco').value) {
+    document.getElementById('orc-preco').placeholder = 'R$ ' + sel.value;
+    preco = parseFloat(sel.value);
+  }
+  var unitTotal = preco + frete;
+  var total     = unitTotal * qtd;
+  document.getElementById('orc-res-unit').textContent  = 'R$ ' + unitTotal.toLocaleString('pt-BR', {minimumFractionDigits:2}) + '/ton';
+  document.getElementById('orc-res-total').textContent = total > 0 ? 'R$ ' + total.toLocaleString('pt-BR', {minimumFractionDigits:2}) : '—';
+}
+
+function salvarOrcamento() {
+  alert('Orçamento salvo com sucesso!\nNº ORC000006 gerado.');
+  document.getElementById('form-orcamento').style.display = 'none';
+}
+
+function converterPedido(modo) {
+  if (modo === 'parcial') {
+    var qtd = prompt('Informe a quantidade parcial (ton) a converter em pedido:');
+    if (!qtd) return;
+    alert('Pedido criado com ' + qtd + ' ton.\nNº PED000000039 gerado.');
+  } else {
+    alert('Pedido criado com quantidade total do orçamento.\nNº PED000000039 gerado.');
+  }
+  document.getElementById('form-orcamento').style.display = 'none';
 }
 
 window.onload = function() {
