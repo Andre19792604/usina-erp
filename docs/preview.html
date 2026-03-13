@@ -868,7 +868,21 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
 
           <!-- Filtros -->
           <div class="card" style="margin-bottom:20px">
-            <div class="card-title-lg" style="margin-bottom:14px">Gerar Relatório de Produção e Estoque por Cliente</div>
+            <div class="card-title-lg" style="margin-bottom:14px">Gerar Relatório</div>
+          <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+              <input type="checkbox" id="chk-producao" checked style="accent-color:#f59e0b;width:15px;height:15px">
+              <span>Produção e Estoque</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+              <input type="checkbox" id="chk-compras" checked style="accent-color:#f59e0b;width:15px;height:15px">
+              <span>Compra de Peças</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+              <input type="checkbox" id="chk-profissionais" checked style="accent-color:#f59e0b;width:15px;height:15px">
+              <span>Profissionais Contratados</span>
+            </label>
+          </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px">
               <div class="form-group">
                 <label>Cliente</label>
@@ -1591,7 +1605,7 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
       <div id="page-relatorios" class="page-content">
         <div class="page-header">
           <div class="page-title">Relatórios</div>
-          <div class="page-subtitle">Relatórios de produção e estoque por cliente</div>
+          <div class="page-subtitle">Relatórios de produção, estoque, compras e profissionais contratados</div>
         </div>
         <!-- Filtros -->
         <div class="card" style="margin-bottom:20px">
@@ -1661,6 +1675,25 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
               </table>
             </div>
             <div id="rel2-totais" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+          </div>
+        </div>
+          <div id="rel2-card-compras" class="card" style="margin-bottom:16px">
+            <div class="card-title-lg" style="margin-bottom:14px">&#128295; Compra de Peças</div>
+            <div class="table-wrap">
+              <table id="rel2-tab-compras" style="font-size:13px">
+                <tr><th>Data</th><th>Peça / Descrição</th><th>Categoria</th><th>Fornecedor</th><th>Qtd</th><th>Valor Unit.</th><th>Total</th><th>NF</th><th>Solicitante</th></tr>
+              </table>
+            </div>
+            <div id="rel2-totais-compras" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+          </div>
+          <div id="rel2-card-profissionais" class="card" style="margin-bottom:16px">
+            <div class="card-title-lg" style="margin-bottom:14px">&#128104;&#8205;&#128295; Profissionais Contratados</div>
+            <div class="table-wrap">
+              <table id="rel2-tab-profissionais" style="font-size:13px">
+                <tr><th>Nome</th><th>Especialidade</th><th>Empresa / PJ</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Status</th></tr>
+              </table>
+            </div>
+            <div id="rel2-totais-prof" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
           </div>
         </div>
         <div id="rel2-vazio" style="text-align:center;padding:48px;color:#475569">
@@ -2346,10 +2379,32 @@ window.onload = function() {
   simulate();
 };
 
+// ── DADOS DE COMPRAS DE PEÇAS ──────────────────────────────────────────
+var dadosCompras = [
+  { data:'01/03/2026', peca:'Correia transportadora 800mm', cat:'Mecânica', forn:'Distribuidora Norte Ltda', qtd:'4 un', unit:'R$ 1.250,00', total:'R$ 5.000,00', nf:'NF-00891', sol:'Carlos M.' },
+  { data:'03/03/2026', peca:'Rolamento SKF 6310',           cat:'Mecânica', forn:'Rolamentos Sul ME',        qtd:'10 un', unit:'R$ 320,00',   total:'R$ 3.200,00', nf:'NF-00312', sol:'Ana P.' },
+  { data:'05/03/2026', peca:'Óleo lubrificante ISO 220',    cat:'Lubrificação', forn:'Química Industrial SP', qtd:'200 L',  unit:'R$ 18,50',    total:'R$ 3.700,00', nf:'NF-02145', sol:'Carlos M.' },
+  { data:'07/03/2026', peca:'Filtro hidráulico HY 10-20',   cat:'Hidráulica', forn:'Hidráulica Total ME',    qtd:'6 un',  unit:'R$ 480,00',   total:'R$ 2.880,00', nf:'NF-00567', sol:'João R.' },
+  { data:'10/03/2026', peca:'Eletrodo de solda E6013 3,25', cat:'Elétrica',  forn:'Ferram. Central SP',     qtd:'50 kg', unit:'R$ 42,00',    total:'R$ 2.100,00', nf:'NF-01023', sol:'Pedro S.' },
+  { data:'12/03/2026', peca:'Parafuso sextavado M16 x 60',  cat:'Fixação',   forn:'Fixadores Brasil Ltda',  qtd:'500 un', unit:'R$ 1,90',     total:'R$ 950,00',  nf:'NF-00748', sol:'Ana P.' }
+];
+
+// ── DADOS DE PROFISSIONAIS CONTRATADOS ─────────────────────────────────
+var dadosProfissionais = [
+  { nome:'Ricardo Souza',   esp:'Mecânico Industrial',   emp:'RS Manutenção ME',       ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:'R$ 350,00', total:'R$ 7.700,00', status:'Ativo' },
+  { nome:'Fernanda Lima',   esp:'Eletricista de Manutenção', emp:'FL Serviços Elétricos', ini:'01/03/2026', fim:'15/03/2026', dias:11, diaria:'R$ 420,00', total:'R$ 4.620,00', status:'Ativo' },
+  { nome:'Paulo Henrique',  esp:'Soldador Certificado',  emp:'PH Soldagem Ltda',       ini:'05/03/2026', fim:'20/03/2026', dias:12, diaria:'R$ 390,00', total:'R$ 4.680,00', status:'Ativo' },
+  { nome:'Marcos Oliveira', esp:'Técnico Hidráulico',    emp:'Hidro Tech ME',          ini:'08/03/2026', fim:'12/03/2026', dias: 5, diaria:'R$ 480,00', total:'R$ 2.400,00', status:'Concluído' },
+  { nome:'Ana Beatriz',     esp:'Técnica em Segurança do Trabalho', emp:'Segur Max Ltda', ini:'01/03/2026', fim:'31/03/2026', dias:22, diaria:'R$ 300,00', total:'R$ 6.600,00', status:'Ativo' }
+];
+
 function gerarRelatorio2() {
-  var cliVal = document.getElementById('rel2-cliente').value;
-  var dtIni  = document.getElementById('rel2-dt-ini').value;
-  var dtFim  = document.getElementById('rel2-dt-fim').value;
+  var cliVal     = document.getElementById('rel2-cliente').value;
+  var dtIni      = document.getElementById('rel2-dt-ini').value;
+  var dtFim      = document.getElementById('rel2-dt-fim').value;
+  var chkProd    = document.getElementById('chk-producao').checked;
+  var chkComp    = document.getElementById('chk-compras').checked;
+  var chkProf    = document.getElementById('chk-profissionais').checked;
   if (!cliVal) { alert('Selecione um cliente'); return; }
   var dados = dadosClientes[cliVal];
   if (!dados) return;
@@ -2357,40 +2412,95 @@ function gerarRelatorio2() {
   document.getElementById('rel2-nome-cli').textContent = 'Cliente: ' + dados.nome;
   document.getElementById('rel2-periodo').textContent = 'Período: ' + dtIni + ' a ' + dtFim;
 
+  // KPIs base
   var kpisEl = document.getElementById('rel2-kpis');
-  kpisEl.innerHTML =
+  var kpiHtml =
     '<div class="kpi-card"><div class="kpi-label">Total Pedido</div><div class="kpi-value" style="color:#60a5fa">' + dados.totalPedido + '</div></div>' +
     '<div class="kpi-card"><div class="kpi-label">Total Produzido</div><div class="kpi-value" style="color:#22c55e">' + dados.totalProduzido + '</div></div>' +
     '<div class="kpi-card"><div class="kpi-label">Saldo do Pedido</div><div class="kpi-value" style="color:#f59e0b">' + dados.saldoPedido + '</div></div>';
 
-  var tabMat = document.getElementById('rel2-tab-materiais');
-  tabMat.innerHTML = '<tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>';
-  dados.materiais.forEach(function(m) {
-    var cor = m.status === 'OK' ? '#22c55e' : m.status === 'Atenção' ? '#f59e0b' : '#ef4444';
-    tabMat.innerHTML += '<tr><td>' + m.mat + '</td><td>' + m.tipo + '</td><td>' + m.por + '</td><td>' + m.contratado + '</td><td>' + m.consumido + '</td><td>' + m.saldoPed + '</td><td>' + m.saldoEst + '</td><td>' + m.pct + '</td><td style="color:' + cor + ';font-weight:700">' + m.status + '</td></tr>';
-  });
+  // KPI compras
+  if (chkComp) {
+    var totalComp = 0;
+    dadosCompras.forEach(function(c) { totalComp += parseFloat(c.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0; });
+    kpiHtml += '<div class="kpi-card"><div class="kpi-label">Gasto Compras</div><div class="kpi-value" style="color:#a78bfa">R$ ' + totalComp.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</div></div>';
+  }
+  // KPI profissionais
+  if (chkProf) {
+    var totalProf = 0;
+    dadosProfissionais.forEach(function(p) { totalProf += parseFloat(p.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0; });
+    kpiHtml += '<div class="kpi-card"><div class="kpi-label">Custo Profissionais</div><div class="kpi-value" style="color:#f472b6">R$ ' + totalProf.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</div></div>';
+  }
+  kpisEl.innerHTML = kpiHtml;
 
-  var tabProd = document.getElementById('rel2-tab-producao');
-  tabProd.innerHTML = '<tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>';
-  dados.producao.forEach(function(p) {
-    tabProd.innerHTML += '<tr><td>' + p.data + '</td><td>' + p.op + '</td><td>' + p.produto + '</td><td>' + p.qtd + '</td><td>' + p.cap + '</td><td>' + p.temp + '</td><td>' + p.resp + '</td></tr>';
-  });
+  // ── Produção e estoque
+  var secProd = document.querySelector('#rel2-resultado .card:nth-child(2)');
+  var secProdProd = document.querySelector('#rel2-resultado .card:nth-child(3)');
+  var secMov = document.querySelector('#rel2-resultado .card:nth-child(4)');
+  if (secProd) secProd.style.display = chkProd ? 'block' : 'none';
+  if (secProdProd) secProdProd.style.display = chkProd ? 'block' : 'none';
+  if (secMov) secMov.style.display = chkProd ? 'block' : 'none';
 
-  var tabMov = document.getElementById('rel2-tab-mov');
-  tabMov.innerHTML = '<tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>';
-  dados.movimentacoes.forEach(function(mv) {
-    var cor = mv.tipo === 'Entrada' ? '#22c55e' : '#f59e0b';
-    tabMov.innerHTML += '<tr><td>' + mv.data + '</td><td>' + mv.hora + '</td><td>' + mv.placa + '</td><td>' + mv.motorista + '</td><td style="color:' + cor + ';font-weight:600">' + mv.tipo + '</td><td>' + mv.material + '</td><td>' + mv.qtd + '</td><td>' + mv.doc + '</td><td>' + mv.operador + '</td></tr>';
-  });
+  if (chkProd) {
+    var tabMat = document.getElementById('rel2-tab-materiais');
+    tabMat.innerHTML = '<tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>';
+    dados.materiais.forEach(function(m) {
+      var cor = m.status === 'OK' ? '#22c55e' : m.status === 'Atenção' ? '#f59e0b' : '#ef4444';
+      tabMat.innerHTML += '<tr><td>' + m.mat + '</td><td>' + m.tipo + '</td><td>' + m.por + '</td><td>' + m.contratado + '</td><td>' + m.consumido + '</td><td>' + m.saldoPed + '</td><td>' + m.saldoEst + '</td><td>' + m.pct + '</td><td style="color:' + cor + ';font-weight:700">' + m.status + '</td></tr>';
+    });
+    var tabProd = document.getElementById('rel2-tab-producao');
+    tabProd.innerHTML = '<tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>';
+    dados.producao.forEach(function(p) {
+      tabProd.innerHTML += '<tr><td>' + p.data + '</td><td>' + p.op + '</td><td>' + p.produto + '</td><td>' + p.qtd + '</td><td>' + p.cap + '</td><td>' + p.temp + '</td><td>' + p.resp + '</td></tr>';
+    });
+    var tabMov = document.getElementById('rel2-tab-mov');
+    tabMov.innerHTML = '<tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>';
+    dados.movimentacoes.forEach(function(mv) {
+      var cor = mv.tipo === 'Entrada' ? '#22c55e' : '#f59e0b';
+      tabMov.innerHTML += '<tr><td>' + mv.data + '</td><td>' + mv.hora + '</td><td>' + mv.placa + '</td><td>' + mv.motorista + '</td><td style="color:' + cor + ';font-weight:600">' + mv.tipo + '</td><td>' + mv.material + '</td><td>' + mv.qtd + '</td><td>' + mv.doc + '</td><td>' + mv.operador + '</td></tr>';
+    });
+    var totalEnt = 0, totalSai = 0;
+    dados.movimentacoes.forEach(function(mv) {
+      var n = parseFloat(mv.qtd.replace(/[^\d,]/g,'').replace(',','.')) || 0;
+      if (mv.tipo === 'Entrada') totalEnt += n; else totalSai += n;
+    });
+    document.getElementById('rel2-totais').innerHTML =
+      '<span style="color:#22c55e;font-weight:700">Total Entradas: ' + totalEnt.toFixed(1) + ' ton</span>' +
+      '<span style="color:#f59e0b;font-weight:700">Total Saídas: ' + totalSai.toFixed(1) + ' ton</span>';
+  }
 
-  var totalEnt = 0, totalSai = 0;
-  dados.movimentacoes.forEach(function(mv) {
-    var n = parseFloat(mv.qtd.replace(/[^\d,]/g,'').replace(',','.')) || 0;
-    if (mv.tipo === 'Entrada') totalEnt += n; else totalSai += n;
-  });
-  document.getElementById('rel2-totais').innerHTML =
-    '<span style="color:#22c55e;font-weight:700">Total Entradas: ' + totalEnt.toFixed(1) + ' ton</span>' +
-    '<span style="color:#f59e0b;font-weight:700">Total Saídas: ' + totalSai.toFixed(1) + ' ton</span>';
+  // ── Compras
+  var cardComp = document.getElementById('rel2-card-compras');
+  cardComp.style.display = chkComp ? 'block' : 'none';
+  if (chkComp) {
+    var tabComp = document.getElementById('rel2-tab-compras');
+    tabComp.innerHTML = '<tr><th>Data</th><th>Peça / Descrição</th><th>Categoria</th><th>Fornecedor</th><th>Qtd</th><th>Valor Unit.</th><th>Total</th><th>NF</th><th>Solicitante</th></tr>';
+    var somaComp = 0;
+    dadosCompras.forEach(function(c) {
+      tabComp.innerHTML += '<tr><td>' + c.data + '</td><td>' + c.peca + '</td><td>' + c.cat + '</td><td>' + c.forn + '</td><td>' + c.qtd + '</td><td>' + c.unit + '</td><td style="color:#a78bfa;font-weight:600">' + c.total + '</td><td>' + c.nf + '</td><td>' + c.sol + '</td></tr>';
+      somaComp += parseFloat(c.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0;
+    });
+    document.getElementById('rel2-totais-compras').innerHTML =
+      '<span style="color:#a78bfa;font-weight:700">Total em Compras: R$ ' + somaComp.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
+      '<span style="color:#94a3b8">Itens: ' + dadosCompras.length + '</span>';
+  }
+
+  // ── Profissionais
+  var cardProf = document.getElementById('rel2-card-profissionais');
+  cardProf.style.display = chkProf ? 'block' : 'none';
+  if (chkProf) {
+    var tabProf = document.getElementById('rel2-tab-profissionais');
+    tabProf.innerHTML = '<tr><th>Nome</th><th>Especialidade</th><th>Empresa / PJ</th><th>Dt. Início</th><th>Dt. Fim</th><th>Dias</th><th>Valor/Dia</th><th>Total</th><th>Status</th></tr>';
+    var somaProf = 0;
+    dadosProfissionais.forEach(function(p) {
+      var cor = p.status === 'Ativo' ? '#22c55e' : '#64748b';
+      tabProf.innerHTML += '<tr><td>' + p.nome + '</td><td>' + p.esp + '</td><td>' + p.emp + '</td><td>' + p.ini + '</td><td>' + p.fim + '</td><td>' + p.dias + '</td><td>' + p.diaria + '</td><td style="color:#f472b6;font-weight:600">' + p.total + '</td><td style="color:' + cor + ';font-weight:700">' + p.status + '</td></tr>';
+      somaProf += parseFloat(p.total.replace(/[R$\s.]/g,'').replace(',','.')) || 0;
+    });
+    document.getElementById('rel2-totais-prof').innerHTML =
+      '<span style="color:#f472b6;font-weight:700">Custo Total: R$ ' + somaProf.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
+      '<span style="color:#94a3b8">Profissionais: ' + dadosProfissionais.length + '</span>';
+  }
 
   document.getElementById('rel2-vazio').style.display = 'none';
   document.getElementById('rel2-resultado').style.display = 'block';
