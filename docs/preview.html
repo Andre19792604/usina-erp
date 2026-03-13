@@ -1817,6 +1817,9 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
               <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
                 <input type="checkbox" id="man-chk-loc" checked style="accent-color:#a78bfa;width:15px;height:15px"> Locação de Equipamentos
               </label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;cursor:pointer">
+                <input type="checkbox" id="man-chk-energia" checked style="accent-color:#a78bfa;width:15px;height:15px"> Energia Elétrica
+              </label>
             </div>
           </div>
         </div>
@@ -1857,7 +1860,7 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
             <div id="man-total-prof" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
           </div>
           <!-- Locação de equipamentos -->
-          <div id="man-card-loc" class="card">
+          <div id="man-card-loc" class="card" style="margin-bottom:16px">
             <div class="card-title-lg" style="margin-bottom:14px">&#127959; Locação de Equipamentos</div>
             <div class="table-wrap">
               <table id="man-tab-loc" style="font-size:13px">
@@ -1865,6 +1868,16 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
               </table>
             </div>
             <div id="man-total-loc" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+          </div>
+          <!-- Energia Elétrica -->
+          <div id="man-card-energia" class="card">
+            <div class="card-title-lg" style="margin-bottom:14px">&#9889; Energia Elétrica</div>
+            <div class="table-wrap">
+              <table id="man-tab-energia" style="font-size:13px">
+                <tr><th>Mês / Ref.</th><th>Distribuidora</th><th>UC / Medidor</th><th>Consumo (kWh)</th><th>Demanda (kW)</th><th>Valor Energia</th><th>Encargos</th><th>Total Fatura</th><th>Vencimento</th><th>Status</th></tr>
+              </table>
+            </div>
+            <div id="man-total-energia" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
           </div>
         </div>
 
@@ -2694,6 +2707,14 @@ function gerarRelInsumos() {
 }
 
 // ── BLOCO 3: MANUTENÇÃO E PEÇAS ─────────────────────────────────────────
+var dadosEnergia = [
+  { mes:'Janeiro/2026', ref:'01/2026', dist:'Enel São Paulo', uc:'UC-001/A — Usina Principal', kwh:148200, dem:480, valorEn:114874.00, encargos:18340.00, total:133214.00, venc:'10/02/2026', status:'Pago' },
+  { mes:'Fevereiro/2026', ref:'02/2026', dist:'Enel São Paulo', uc:'UC-001/A — Usina Principal', kwh:136500, dem:480, valorEn:105772.50, encargos:16920.00, total:122692.50, venc:'10/03/2026', status:'Pago' },
+  { mes:'Fevereiro/2026', ref:'02/2026', dist:'Enel São Paulo', uc:'UC-002/B — Bloco Adm.', kwh:4200, dem:50, valorEn:3255.00, encargos:820.00, total:4075.00, venc:'10/03/2026', status:'Pago' },
+  { mes:'Março/2026', ref:'03/2026', dist:'Enel São Paulo', uc:'UC-001/A — Usina Principal', kwh:89400, dem:480, valorEn:69285.00, encargos:11020.00, total:80305.00, venc:'10/04/2026', status:'A Vencer' },
+  { mes:'Março/2026', ref:'03/2026', dist:'Enel São Paulo', uc:'UC-002/B — Bloco Adm.', kwh:2600, dem:50, valorEn:2015.00, encargos:508.00, total:2523.00, venc:'10/04/2026', status:'A Vencer' }
+];
+
 var dadosPecas = [
   { data:'01/03/2026', peca:'Correia transportadora 800mm', cat:'Mecânica',    forn:'Distribuidora Norte Ltda', qtd:'4 un',   unit:'R$ 1.250,00', total: 5000,  nf:'NF-00891', sol:'Carlos M.' },
   { data:'03/03/2026', peca:'Rolamento SKF 6310',           cat:'Mecânica',    forn:'Rolamentos Sul ME',        qtd:'10 un',  unit:'R$ 320,00',   total: 3200,  nf:'NF-00312', sol:'Ana P.' },
@@ -2726,7 +2747,8 @@ function gerarRelManut() {
   var chkPro = document.getElementById('man-chk-prof').checked;
   var chkL   = document.getElementById('man-chk-loc').checked;
 
-  if (!chkP && !chkPro && !chkL) { alert('Selecione ao menos uma categoria'); return; }
+  var chkE   = document.getElementById('man-chk-energia').checked;
+  if (!chkP && !chkPro && !chkL && !chkE) { alert('Selecione ao menos uma categoria'); return; }
 
   document.getElementById('man-periodo-label').textContent = 'Período: ' + dtIni + ' a ' + dtFim;
 
