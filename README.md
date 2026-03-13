@@ -1,47 +1,37 @@
-# Usina ERP
+# USINA ERP 🏭
 
-Sistema ERP completo para usina de asfalto.
+Sistema de Gestão Integrada para Usinas de Açúcar e Etanol — desenvolvido como aplicação web standalone (single HTML file), sem dependências externas.
 
-## Módulos
-- Autenticação e controle de acesso por perfil
-- Cadastros (clientes, fornecedores, materiais, veículos, funcionários)
-- Produção (ordens, fórmulas/traços, controle de qualidade)
-- Estoque (insumos: CAP, brita, areia, cal)
-- Balança / Pesagem
-- Vendas (orçamentos, pedidos, contratos)
-- Compras (cotações, pedidos de compra)
-- Financeiro (contas a pagar/receber, fluxo de caixa)
-- Manutenção (equipamentos, ordens de serviço)
-- Relatórios e Dashboard
+## 🌐 Acesso Online
 
-## Stack
-- **Backend:** Node.js + Express + Prisma ORM + PostgreSQL
-- **Frontend:** React + Vite + TypeScript + Ant Design
-- **Infra:** Docker Compose
+**[https://andre19792604.github.io/usina-erp/](https://andre19792604.github.io/usina-erp/)**
 
-## Início rápido
+## 📦 Módulos
 
-```bash
-# Subir banco de dados
-docker-compose up -d
+| Módulo | Funcionalidades |
+|---|---|
+| **Dashboard** | KPIs, pedidos recentes, estoque crítico, contas a vencer, feed de atividades |
+| **Vendas** | Pedidos PV-2024 a PV-2029, novo pedido, editar, excluir, filtro em tempo real |
+| **Estoque** | 8 produtos (Açúcar VHP, Etanol, etc.), entradas/saídas, alertas de mínimo |
+| **Financeiro** | Contas a Pagar, Contas a Receber, Fluxo de Caixa (tabs) |
+| **Clientes** | 5 clientes, CRUD completo com busca |
+| **Fornecedores** | 5 fornecedores, CRUD completo |
+| **RH** | Funcionários, Folha de Pagamento, Férias (tabs) |
+| **Produção** | 3 ordens ativas com avanço de status |
+| **Relatórios** | Visão consolidada por período |
+| **Configurações** | Dados da usina e preferências |
 
-# Backend
-cd backend
-cp .env.example .env
-npm install
-npx prisma migrate dev
-npm run dev
+## 🛠️ Tecnologia
 
-# Frontend
-cd frontend
-npm install
-npm run dev
-```
+- HTML5 + CSS3 + JavaScript (vanilla)
+- 100% offline — zero dependências externas
+- Tema escuro (`#0a0f1a`) com cor primária âmbar (`#f59e0b`)
+- Notificações toast, modais, filtros em tempo real, validação de formulários
 
-## Estrutura
-```
-usina-erp/
-├── backend/          # API REST
-├── frontend/         # Interface web
-└── docker-compose.yml
-```
+## 🚀 Uso Local
+
+Basta abrir o arquivo `index.html` no navegador — sem servidor, sem instalação.
+
+---
+
+*USINA ERP — Gestão completa para o agronegócio sucroenergético brasileiro.*
