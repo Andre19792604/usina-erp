@@ -771,30 +771,170 @@ table tr:hover td { background: rgba(30,58,95,0.2); }
       <div id="page-estoque" class="page-content">
         <div class="page-header">
           <div class="page-title">Estoque da Usina</div>
-          <div class="page-subtitle">Posição de insumos e movimentações</div>
+          <div class="page-subtitle">Posição de insumos, movimentações e relatórios</div>
         </div>
-        <div class="kpi-row">
-          <div class="kpi-card"><div class="kpi-label">Itens em Estoque</div><div class="kpi-value" style="color:#60a5fa">24</div><div class="kpi-change"><span style="color:#ef4444">6 abaixo do mínimo</span></div></div>
-          <div class="kpi-card"><div class="kpi-label">Valor em Estoque</div><div class="kpi-value" style="color:#22c55e;font-size:22px">R$ 1,24M</div></div>
-          <div class="kpi-card"><div class="kpi-label">Pedidos de Compra</div><div class="kpi-value" style="color:#f59e0b">3</div><div class="kpi-change">aguardando</div></div>
-          <div class="kpi-card"><div class="kpi-label">Consumo Hoje</div><div class="kpi-value" style="color:#e2e8f0">892 ton</div></div>
+
+        <!-- ABAS -->
+        <div style="display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid #1e3a5f;padding-bottom:0">
+          <button id="tab-estoque-pos" onclick="showEstoqueTab('pos')" style="padding:10px 20px;background:#1e3a5f;color:#e2e8f0;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px;font-weight:700;border-bottom:2px solid #f59e0b">&#128202; Posição de Estoque</button>
+          <button id="tab-estoque-rel" onclick="showEstoqueTab('rel')" style="padding:10px 20px;background:transparent;color:#64748b;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px;font-weight:600;border-bottom:2px solid transparent">&#128196; Relatórios</button>
         </div>
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div class="card-title-lg" style="margin:0">Posição de Estoque</div>
-            <button class="btn btn-primary btn-sm">+ Registrar Entrada</button>
+
+        <!-- ── ABA: POSIÇÃO DE ESTOQUE ── -->
+        <div id="estoque-tab-pos">
+          <div class="kpi-row">
+            <div class="kpi-card"><div class="kpi-label">Itens em Estoque</div><div class="kpi-value" style="color:#60a5fa">24</div><div class="kpi-change"><span style="color:#ef4444">6 abaixo do mínimo</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">Valor em Estoque</div><div class="kpi-value" style="color:#22c55e;font-size:22px">R$ 1,24M</div></div>
+            <div class="kpi-card"><div class="kpi-label">Pedidos de Compra</div><div class="kpi-value" style="color:#f59e0b">3</div><div class="kpi-change">aguardando</div></div>
+            <div class="kpi-card"><div class="kpi-label">Consumo Hoje</div><div class="kpi-value" style="color:#e2e8f0">892 ton</div></div>
           </div>
-          <div class="table-wrap">
-            <table>
-              <tr><th>Material</th><th>Tipo</th><th>Saldo Atual</th><th>Est. Mín</th><th>Est. Máx</th><th>Unid.</th><th>Valor Unit.</th><th>Valor Total</th><th>Status</th></tr>
-              <tr><td style="font-weight:600">CAP 50/70</td><td>Ligante</td><td style="color:#ef4444;font-weight:700">45,0</td><td>50,0</td><td>300,0</td><td>ton</td><td>R$ 3.800</td><td>R$ 171.000</td><td><span class="badge badge-red">Abaixo Mín</span></td></tr>
-              <tr><td style="font-weight:600">Brita 0 (4,8mm)</td><td>Agregado</td><td style="color:#22c55e;font-weight:700">1.850</td><td>500</td><td>5.000</td><td>ton</td><td>R$ 48</td><td>R$ 88.800</td><td><span class="badge badge-green">OK</span></td></tr>
-              <tr><td style="font-weight:600">Brita 1 (12,5mm)</td><td>Agregado</td><td style="color:#22c55e;font-weight:700">2.420</td><td>500</td><td>6.000</td><td>ton</td><td>R$ 52</td><td>R$ 125.840</td><td><span class="badge badge-green">OK</span></td></tr>
-              <tr><td style="font-weight:600">Areia Natural</td><td>Agregado</td><td style="color:#22c55e;font-weight:700">3.100</td><td>800</td><td>8.000</td><td>ton</td><td>R$ 32</td><td>R$ 99.200</td><td><span class="badge badge-green">OK</span></td></tr>
-              <tr><td style="font-weight:600">Cal Hidratada</td><td>Fíler</td><td style="color:#ef4444;font-weight:700">12,0</td><td>20,0</td><td>100,0</td><td>ton</td><td>R$ 420</td><td>R$ 5.040</td><td><span class="badge badge-red">Abaixo Mín</span></td></tr>
-              <tr><td style="font-weight:600">Pó de Calcário</td><td>Fíler</td><td style="color:#f59e0b;font-weight:700">28,0</td><td>30,0</td><td>150,0</td><td>ton</td><td>R$ 180</td><td>R$ 5.040</td><td><span class="badge badge-amber">Próx. Mín</span></td></tr>
-              <tr><td style="font-weight:600">Óleo Diesel B S10</td><td>Combustível</td><td style="color:#ef4444;font-weight:700">3.200</td><td>5.000</td><td>30.000</td><td>L</td><td>R$ 6,40</td><td>R$ 20.480</td><td><span class="badge badge-red">Abaixo Mín</span></td></tr>
-            </table>
+          <!-- CONTROLE DIÁRIO DE ÓLEO BPF -->
+          <div class="card" style="margin-bottom:16px;border:1px solid #312e81">
+            <div class="card-title-lg" style="margin-bottom:14px;color:#a78bfa">&#9881; Controle Diário — Óleo BPF</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px">
+              <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="bpf-data" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Saldo Inicial do Dia (L)</label>
+                <input type="number" id="bpf-inicial" placeholder="Ex: 8.500" oninput="calcBPF()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Saldo Final do Dia (L)</label>
+                <input type="number" id="bpf-final" placeholder="Ex: 3.200" oninput="calcBPF()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Produção do Dia (ton)</label>
+                <input type="number" id="bpf-prod" placeholder="Ex: 892" oninput="calcBPF()" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+            </div>
+            <div style="background:#0f172a;border:1px solid #312e81;border-radius:8px;padding:14px;margin-bottom:14px;display:flex;gap:28px;flex-wrap:wrap">
+              <div style="font-size:13px">Consumido: <strong id="bpf-consumido" style="color:#a78bfa;font-size:16px">—</strong></div>
+              <div style="font-size:13px">Consumo médio: <strong id="bpf-media" style="color:#f59e0b">—</strong></div>
+              <div style="font-size:13px">Consumo teórico (8,5 L/ton): <strong id="bpf-teorico" style="color:#60a5fa">—</strong></div>
+              <div style="font-size:13px">Diferença real vs teórico: <strong id="bpf-diff" style="color:#94a3b8">—</strong></div>
+            </div>
+            <button class="btn btn-outline" style="border-color:#a78bfa;color:#a78bfa" onclick="salvarBPF()">&#10003; Registrar Leitura do Dia</button>
+            <span id="bpf-feedback" style="font-size:13px;color:#22c55e;display:none;margin-left:12px">&#10003; Registrado com sucesso.</span>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <div class="card-title-lg" style="margin:0">Posição de Estoque</div>
+              <button class="btn btn-primary btn-sm">+ Registrar Entrada</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Material</th><th>Tipo</th><th>Saldo Atual</th><th>Est. Mín</th><th>Est. Máx</th><th>Unid.</th><th>Valor Unit.</th><th>Valor Total</th><th>Status</th></tr>
+                <tr><td style="font-weight:600">CAP 50/70</td><td>Ligante</td><td style="color:#ef4444;font-weight:700">45,0</td><td>50,0</td><td>300,0</td><td>ton</td><td>R$ 3.800</td><td>R$ 171.000</td><td><span class="badge badge-red">Abaixo Mín</span></td></tr>
+                <tr><td style="font-weight:600">Brita 0 (4,8mm)</td><td>Agregado</td><td style="color:#22c55e;font-weight:700">1.850</td><td>500</td><td>5.000</td><td>ton</td><td>R$ 48</td><td>R$ 88.800</td><td><span class="badge badge-green">OK</span></td></tr>
+                <tr><td style="font-weight:600">Brita 1 (12,5mm)</td><td>Agregado</td><td style="color:#22c55e;font-weight:700">2.420</td><td>500</td><td>6.000</td><td>ton</td><td>R$ 52</td><td>R$ 125.840</td><td><span class="badge badge-green">OK</span></td></tr>
+                <tr><td style="font-weight:600">Areia Natural</td><td>Agregado</td><td style="color:#22c55e;font-weight:700">3.100</td><td>800</td><td>8.000</td><td>ton</td><td>R$ 32</td><td>R$ 99.200</td><td><span class="badge badge-green">OK</span></td></tr>
+                <tr><td style="font-weight:600">Cal Hidratada</td><td>Fíler</td><td style="color:#ef4444;font-weight:700">12,0</td><td>20,0</td><td>100,0</td><td>ton</td><td>R$ 420</td><td>R$ 5.040</td><td><span class="badge badge-red">Abaixo Mín</span></td></tr>
+                <tr><td style="font-weight:600">Pó de Calcário</td><td>Fíler</td><td style="color:#f59e0b;font-weight:700">28,0</td><td>30,0</td><td>150,0</td><td>ton</td><td>R$ 180</td><td>R$ 5.040</td><td><span class="badge badge-amber">Próx. Mín</span></td></tr>
+                <tr><td style="font-weight:600">Óleo Diesel B S10</td><td>Combustível</td><td style="color:#ef4444;font-weight:700">3.200</td><td>5.000</td><td>30.000</td><td>L</td><td>R$ 6,40</td><td>R$ 20.480</td><td><span class="badge badge-red">Abaixo Mín</span></td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ABA: RELATÓRIOS ── -->
+        <div id="estoque-tab-rel" style="display:none">
+
+          <!-- Filtros -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-title-lg" style="margin-bottom:14px">Gerar Relatório de Produção e Estoque por Cliente</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px">
+              <div class="form-group">
+                <label>Cliente</label>
+                <select id="rel-cliente" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+                  <option value="">— Selecione o cliente —</option>
+                  <option value="prefeitura">Prefeitura Municipal SP</option>
+                  <option value="rodovias">Rodovias do Brasil S.A.</option>
+                  <option value="abc">Construtora ABC Ltda</option>
+                  <option value="rapida">Engenharia Rápida ME</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Data Início</label>
+                <input type="date" id="rel-dt-ini" value="2026-03-01" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group">
+                <label>Data Fim</label>
+                <input type="date" id="rel-dt-fim" value="2026-03-13" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:13px;width:100%">
+              </div>
+              <div class="form-group" style="align-self:flex-end">
+                <button class="btn btn-primary" style="width:100%;padding:11px" onclick="gerarRelatorio()">&#128202; Gerar Relatório</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resultado do relatório -->
+          <div id="rel-resultado" style="display:none">
+
+            <!-- Cabeçalho do relatório -->
+            <div class="card" style="margin-bottom:16px;border:1px solid #1e3a5f">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+                <div>
+                  <div style="font-size:20px;font-weight:800;color:#f59e0b">USINA ERP</div>
+                  <div style="font-size:16px;font-weight:700;color:#e2e8f0;margin-top:4px">Relatório de Produção e Estoque</div>
+                  <div id="rel-nome-cli" style="font-size:13px;color:#94a3b8;margin-top:2px"></div>
+                  <div id="rel-periodo" style="font-size:12px;color:#64748b;margin-top:2px"></div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-outline" onclick="imprimirRelatorio()">&#128424; Imprimir</button>
+                  <button class="btn btn-primary" onclick="imprimirRelatorio()">&#128196; Gerar PDF</button>
+                </div>
+              </div>
+
+              <!-- KPIs do cliente -->
+              <div class="kpi-row" id="rel-kpis" style="margin-bottom:0"></div>
+            </div>
+
+            <!-- Materiais contratados -->
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-title-lg" style="margin-bottom:14px">Materiais Contratados — Saldo Pedido e Estoque</div>
+              <div class="table-wrap">
+                <table id="rel-tab-materiais" style="font-size:13px">
+                  <tr>
+                    <th>Material</th><th>Tipo</th><th>Fornecido por</th>
+                    <th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th>
+                    <th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- Produção por material -->
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-title-lg" style="margin-bottom:14px">Produção por Tipo de Material</div>
+              <div class="table-wrap">
+                <table id="rel-tab-producao" style="font-size:13px">
+                  <tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP consumido</th><th>Temperatura</th><th>Responsável</th></tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- Movimentações (entradas e saídas) -->
+            <div class="card">
+              <div class="card-title-lg" style="margin-bottom:14px">Movimentações — Entradas e Saídas de Material</div>
+              <div class="table-wrap">
+                <table id="rel-tab-mov" style="font-size:13px">
+                  <tr>
+                    <th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th>
+                    <th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th>
+                  </tr>
+                </table>
+              </div>
+              <div id="rel-totais" style="margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;gap:24px;font-size:13px;flex-wrap:wrap"></div>
+            </div>
+          </div>
+
+          <!-- Mensagem inicial -->
+          <div id="rel-vazio" style="text-align:center;padding:48px;color:#475569">
+            <div style="font-size:40px;margin-bottom:12px">&#128202;</div>
+            <div style="font-size:16px;font-weight:600;color:#64748b">Selecione um cliente e o período para gerar o relatório</div>
           </div>
         </div>
       </div>
@@ -1679,6 +1819,265 @@ function converterPedido(modo) {
     alert('Pedido criado com quantidade total do orçamento.\nNº PED000000039 gerado.');
   }
   document.getElementById('form-orcamento').style.display = 'none';
+}
+
+window.onload = function() {
+  simulate();
+};
+
+// ── ABAS ESTOQUE ────────────────────────────────────────────
+// ── ÓLEO BPF DIÁRIO ─────────────────────────────────────────
+function calcBPF() {
+  var ini  = parseFloat(document.getElementById('bpf-inicial').value) || 0;
+  var fim  = parseFloat(document.getElementById('bpf-final').value)   || 0;
+  var prod = parseFloat(document.getElementById('bpf-prod').value)    || 0;
+  if (!ini) return;
+  var consumido = ini - fim;
+  var media     = prod > 0 ? consumido / prod : 0;
+  var teorico   = prod * 8.5;
+  var diff      = consumido - teorico;
+  document.getElementById('bpf-consumido').textContent = consumido.toLocaleString('pt-BR') + ' L';
+  document.getElementById('bpf-media').textContent     = prod > 0 ? media.toFixed(1) + ' L/ton' : '—';
+  document.getElementById('bpf-teorico').textContent   = prod > 0 ? teorico.toLocaleString('pt-BR') + ' L' : '—';
+  var diffEl  = document.getElementById('bpf-diff');
+  var diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(0) + ' L';
+  diffEl.textContent = prod > 0 ? diffStr : '—';
+  diffEl.style.color = Math.abs(diff) <= teorico * 0.05 ? '#22c55e' : diff > 0 ? '#ef4444' : '#f59e0b';
+}
+
+function salvarBPF() {
+  var ini = document.getElementById('bpf-inicial').value;
+  var fim = document.getElementById('bpf-final').value;
+  if (!ini || !fim) { alert('Preencha o saldo inicial e final antes de registrar.'); return; }
+  var fb = document.getElementById('bpf-feedback');
+  fb.style.display = 'inline';
+  setTimeout(function() { fb.style.display = 'none'; }, 4000);
+}
+
+// ── ABAS ESTOQUE ────────────────────────────────────────────
+function showEstoqueTab(tab) {
+  var tabs = ['pos','rel'];
+  tabs.forEach(function(t) {
+    var content = document.getElementById('estoque-tab-' + t);
+    var btn     = document.getElementById('tab-estoque-' + t);
+    if (content) content.style.display = t === tab ? 'block' : 'none';
+    if (btn) {
+      btn.style.background    = t === tab ? '#1e3a5f' : 'transparent';
+      btn.style.color         = t === tab ? '#e2e8f0' : '#64748b';
+      btn.style.borderBottom  = t === tab ? '2px solid #f59e0b' : '2px solid transparent';
+      btn.style.fontWeight    = t === tab ? '700' : '600';
+    }
+  });
+}
+
+// ── DADOS DE RELATÓRIO POR CLIENTE ──────────────────────────
+var dadosClientes = {
+  prefeitura: {
+    nome: 'Prefeitura Municipal SP',
+    fornece: 'CAP 50/70 · Pedra 1 · Óleo BPF',
+    totalPedido: '2.500 ton',
+    totalProduzido: '1.200 ton',
+    saldoPedido: '1.300 ton',
+    materiais: [
+      { mat:'CAP 50/70',   tipo:'Ligante',    por:'Cliente', contratado:'137,5 ton', consumido:'109,0 ton', saldoPed:'28,5 ton',  saldoEst:'28,5 ton',  pct:'79%', status:'OK' },
+      { mat:'Pedra 1',     tipo:'Agregado',   por:'Cliente', contratado:'950 ton',   consumido:'630,0 ton', saldoPed:'320 ton',   saldoEst:'320 ton',   pct:'66%', status:'OK' },
+      { mat:'Óleo BPF',    tipo:'Combustível',por:'Cliente', contratado:'10.200 L',  consumido:'5.700 L',   saldoPed:'4.500 L',   saldoEst:'4.500 L',   pct:'56%', status:'OK' }
+    ],
+    producao: [
+      { dt:'11/03/2026', op:'OP000000243', prod:'CBUQ BC', qtd:'120,0 ton', cap:'6,6 ton',  temp:'148°C', resp:'João Operador' },
+      { dt:'10/03/2026', op:'OP000000241', prod:'CBUQ BC', qtd:'200,0 ton', cap:'11,0 ton', temp:'150°C', resp:'João Operador' },
+      { dt:'07/03/2026', op:'OP000000235', prod:'CBUQ BC', qtd:'880,0 ton', cap:'48,4 ton', temp:'149°C', resp:'Carlos Operador'},
+      { dt:'04/03/2026', op:'OP000000228', prod:'CBUQ BC', qtd:'0,0 ton',   cap:'0,0 ton',  temp:'—',     resp:'João Operador' }
+    ],
+    movimentacoes: [
+      { dt:'11/03/2026', hr:'08:32', placa:'ABC-1234', motorista:'José da Silva',    tipo:'SAÍDA',   mat:'CBUQ BC',  qtd:'15.200 kg', doc:'PES00000001', op:'Maria Controle' },
+      { dt:'11/03/2026', hr:'09:15', placa:'DEF-5678', motorista:'Carlos Pereira',   tipo:'SAÍDA',   mat:'CBUQ BC',  qtd:'14.900 kg', doc:'PES00000002', op:'Maria Controle' },
+      { dt:'10/03/2026', hr:'07:45', placa:'GHI-9012', motorista:'Antonio Santos',   tipo:'SAÍDA',   mat:'CBUQ BC',  qtd:'16.100 kg', doc:'PES00000003', op:'Maria Controle' },
+      { dt:'08/03/2026', hr:'14:20', placa:'MNO-7890', motorista:'Roberto Lima',     tipo:'ENTRADA', mat:'CAP 50/70',qtd:'30.000 kg', doc:'NF-004512',   op:'Carlos Almox.' },
+      { dt:'07/03/2026', hr:'06:58', placa:'ABC-1234', motorista:'José da Silva',    tipo:'SAÍDA',   mat:'CBUQ BC',  qtd:'15.800 kg', doc:'PES00000007', op:'Maria Controle' },
+      { dt:'05/03/2026', hr:'15:40', placa:'PQR-3344', motorista:'Marcos Oliveira',  tipo:'ENTRADA', mat:'Pedra 1',  qtd:'25.000 kg', doc:'NF-002201',   op:'Carlos Almox.' },
+      { dt:'03/03/2026', hr:'11:10', placa:'STU-5566', motorista:'Fábio Andrade',    tipo:'ENTRADA', mat:'Óleo BPF', qtd:'6.000 L',   doc:'NF-007733',   op:'Carlos Almox.' }
+    ]
+  },
+  rodovias: {
+    nome: 'Rodovias do Brasil S.A.',
+    fornece: 'CAP 50/70 · Pedra 1 · Pedrisco',
+    totalPedido: '1.800 ton',
+    totalProduzido: '980 ton',
+    saldoPedido: '820 ton',
+    materiais: [
+      { mat:'CAP 50/70', tipo:'Ligante',  por:'Cliente', contratado:'99 ton',   consumido:'79,8 ton', saldoPed:'19,2 ton', saldoEst:'19,2 ton', pct:'81%', status:'Atenção' },
+      { mat:'Pedrisco',  tipo:'Agregado', por:'Cliente', contratado:'300 ton',  consumido:'215 ton',  saldoPed:'85 ton',   saldoEst:'85 ton',   pct:'72%', status:'OK' },
+      { mat:'Pedra 1',   tipo:'Agregado', por:'Cliente', contratado:'550 ton',  consumido:'340 ton',  saldoPed:'210 ton',  saldoEst:'210 ton',  pct:'62%', status:'OK' }
+    ],
+    producao: [
+      { dt:'11/03/2026', op:'OP000000244', prod:'CBUQ CR', qtd:'180,0 ton', cap:'9,9 ton', temp:'152°C', resp:'Carlos Operador'},
+      { dt:'09/03/2026', op:'OP000000239', prod:'CBUQ CR', qtd:'400,0 ton', cap:'22,0 ton',temp:'151°C', resp:'João Operador'  },
+      { dt:'06/03/2026', op:'OP000000232', prod:'CBUQ CR', qtd:'400,0 ton', cap:'22,0 ton',temp:'150°C', resp:'Carlos Operador'}
+    ],
+    movimentacoes: [
+      { dt:'11/03/2026', hr:'10:05', placa:'VWX-1122', motorista:'Luiz Costa',       tipo:'SAÍDA',   mat:'CBUQ CR', qtd:'18.000 kg', doc:'PES00000005', op:'Maria Controle' },
+      { dt:'09/03/2026', hr:'08:20', placa:'ABC-1234', motorista:'José da Silva',    tipo:'SAÍDA',   mat:'CBUQ CR', qtd:'15.600 kg', doc:'PES00000008', op:'Maria Controle' },
+      { dt:'07/03/2026', hr:'16:00', placa:'YZA-9900', motorista:'Dirceu Matos',     tipo:'ENTRADA', mat:'Pedrisco',qtd:'20.000 kg', doc:'NF-003318',   op:'Carlos Almox.' },
+      { dt:'06/03/2026', hr:'07:30', placa:'GHI-9012', motorista:'Antonio Santos',   tipo:'SAÍDA',   mat:'CBUQ CR', qtd:'16.100 kg', doc:'PES00000010', op:'Maria Controle' },
+      { dt:'04/03/2026', hr:'13:45', placa:'BCD-4455', motorista:'Silvio Ferreira',  tipo:'ENTRADA', mat:'Pedra 1', qtd:'30.000 kg', doc:'NF-001187',   op:'Carlos Almox.' }
+    ]
+  },
+  abc: {
+    nome: 'Construtora ABC Ltda',
+    fornece: 'CAP 50/70',
+    totalPedido: '1.000 ton',
+    totalProduzido: '650 ton',
+    saldoPedido: '350 ton',
+    materiais: [
+      { mat:'CAP 50/70', tipo:'Ligante', por:'Cliente', contratado:'55 ton',  consumido:'42,2 ton', saldoPed:'12,8 ton', saldoEst:'12,8 ton', pct:'77%', status:'Baixo' }
+    ],
+    producao: [
+      { dt:'10/03/2026', op:'OP000000240', prod:'PMF I',   qtd:'250,0 ton', cap:'13,8 ton', temp:'145°C', resp:'João Operador'   },
+      { dt:'05/03/2026', op:'OP000000229', prod:'CBUQ BC', qtd:'400,0 ton', cap:'22,0 ton', temp:'148°C', resp:'Carlos Operador' }
+    ],
+    movimentacoes: [
+      { dt:'10/03/2026', hr:'09:00', placa:'EFG-6677', motorista:'Paulo Nunes',    tipo:'SAÍDA',   mat:'PMF I',    qtd:'14.500 kg', doc:'PES00000006', op:'Maria Controle' },
+      { dt:'05/03/2026', hr:'11:30', placa:'DEF-5678', motorista:'Carlos Pereira', tipo:'SAÍDA',   mat:'CBUQ BC',  qtd:'14.900 kg', doc:'PES00000009', op:'Maria Controle' },
+      { dt:'03/03/2026', hr:'14:00', placa:'HIJ-2233', motorista:'Renato Gomes',   tipo:'ENTRADA', mat:'CAP 50/70',qtd:'20.000 kg', doc:'NF-009944',   op:'Carlos Almox.' }
+    ]
+  },
+  rapida: {
+    nome: 'Engenharia Rápida ME',
+    fornece: 'CAP 50/70',
+    totalPedido: '600 ton',
+    totalProduzido: '450 ton',
+    saldoPedido: '150 ton',
+    materiais: [
+      { mat:'CAP 50/70', tipo:'Ligante', por:'Cliente', contratado:'33 ton',  consumido:'24,5 ton', saldoPed:'8,5 ton', saldoEst:'8,5 ton', pct:'74%', status:'Baixo' }
+    ],
+    producao: [
+      { dt:'08/03/2026', op:'OP000000236', prod:'CBUQ BC', qtd:'250,0 ton', cap:'13,8 ton', temp:'148°C', resp:'João Operador'   },
+      { dt:'02/03/2026', op:'OP000000220', prod:'PMF I',   qtd:'200,0 ton', cap:'11,0 ton', temp:'144°C', resp:'Carlos Operador' }
+    ],
+    movimentacoes: [
+      { dt:'08/03/2026', hr:'10:45', placa:'JKL-3456', motorista:'—',             tipo:'SAÍDA',   mat:'CBUQ BC',  qtd:'13.750 kg', doc:'PES00000004', op:'Maria Controle' },
+      { dt:'02/03/2026', hr:'08:15', placa:'KLM-8899', motorista:'Adilson Braga', tipo:'SAÍDA',   mat:'PMF I',    qtd:'15.000 kg', doc:'PES00000011', op:'Maria Controle' },
+      { dt:'01/03/2026', hr:'15:20', placa:'NOP-5544', motorista:'Gilberto Sá',   tipo:'ENTRADA', mat:'CAP 50/70',qtd:'15.000 kg', doc:'NF-008821',   op:'Carlos Almox.' }
+    ]
+  }
+};
+
+function gerarRelatorio() {
+  var chave = document.getElementById('rel-cliente').value;
+  if (!chave) { alert('Selecione um cliente para gerar o relatório.'); return; }
+  var d = dadosClientes[chave];
+  var dtIni = document.getElementById('rel-dt-ini').value.split('-').reverse().join('/');
+  var dtFim = document.getElementById('rel-dt-fim').value.split('-').reverse().join('/');
+
+  document.getElementById('rel-nome-cli').textContent = 'Cliente: ' + d.nome + '   |   Fornece: ' + d.fornece;
+  document.getElementById('rel-periodo').textContent  = 'Período: ' + dtIni + ' a ' + dtFim + '   |   Gerado em: ' + new Date().toLocaleString('pt-BR');
+
+  // KPIs
+  document.getElementById('rel-kpis').innerHTML =
+    kpiCard('Total Pedido',     d.totalPedido,     '#60a5fa') +
+    kpiCard('Total Produzido',  d.totalProduzido,  '#22c55e') +
+    kpiCard('Saldo do Pedido',  d.saldoPedido,     '#f59e0b');
+
+  // Materiais
+  var tbMat = document.getElementById('rel-tab-materiais');
+  var rowsMat = '<tr><th>Material</th><th>Tipo</th><th>Fornecido por</th><th>Qtd Contratada</th><th>Total Consumido</th><th>Saldo Pedido</th><th>Saldo em Estoque</th><th>% Consumido</th><th>Status</th></tr>';
+  d.materiais.forEach(function(m) {
+    var cor = m.status === 'OK' ? '#22c55e' : m.status === 'Atenção' ? '#f59e0b' : '#ef4444';
+    var badgeCls = m.status === 'OK' ? 'badge-green' : m.status === 'Atenção' ? 'badge-amber' : 'badge-red';
+    rowsMat += '<tr>' +
+      '<td style="font-weight:600">' + m.mat + '</td><td>' + m.tipo + '</td><td style="color:#60a5fa">' + m.por + '</td>' +
+      '<td>' + m.contratado + '</td><td>' + m.consumido + '</td>' +
+      '<td style="font-weight:700;color:' + cor + '">' + m.saldoPed + '</td>' +
+      '<td style="font-weight:700;color:' + cor + '">' + m.saldoEst + '</td>' +
+      '<td><div style="display:flex;align-items:center;gap:8px"><div style="width:60px;height:6px;background:#1e3a5f;border-radius:3px"><div style="width:' + m.pct + ';height:100%;background:' + cor + ';border-radius:3px"></div></div>' + m.pct + '</div></td>' +
+      '<td><span class="badge ' + badgeCls + '">' + m.status + '</span></td>' +
+    '</tr>';
+  });
+  tbMat.innerHTML = rowsMat;
+
+  // Produção
+  var tbProd = document.getElementById('rel-tab-producao');
+  var rowsProd = '<tr><th>Data</th><th>Nº OP</th><th>Produto / Traço</th><th>Quantidade Produzida</th><th>CAP Consumido</th><th>Temperatura</th><th>Responsável</th></tr>';
+  d.producao.forEach(function(p) {
+    rowsProd += '<tr><td>' + p.dt + '</td><td style="font-family:monospace;font-size:12px;color:#60a5fa">' + p.op + '</td><td style="font-weight:600">' + p.prod + '</td><td style="color:#22c55e;font-weight:700">' + p.qtd + '</td><td style="color:#f59e0b">' + p.cap + '</td><td>' + p.temp + '</td><td>' + p.resp + '</td></tr>';
+  });
+  tbProd.innerHTML = rowsProd;
+
+  // Movimentações
+  var tbMov = document.getElementById('rel-tab-mov');
+  var rowsMov = '<tr><th>Data</th><th>Hora</th><th>Placa</th><th>Motorista</th><th>Tipo</th><th>Material</th><th>Quantidade</th><th>Nº Doc.</th><th>Operador</th></tr>';
+  var totSaida = 0; var totEntrada = 0;
+  d.movimentacoes.forEach(function(m) {
+    var isSaida = m.tipo === 'SAÍDA';
+    var badge = isSaida
+      ? '<span class="badge badge-green">SAÍDA</span>'
+      : '<span class="badge badge-blue">ENTRADA</span>';
+    rowsMov += '<tr>' +
+      '<td>' + m.dt + '</td><td style="color:#94a3b8">' + m.hr + '</td>' +
+      '<td style="font-family:monospace;font-weight:700;color:#60a5fa">' + m.placa + '</td>' +
+      '<td>' + m.motorista + '</td><td>' + badge + '</td>' +
+      '<td style="font-weight:600">' + m.mat + '</td>' +
+      '<td style="color:' + (isSaida?'#22c55e':'#60a5fa') + ';font-weight:700">' + m.qtd + '</td>' +
+      '<td style="font-family:monospace;font-size:12px">' + m.doc + '</td>' +
+      '<td>' + m.op + '</td>' +
+    '</tr>';
+    var kg = parseFloat(m.qtd.replace(/\./g,'').replace(',','.').replace(/[^\d.]/g,'')) || 0;
+    if (isSaida) totSaida += kg; else totEntrada += kg;
+  });
+  tbMov.innerHTML = rowsMov;
+
+  document.getElementById('rel-totais').innerHTML =
+    '<span style="color:#94a3b8">Total de movimentações: <strong style="color:#e2e8f0">' + d.movimentacoes.length + '</strong></span>' +
+    '<span style="color:#22c55e;font-weight:700">Saídas: ' + totSaida.toLocaleString('pt-BR') + ' kg</span>' +
+    '<span style="color:#60a5fa;font-weight:700">Entradas: ' + totEntrada.toLocaleString('pt-BR') + ' kg</span>';
+
+  document.getElementById('rel-resultado').style.display = 'block';
+  document.getElementById('rel-vazio').style.display     = 'none';
+}
+
+function kpiCard(label, val, cor) {
+  return '<div class="kpi-card"><div class="kpi-label">' + label + '</div><div class="kpi-value" style="color:' + cor + ';font-size:20px">' + val + '</div></div>';
+}
+
+function imprimirRelatorio() {
+  var nomeCliente = document.getElementById('rel-nome-cli').textContent;
+  var periodo     = document.getElementById('rel-periodo').textContent;
+
+  var tMat  = document.getElementById('rel-tab-materiais').outerHTML;
+  var tProd = document.getElementById('rel-tab-producao').outerHTML;
+  var tMov  = document.getElementById('rel-tab-mov').outerHTML;
+  var tots  = document.getElementById('rel-totais').innerHTML;
+  var kpis  = document.getElementById('rel-kpis').innerText || '';
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório — Usina ERP</title><style>' +
+    'body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px}' +
+    'h1{font-size:20px;margin-bottom:2px}h2{font-size:14px;color:#333;margin:18px 0 8px;border-bottom:1px solid #ccc;padding-bottom:4px}' +
+    '.sub{color:#555;font-size:11px;margin-bottom:4px}.kpis{display:flex;gap:24px;margin:12px 0;flex-wrap:wrap}' +
+    '.kpi{background:#f5f5f5;border-radius:6px;padding:10px 16px;min-width:120px}' +
+    '.kpi-l{font-size:10px;color:#666;text-transform:uppercase}.kpi-v{font-size:18px;font-weight:700}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#1a56db;color:#fff;padding:6px 8px;text-align:left;font-size:11px}' +
+    'td{padding:5px 8px;border-bottom:1px solid #e5e7eb;font-size:11px}tr:nth-child(even){background:#f9fafb}' +
+    '.tots{margin-top:8px;font-size:12px;display:flex;gap:20px}.badge-s{background:#16a34a;color:#fff;padding:2px 7px;border-radius:4px;font-size:10px}' +
+    '.badge-e{background:#1d4ed8;color:#fff;padding:2px 7px;border-radius:4px;font-size:10px}' +
+    '.rodape{margin-top:32px;text-align:center;font-size:10px;color:#aaa;border-top:1px solid #e5e7eb;padding-top:8px}' +
+    '@media print{body{padding:8px}h2{break-before:avoid}table{break-inside:auto}}' +
+    '</style></head><body>' +
+    '<h1>USINA ERP — Relatório de Produção e Estoque</h1>' +
+    '<div class="sub">' + nomeCliente + '</div>' +
+    '<div class="sub">' + periodo + '</div>' +
+    '<h2>Materiais Contratados — Saldo Pedido e Estoque</h2>' + tMat.replace(/class="badge[^"]*"/g,'') +
+    '<h2>Produção por Tipo de Material</h2>' + tProd.replace(/class="badge[^"]*"/g,'') +
+    '<h2>Movimentações — Entradas e Saídas</h2>' + tMov.replace(/class="badge badge-green">SAÍDA/g,'class="badge-s">SAÍDA').replace(/class="badge badge-blue">ENTRADA/g,'class="badge-e">ENTRADA') +
+    '<div class="tots">' + tots.replace(/<[^>]+>/g,'').trim() + '</div>' +
+    '<div class="rodape">Documento gerado em ' + new Date().toLocaleString('pt-BR') + ' — Usina ERP · Documento sem valor fiscal</div>' +
+    '</body></html>';
+
+  var win = window.open('','_blank','width=900,height=700');
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  win.print();
 }
 
 window.onload = function() {
