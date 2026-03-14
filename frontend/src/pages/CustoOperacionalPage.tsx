@@ -4,7 +4,7 @@ import {
   Button, Tabs, Statistic, Tag, Divider, Spin, message, Typography, Space, Tooltip,
 } from 'antd'
 import {
-  SaveOutlined, CalculatorOutlined, ReloadOutlined,
+  SaveOutlined, CalculatorOutlined,
   ArrowUpOutlined, ArrowDownOutlined, InfoCircleOutlined,
 } from '@ant-design/icons'
 import { custoOpService } from '../services/api'
@@ -368,7 +368,7 @@ export default function CustoOperacionalPage() {
                         </Col>
                       </Row>
 
-                      <Divider orientation="left" style={{ fontSize: 13 }}>Custos Fixos Mensais (R$)</Divider>
+                      <Divider titlePlacement="left" style={{ fontSize: 13 }}>Custos Fixos Mensais (R$)</Divider>
                       <Row gutter={12}>
                         {[
                           ['folhaSalarial', 'Folha Salarial Bruta'],
@@ -449,7 +449,7 @@ export default function CustoOperacionalPage() {
                         { title: 'Energia Elétrica', fields: [['energiaKwhTon', 'Consumo (kWh/ton)', 0.1], ['energiaTarifa', 'Tarifa (R$/kWh)', 0.001]] },
                       ].map(({ title, fields }) => (
                         <div key={title}>
-                          <Divider orientation="left" style={{ fontSize: 13 }}>{title}</Divider>
+                          <Divider titlePlacement="left" style={{ fontSize: 13 }}>{title}</Divider>
                           <Row gutter={12}>
                             {fields.map(([name, label, step]) => (
                               <Col span={12} key={name as string}>
