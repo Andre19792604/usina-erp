@@ -11,10 +11,9 @@ import { setupWebSocket } from './services/integrations/websocket.service'
 const app = express()
 const PORT = process.env.PORT || 3001
 
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
 app.use(cors({
-  origin: process.env.FRONTEND_URL
-    ? process.env.FRONTEND_URL.split(',').map(u => u.trim())
-    : 'http://localhost:5173',
+  origin: frontendUrl === '*' ? true : frontendUrl.split(',').map(u => u.trim()),
   credentials: true,
 }))
 app.use(express.json())
