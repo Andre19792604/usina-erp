@@ -1,0 +1,325 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  GERENTE
+  ENCARREGADO
+  OPERADOR
+  MOTORISTA
+  VIEWER
+}
+
+enum ProjectStatus {
+  PLANEJAMENTO
+  EM_ANDAMENTO
+  PAUSADO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum ProductionStatus {
+  PENDENTE
+  EM_EXECUCAO
+  CONCLUIDO
+}
+
+enum EquipmentStatus {
+  DISPONIVEL
+  EM_OPERACAO
+  MANUTENCAO
+  INATIVO
+}
+
+enum VehicleType {
+  CAMINHAO
+  CARRETA
+  PICKUP
+  MAQUINA
+  OUTRO
+}
+
+enum FuelType {
+  DIESEL
+  GASOLINA
+  ETANOL
+  GNV
+}
+
+enum MaintenanceType {
+  PREVENTIVA
+  CORRETIVA
+}
+
+enum MaintenanceStatus {
+  ABERTA
+  EM_ANDAMENTO
+  CONCLUIDA
+  CANCELADA
+}
+
+// ── Multi-empresa (SaaS) ─────────────────────────────────────────
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  cnpj      String   @unique
+  phone     String?
+  email     String?
+  address   String?
+  city      String?
+  state     String?
+  logo      String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users           User[]
+  projects        Project[]
+  services        Service[]
+  equipment       Equipment[]
+  vehicles        Vehicle[]
+  reports         Report[]
+
+  @@map("companies")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(OPERADOR)
+  phone     String?
+  active    Boolean  @default(true)
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company     Company      @relation(fields: [companyId], references: [id])
+  productions Production[]
+  reports     Report[]
+
+  @@map("users")
+}
+
+// ── Obras / Projetos ─────────────────────────────────────────────
+
+model Project {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  name        String
+  client      String?
+  address     String?
+  city        String?
+  state       String?
+  description String?
+  status      ProjectStatus @default(PLANEJAMENTO)
+  startDate   DateTime?
+  endDate     DateTime?
+  totalArea   Decimal?      @db.Decimal(12, 2) // m2
+  companyId   String
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  company     Company      @relation(fields: [companyId], references: [id])
+  productions Production[]
+  reports     Report[]
+
+  @@map("projects")
+}
+
+// ── Biblioteca de Serviços ───────────────────────────────────────
+
+model Service {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  unit      String   @default("TON") // TON, M2, M3, ML
+  companyId String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company     Company      @relation(fields: [companyId], references: [id])
+  productions Production[]
+
+  @@map("services")
+}
+
+// ── Produção Diária ──────────────────────────────────────────────
+
+model Production {
+  id             String           @id @default(cuid())
+  date           DateTime         @default(now())
+  projectId      String
+  serviceId      String
+  userId         String
+  sectionStart   Decimal?         @db.Decimal(10, 2) // trecho_inicial (estaca)
+  sectionEnd     Decimal?         @db.Decimal(10, 2) // trecho_final (estaca)
+  quantity       Decimal          @db.Decimal(12, 2) // quantidade
+  temperature    Decimal?         @db.Decimal(5, 1)  // temperatura do material
+  weather        String?          // tempo (sol, chuva, nublado)
+  notes          String?
+  status         ProductionStatus @default(PENDENTE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  project  Project  @relation(fields: [projectId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@map("productions")
+}
+
+// ── Equipamentos ─────────────────────────────────────────────────
+
+model Equipment {
+  id            String          @id @default(cuid())
+  code          String          @unique
+  name          String
+  brand         String?
+  model         String?
+  year          Int?
+  serialNumber  String?
+  status        EquipmentStatus @default(DISPONIVEL)
+  companyId     String
+  active        Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  company       Company          @relation(fields: [companyId], references: [id])
+  hourmeterLogs EquipmentLog[]
+  maintenances  Maintenance[]
+
+  @@map("equipment")
+}
+
+model EquipmentLog {
+  id             String   @id @default(cuid())
+  equipmentId    String
+  date           DateTime @default(now())
+  hourmeterStart Decimal  @db.Decimal(10, 1)
+  hourmeterEnd   Decimal? @db.Decimal(10, 1)
+  hoursWorked    Decimal? @db.Decimal(10, 1)
+  operatorName   String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@map("equipment_logs")
+}
+
+// ── Veículos e Frota ─────────────────────────────────────────────
+
+model Vehicle {
+  id        String      @id @default(cuid())
+  plate     String      @unique
+  type      VehicleType @default(CAMINHAO)
+  brand     String?
+  model     String?
+  year      Int?
+  capacity  Decimal?    @db.Decimal(10, 2) // ton
+  fuelType  FuelType    @default(DIESEL)
+  companyId String
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  company    Company      @relation(fields: [companyId], references: [id])
+  mileageLogs VehicleLog[]
+  fuelLogs   FuelLog[]
+
+  @@map("vehicles")
+}
+
+model VehicleLog {
+  id         String   @id @default(cuid())
+  vehicleId  String
+  date       DateTime @default(now())
+  kmStart    Decimal  @db.Decimal(10, 1)
+  kmEnd      Decimal? @db.Decimal(10, 1)
+  kmTotal    Decimal? @db.Decimal(10, 1)
+  driverName String?
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+
+  @@map("vehicle_logs")
+}
+
+// ── Abastecimentos ───────────────────────────────────────────────
+
+model FuelLog {
+  id         String   @id @default(cuid())
+  vehicleId  String
+  date       DateTime @default(now())
+  fuelType   FuelType @default(DIESEL)
+  liters     Decimal  @db.Decimal(10, 2)
+  pricePerLiter Decimal? @db.Decimal(10, 4)
+  totalCost  Decimal? @db.Decimal(12, 2)
+  kmAtFuel   Decimal? @db.Decimal(10, 1)
+  supplier   String?
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+
+  @@map("fuel_logs")
+}
+
+// ── Manutenção ───────────────────────────────────────────────────
+
+model Maintenance {
+  id            String            @id @default(cuid())
+  equipmentId   String
+  type          MaintenanceType   @default(CORRETIVA)
+  description   String
+  cost          Decimal?          @db.Decimal(12, 2)
+  status        MaintenanceStatus @default(ABERTA)
+  scheduledDate DateTime?
+  completedDate DateTime?
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@map("maintenances")
+}
+
+// ── Relatórios Diários ───────────────────────────────────────────
+
+model Report {
+  id          String   @id @default(cuid())
+  date        DateTime @default(now())
+  projectId   String
+  userId      String
+  companyId   String
+  summary     String?
+  weather     String?
+  incidents   String?
+  observations String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@map("reports")
+}

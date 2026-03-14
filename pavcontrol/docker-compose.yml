@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  pavcontrol-db:
+    image: postgres:16-alpine
+    container_name: pavcontrol-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pavcontrol
+      POSTGRES_PASSWORD: pavcontrol123
+      POSTGRES_DB: pavcontrol
+    volumes:
+      - pavcontrol_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pavcontrol"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pavcontrol-backend:
+    build: ./backend
+    container_name: pavcontrol-backend
+    restart: unless-stopped
+    depends_on:
+      pavcontrol-db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://pavcontrol:pavcontrol123@pavcontrol-db:5432/pavcontrol
+      JWT_SECRET: pavcontrol-jwt-secret-change-in-production
+      JWT_EXPIRES_IN: 8h
+      PORT: 3002
+      FRONTEND_URL: http://localhost:5174
+      NODE_ENV: production
+    ports:
+      - "3002:3002"
+
+  pavcontrol-frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    container_name: pavcontrol-frontend
+    restart: unless-stopped
+    depends_on:
+      - pavcontrol-backend
+    ports:
+      - "5174:80"
+
+volumes:
+  pavcontrol_pgdata:
