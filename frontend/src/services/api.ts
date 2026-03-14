@@ -192,3 +192,10 @@ export const custoOpService = {
   update: (id: string, data: any) =>
     api.put(`/custo-operacional/${id}`, data).then(r => r.data),
 }
+
+// ── Integration Keys ────────────────────────────────────────
+export const integrationService = {
+  listKeys: () => api.get('/integration/keys').then(r => r.data),
+  createKey: (data: any) => api.post('/integration/keys', data).then(r => r.data),
+  revokeKey: (id: string) => api.put(`/integration/keys/${id}/revoke`).then(r => r.data),
+}

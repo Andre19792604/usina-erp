@@ -145,3 +145,22 @@ export const maintenanceService = {
   updateStatus: (id: string, data: any) =>
     api.put(`/maintenance/${id}/status`, data).then(r => r.data),
 }
+
+// ── Usina Integration ───────────────────────────────────────
+export const usinaService = {
+  list: () => api.get('/usina').then(r => r.data),
+  create: (data: any) => api.post('/usina', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/usina/${id}`, data).then(r => r.data),
+  remove: (id: string) => api.delete(`/usina/${id}`).then(r => r.data),
+  testConnection: (id: string) => api.post(`/usina/${id}/test`).then(r => r.data),
+  fetchCatalog: (id: string) => api.get(`/usina/${id}/catalog`).then(r => r.data),
+}
+
+// ── Material Orders ─────────────────────────────────────────
+export const materialOrderService = {
+  list: () => api.get('/material-orders').then(r => r.data),
+  getById: (id: string) => api.get(`/material-orders/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/material-orders', data).then(r => r.data),
+  send: (id: string) => api.post(`/material-orders/${id}/send`).then(r => r.data),
+  sync: (id: string) => api.post(`/material-orders/${id}/sync`).then(r => r.data),
+}

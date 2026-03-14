@@ -15,6 +15,8 @@ import * as vehicles from '../controllers/vehicles.controller'
 import * as maintenance from '../controllers/maintenance.controller'
 import * as nfe from '../controllers/nfe.controller'
 import * as custoOp from '../controllers/custo-operacional.controller'
+import * as integration from '../controllers/integration.controller'
+import { authenticateApiKey } from '../middleware/apiKeyAuth'
 
 export const router = Router()
 
@@ -130,3 +132,14 @@ router.get('/custo-operacional/:id', authenticate, custoOp.getById)
 router.get('/custo-operacional/:id/calcular', authenticate, custoOp.calcular)
 router.post('/custo-operacional', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), custoOp.create)
 router.put('/custo-operacional/:id', authenticate, authorize('ADMIN', 'GERENTE', 'FINANCEIRO'), custoOp.update)
+
+// ── Integração (API keys — admin) ──────────────────────────────
+router.get('/integration/keys', authenticate, authorize('ADMIN'), integration.listKeys)
+router.post('/integration/keys', authenticate, authorize('ADMIN'), integration.createKey)
+router.put('/integration/keys/:id/revoke', authenticate, authorize('ADMIN'), integration.revokeKey)
+
+// ── Integração (API pública — autenticada por API key) ──────────
+router.get('/integration/catalog', authenticateApiKey, integration.catalog)
+router.get('/integration/orders', authenticateApiKey, integration.listOrders)
+router.get('/integration/orders/:id', authenticateApiKey, integration.getOrder)
+router.post('/integration/orders', authenticateApiKey, integration.createOrder)

@@ -10,6 +10,7 @@ import {
   MenuFoldOutlined, MenuUnfoldOutlined,
   ThunderboltOutlined, FileTextOutlined,
   SettingOutlined, TeamOutlined, AppstoreOutlined,
+  ApiOutlined, ShoppingCartOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -49,6 +50,15 @@ const menuItems: MenuProps['items'] = [
   },
   {
     type: 'divider',
+  },
+  {
+    key: 'usina',
+    icon: <ApiOutlined />,
+    label: 'Usina ERP',
+    children: [
+      { key: '/pedidos-material', icon: <ShoppingCartOutlined />, label: 'Pedidos de Material' },
+      { key: '/usina-integracoes', icon: <ApiOutlined />, label: 'Integrações' },
+    ],
   },
   {
     key: 'cadastros',
@@ -125,7 +135,7 @@ export default function MainLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
-          defaultOpenKeys={['frota', 'cadastros']}
+          defaultOpenKeys={['frota', 'usina', 'cadastros']}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
           style={{ border: 'none', marginTop: 8 }}

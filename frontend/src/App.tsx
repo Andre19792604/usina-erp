@@ -22,6 +22,7 @@ import VehiclesPage from './pages/VehiclesPage'
 import UsersPage from './pages/UsersPage'
 import NfePage from './pages/NfePage'
 import CustoOperacionalPage from './pages/CustoOperacionalPage'
+import IntegrationPage from './pages/IntegrationPage'
 
 function PrivateRoute({ children }: { children: React.ReactElement }) {
   const { isAuthenticated, loading } = useAuth()
@@ -53,6 +54,7 @@ function AppRoutes() {
         <Route path="materiais" element={<MaterialsPage />} />
         <Route path="veiculos" element={<VehiclesPage />} />
         <Route path="usuarios" element={<UsersPage />} />
+        <Route path="integracoes" element={<IntegrationPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

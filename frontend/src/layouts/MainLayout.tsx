@@ -81,6 +81,7 @@ const menuItems: MenuProps['items'] = [
       { key: '/materiais', icon: <InboxOutlined />, label: 'Materiais' },
       { key: '/veiculos', icon: <CarOutlined />, label: 'Veículos' },
       { key: '/usuarios', icon: <UserOutlined />, label: 'Usuários' },
+      { key: '/integracoes', icon: <ApartmentOutlined />, label: 'Integrações API' },
     ],
   },
 ]

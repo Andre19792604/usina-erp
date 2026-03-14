@@ -61,11 +61,12 @@ model Client {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  salesOrders  SalesOrder[]
-  quotes       Quote[]
-  contracts    Contract[]
-  invoices     Invoice[]
-  clientStocks ClientStock[]
+  salesOrders      SalesOrder[]
+  quotes           Quote[]
+  contracts        Contract[]
+  invoices         Invoice[]
+  clientStocks     ClientStock[]
+  integrationKeys  IntegrationKey[]
 
   @@map("clients")
 }
@@ -831,6 +832,24 @@ model Mx3000Reading {
   readAt              DateTime @default(now())
 
   @@map("mx3000_readings")
+}
+
+// ─── INTEGRAÇÃO PAVCONTROL ────────────────────────────────────
+// API keys para sistemas externos (PavControl) acessarem a usina
+
+model IntegrationKey {
+  id          String   @id @default(cuid())
+  name        String   // nome da empresa/sistema
+  apiKey      String   @unique
+  clientId    String?  // vincula a um cliente da usina
+  client      Client?  @relation(fields: [clientId], references: [id])
+  active      Boolean  @default(true)
+  permissions Json     @default("[]") // ["products:read", "orders:create", etc.]
+  lastUsedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("integration_keys")
 }
 
 // ─── CUSTO OPERACIONAL ───────────────────────────────────────

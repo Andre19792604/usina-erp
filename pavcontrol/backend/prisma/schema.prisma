@@ -82,12 +82,13 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users           User[]
-  projects        Project[]
-  services        Service[]
-  equipment       Equipment[]
-  vehicles        Vehicle[]
-  reports         Report[]
+  users              User[]
+  projects           Project[]
+  services           Service[]
+  equipment          Equipment[]
+  vehicles           Vehicle[]
+  reports            Report[]
+  usinaIntegrations  UsinaIntegration[]
 
   @@map("companies")
 }
@@ -131,9 +132,10 @@ model Project {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  company     Company      @relation(fields: [companyId], references: [id])
-  productions Production[]
-  reports     Report[]
+  company        Company         @relation(fields: [companyId], references: [id])
+  productions    Production[]
+  reports        Report[]
+  materialOrders MaterialOrder[]
 
   @@map("projects")
 }
@@ -300,6 +302,74 @@ model Maintenance {
   equipment Equipment @relation(fields: [equipmentId], references: [id])
 
   @@map("maintenances")
+}
+
+// ── Integração com Usina ERP ─────────────────────────────────
+
+model UsinaIntegration {
+  id          String   @id @default(cuid())
+  name        String   // nome da usina
+  baseUrl     String   // URL da API da usina (ex: http://usina:3001/api)
+  apiKey      String   // chave de integração fornecida pela usina
+  active      Boolean  @default(true)
+  companyId   String
+  lastSyncAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company        Company         @relation(fields: [companyId], references: [id])
+  materialOrders MaterialOrder[]
+
+  @@map("usina_integrations")
+}
+
+enum MaterialOrderStatus {
+  RASCUNHO
+  ENVIADO
+  ACEITO
+  EM_PRODUCAO
+  PRONTO
+  ENTREGANDO
+  ENTREGUE
+  CANCELADO
+}
+
+model MaterialOrder {
+  id                String              @id @default(cuid())
+  code              String              @unique
+  usinaIntegrationId String
+  projectId         String
+  status            MaterialOrderStatus @default(RASCUNHO)
+  deliveryDate      DateTime?
+  deliveryAddress   String?
+  notes             String?
+  // Dados sincronizados da usina
+  usinaOrderId      String?             // ID do SalesOrder na usina
+  usinaOrderNumber  String?             // Número do pedido na usina
+  totalAmount       Decimal?            @db.Decimal(14, 2)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  usinaIntegration UsinaIntegration @relation(fields: [usinaIntegrationId], references: [id])
+  project          Project          @relation(fields: [projectId], references: [id])
+  items            MaterialOrderItem[]
+
+  @@map("material_orders")
+}
+
+model MaterialOrderItem {
+  id              String        @id @default(cuid())
+  materialOrderId String
+  usinaProductId  String        // ID do Product na usina
+  productName     String        // nome do produto (cache)
+  productType     String?       // tipo (CBUQ, PMF, etc.)
+  quantity        Decimal       @db.Decimal(14, 2) // toneladas
+  unitPrice       Decimal?      @db.Decimal(14, 4)
+  total           Decimal?      @db.Decimal(14, 2)
+
+  materialOrder MaterialOrder @relation(fields: [materialOrderId], references: [id], onDelete: Cascade)
+
+  @@map("material_order_items")
 }
 
 // ── Relatórios Diários ───────────────────────────────────────────

@@ -12,6 +12,7 @@ import * as fuel from '../controllers/fuel.controller'
 import * as reports from '../controllers/reports.controller'
 import * as dashboard from '../controllers/dashboard.controller'
 import * as maintenance from '../controllers/maintenance.controller'
+import * as usina from '../controllers/usina-integration.controller'
 
 export const router = Router()
 
@@ -93,3 +94,18 @@ router.delete('/reports/:id', authenticate, authorize('ADMIN', 'GERENTE'), repor
 router.get('/maintenance', authenticate, maintenance.list)
 router.post('/maintenance', authenticate, authorize('ADMIN', 'GERENTE', 'OPERADOR'), maintenance.create)
 router.put('/maintenance/:id/status', authenticate, maintenance.updateStatus)
+
+// ── Integração Usina ERP ────────────────────────────────────────
+router.get('/usina', authenticate, usina.list)
+router.post('/usina', authenticate, authorize('ADMIN', 'GERENTE'), usina.create)
+router.put('/usina/:id', authenticate, authorize('ADMIN', 'GERENTE'), usina.update)
+router.delete('/usina/:id', authenticate, authorize('ADMIN', 'GERENTE'), usina.remove)
+router.post('/usina/:id/test', authenticate, usina.testConnection)
+router.get('/usina/:id/catalog', authenticate, usina.fetchCatalog)
+
+// ── Pedidos de Material (via Usina) ─────────────────────────────
+router.get('/material-orders', authenticate, usina.listOrders)
+router.get('/material-orders/:id', authenticate, usina.getOrderById)
+router.post('/material-orders', authenticate, authorize('ADMIN', 'GERENTE', 'ENCARREGADO'), usina.createOrder)
+router.post('/material-orders/:id/send', authenticate, authorize('ADMIN', 'GERENTE'), usina.sendOrder)
+router.post('/material-orders/:id/sync', authenticate, usina.syncOrderStatus)

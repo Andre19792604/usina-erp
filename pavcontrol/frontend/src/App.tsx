@@ -13,6 +13,8 @@ import FuelPage from './pages/FuelPage'
 import ReportsPage from './pages/ReportsPage'
 import ServicesPage from './pages/ServicesPage'
 import UsersPage from './pages/UsersPage'
+import UsinaIntegrationPage from './pages/UsinaIntegrationPage'
+import MaterialOrdersPage from './pages/MaterialOrdersPage'
 
 function PrivateRoute({ children }: { children: React.ReactElement }) {
   const { isAuthenticated, loading } = useAuth()
@@ -35,6 +37,8 @@ function AppRoutes() {
         <Route path="relatorios" element={<ReportsPage />} />
         <Route path="servicos" element={<ServicesPage />} />
         <Route path="usuarios" element={<UsersPage />} />
+        <Route path="usina-integracoes" element={<UsinaIntegrationPage />} />
+        <Route path="pedidos-material" element={<MaterialOrdersPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
