@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PavControl — Gestão de Obras de Pavimentação</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0f1a; color: #e2e8f0; }
+
+/* LOGIN */
+#screen-login {
+  width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0a0f1a 0%, #0f172a 50%, #0d1b2e 100%);
+}
+.login-card {
+  background: #162032; border: 1px solid #1e3a5f; border-radius: 16px;
+  padding: 48px 40px; width: 400px; text-align: center;
+}
+.login-logo-icon { width:64px;height:64px;border-radius:16px;margin:0 auto 12px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff; }
+.login-logo-title { font-size: 28px; font-weight: 800; color: #10b981; margin-bottom: 6px; }
+.login-logo-sub { font-size: 13px; color: #64748b; margin-bottom: 36px; }
+.login-form { display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.form-group label { font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.form-group input {
+  background: #0f172a; border: 1px solid #1e3a5f; border-radius: 8px;
+  padding: 12px 16px; color: #e2e8f0; font-size: 14px;
+}
+.form-group input:focus { outline: none; border-color: #10b981; }
+.btn-login {
+  margin-top: 8px; background: linear-gradient(135deg,#10b981,#059669); color: #fff; border: none;
+  border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: background 0.2s;
+}
+.btn-login:hover { background: #059669; }
+
+/* APP LAYOUT */
+#screen-app { display: none; width: 100vw; height: 100vh; flex-direction: row; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; background: #0d1b2e; border-right: 1px solid #1e3a5f;
+  display: flex; flex-direction: column; flex-shrink: 0;
+  height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto;
+}
+.logo {
+  height: 64px; display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; border-bottom: 1px solid #1e3a5f; flex-shrink: 0;
+}
+.logo-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #fff;
+}
+.logo-text { font-size: 14px; font-weight: 700; color: #10b981; }
+.logo-sub { font-size: 10px; color: #64748b; }
+.menu { padding: 8px 0; flex: 1; }
+.menu-group-label {
+  font-size: 10px; color: #475569; text-transform: uppercase;
+  letter-spacing: 0.1em; padding: 16px 20px 4px; font-weight: 600;
+}
+.menu-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 20px;
+  color: #94a3b8; font-size: 13px; cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.menu-item:hover { background: #1e3a5f22; color: #e2e8f0; }
+.menu-item.active {
+  background: rgba(16,185,129,0.1); color: #10b981;
+  border-right: 3px solid #10b981;
+}
+.menu-icon { font-size: 15px; width: 20px; text-align: center; }
+.menu-divider { border-top: 1px solid #1e3a5f; margin: 8px 0; }
+
+/* MAIN */
+.main-area { margin-left: 240px; flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* HEADER */
+.header {
+  height: 64px; background: #0f172a; border-bottom: 1px solid #1e3a5f;
+  display: flex; align-items: center; padding: 0 24px; gap: 16px;
+  flex-shrink: 0;
+}
+.header-title { font-size: 16px; font-weight: 700; color: #e2e8f0; flex: 1; }
+.hdr-pill {
+  display: flex; align-items: center; gap: 8px; background: #162032;
+  border: 1px solid #1e3a5f; border-radius: 20px; padding: 6px 14px; font-size: 12px;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.dot-green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.dot-amber { background: #f59e0b; }
+.hdr-clock { font-size: 13px; font-weight: 600; color: #e2e8f0; font-family: monospace; }
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff; cursor: pointer;
+}
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 24px; background: #0a0f1a; }
+
+/* PAGE */
+.page-content { display: none; }
+.page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+.page-title { font-size: 22px; font-weight: 800; color: #e2e8f0; margin-bottom: 4px; }
+.page-subtitle { font-size: 13px; color: #64748b; }
+
+/* CARDS */
+.card { background: #162032; border: 1px solid #1e3a5f; border-radius: 12px; padding: 20px; }
+.card-title { font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; }
+
+/* KPI GRID */
+.kpi-row { display: flex; gap: 16px; margin-bottom: 20px; }
+.kpi-card { flex: 1; background: #162032; border: 1px solid #1e3a5f; border-radius: 12px; padding: 18px 20px; }
+.kpi-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; font-weight: 600; }
+.kpi-value { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.kpi-change { font-size: 12px; color: #64748b; }
+.kpi-change span { font-weight: 600; }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table th {
+  text-align: left; padding: 10px 12px; font-size: 11px;
+  color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 1px solid #1e3a5f; font-weight: 600;
+}
+table td { padding: 11px 12px; border-bottom: 1px solid rgba(30,58,95,0.4); color: #e2e8f0; }
+table tr:last-child td { border-bottom: none; }
+table tr:hover td { background: rgba(30,58,95,0.2); }
+
+/* BADGES */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+.badge-amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.badge-blue { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.badge-gray { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.badge-purple { background: rgba(167,139,250,0.15); color: #a78bfa; }
+.badge-emerald { background: rgba(16,185,129,0.15); color: #10b981; }
+.badge-cyan { background: rgba(34,211,238,0.15); color: #22d3ee; }
+
+/* PROGRESS BAR */
+.progress-wrap { background: #0f172a; border-radius: 4px; height: 6px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 4px; }
+
+/* ROWS */
+.row { display: flex; gap: 16px; margin-bottom: 20px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all 0.15s;
+}
+.btn-primary { background: linear-gradient(135deg,#10b981,#059669); color: #fff; }
+.btn-primary:hover { background: #059669; }
+.btn-amber { background: linear-gradient(135deg,#f59e0b,#d97706); color: #0a0f1a; }
+.btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+.btn-outline { background: transparent; border: 1px solid #1e3a5f; color: #94a3b8; }
+.btn-outline:hover { border-color: #10b981; color: #10b981; }
+.btn-green { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.btn-red { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.btn-blue { background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+
+/* CHART BARS */
+.chart-bars { display: flex; align-items: flex-end; gap: 12px; height: 120px; padding-top: 8px; }
+.bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.bar { width: 100%; background: rgba(16,185,129,0.7); border-radius: 4px 4px 0 0; transition: all 0.3s; min-height: 4px; }
+.bar:hover { background: #10b981; }
+.bar-label { font-size: 11px; color: #64748b; }
+
+/* FORM */
+.form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.form-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.form-col label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+.form-col input, .form-col select, .form-col textarea {
+  background: #0f172a; border: 1px solid #1e3a5f; border-radius: 6px;
+  padding: 8px 12px; color: #e2e8f0; font-size: 13px; font-family: inherit;
+}
+.form-col input:focus, .form-col select:focus, .form-col textarea:focus { outline: none; border-color: #10b981; }
+
+/* MODAL */
+.modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center; }
+.modal-overlay.show { display:flex; }
+.modal { background:#162032;border:1px solid #1e3a5f;border-radius:16px;padding:32px;width:560px;max-height:80vh;overflow-y:auto; }
+.modal-title { font-size:18px;font-weight:700;color:#e2e8f0;margin-bottom:20px; }
+.modal-footer { display:flex;gap:8px;justify-content:flex-end;margin-top:20px; }
+
+/* PLATE */
+.plate-tag { background:#0f172a;border:1px solid #334155;border-radius:4px;padding:2px 8px;font-family:'Courier New',monospace;font-weight:700;font-size:12px; }
+
+/* BLINK */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+.blink { animation: blink 2s infinite; }
+
+/* INTEGRATION FLOW */
+.flow-step { display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0f172a;border:1px solid #1e3a5f;border-radius:8px;margin-bottom:8px; }
+.flow-num { width:28px;height:28px;border-radius:50%;background:#10b981;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0; }
+.flow-arrow { text-align:center;color:#1e3a5f;font-size:18px;margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo-icon">P</div>
+    <div class="login-logo-title">PAVCONTROL</div>
+    <div class="login-logo-sub">Gestão de Obras de Pavimentação</div>
+    <div class="login-form">
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="text" value="admin@pavcontrol.com" id="login-email">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" value="admin123" id="login-pass">
+      </div>
+      <button class="btn-login" onclick="doLogin()">Entrar no Sistema</button>
+    </div>
+    <div style="margin-top:24px;font-size:11px;color:#475569;">PavControl v1.0 · SaaS para Construtoras de Pavimentação</div>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="screen-app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">P</div>
+      <div>
+        <div class="logo-text">PAVCONTROL</div>
+        <div class="logo-sub">Gestão de Obras</div>
+      </div>
+    </div>
+    <div class="menu">
+      <div class="menu-item active" onclick="showPage('dashboard')">
+        <span class="menu-icon">📊</span> Dashboard
+      </div>
+      <div class="menu-item" onclick="showPage('obras')">
+        <span class="menu-icon">🏗️</span> Obras
+      </div>
+      <div class="menu-item" onclick="showPage('producao')">
+        <span class="menu-icon">📋</span> Produção Diária
+      </div>
+      <div class="menu-group-label">Frota</div>
+      <div class="menu-item" onclick="showPage('veiculos')">
+        <span class="menu-icon">🚛</span> Veículos
+      </div>
+      <div class="menu-item" onclick="showPage('equipamentos')">
+        <span class="menu-icon">⚙️</span> Equipamentos
+      </div>
+      <div class="menu-item" onclick="showPage('combustivel')">
+        <span class="menu-icon">⛽</span> Combustível
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-item" onclick="showPage('relatorios')">
+        <span class="menu-icon">📄</span> Relatórios
+      </div>
+      <div class="menu-group-label">Usina ERP</div>
+      <div class="menu-item" onclick="showPage('pedidos')">
+        <span class="menu-icon">🛒</span> Pedidos de Material
+      </div>
+      <div class="menu-item" onclick="showPage('integracoes')">
+        <span class="menu-icon">🔗</span> Integrações
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-group-label">Cadastros</div>
+      <div class="menu-item" onclick="showPage('servicos')">
+        <span class="menu-icon">📐</span> Serviços
+      </div>
+      <div class="menu-item" onclick="showPage('usuarios')">
+        <span class="menu-icon">👤</span> Usuários
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+    <div class="header">
+      <div class="header-title" id="header-title">Dashboard</div>
+      <div class="hdr-pill">
+        <span class="dot dot-green blink"></span>
+        <span style="color:#94a3b8">Empresa:</span>
+        <span style="color:#10b981;font-weight:600">PavControl Demo</span>
+      </div>
+      <div class="hdr-clock" id="clock">--:--:--</div>
+      <div class="user-avatar">A</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══════════════ DASHBOARD ═══════════════ -->
+      <div class="page-content" id="page-dashboard" style="display:block">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Dashboard</div>
+            <div class="page-subtitle">Visão geral das operações</div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Obras Ativas</div>
+            <div class="kpi-value" style="color:#10b981">5</div>
+            <div class="kpi-change"><span style="color:#22c55e">+1</span> esta semana</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Produção Hoje</div>
+            <div class="kpi-value" style="color:#60a5fa">284 <span style="font-size:14px;color:#64748b">ton</span></div>
+            <div class="kpi-change"><span style="color:#22c55e">↑ 12%</span> vs ontem</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Equipamentos Ativos</div>
+            <div class="kpi-value" style="color:#f59e0b">12</div>
+            <div class="kpi-change">de 18 cadastrados</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Combustível Hoje</div>
+            <div class="kpi-value" style="color:#ef4444">1.240 <span style="font-size:14px;color:#64748b">L</span></div>
+            <div class="kpi-change"><span style="color:#ef4444">R$ 8.184</span> custo</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="card" style="flex:2">
+            <div class="card-title">Produção da Semana (ton)</div>
+            <div class="chart-bars">
+              <div class="bar-col"><div class="bar" style="height:60%"></div><div class="bar-label">Seg</div></div>
+              <div class="bar-col"><div class="bar" style="height:80%"></div><div class="bar-label">Ter</div></div>
+              <div class="bar-col"><div class="bar" style="height:70%"></div><div class="bar-label">Qua</div></div>
+              <div class="bar-col"><div class="bar" style="height:95%"></div><div class="bar-label">Qui</div></div>
+              <div class="bar-col"><div class="bar" style="height:85%;background:rgba(16,185,129,1)"></div><div class="bar-label" style="color:#10b981;font-weight:600">Sex</div></div>
+              <div class="bar-col"><div class="bar" style="height:40%"></div><div class="bar-label">Sab</div></div>
+              <div class="bar-col"><div class="bar" style="height:4px"></div><div class="bar-label">Dom</div></div>
+            </div>
+          </div>
+          <div class="card" style="flex:1">
+            <div class="card-title">Resumo da Frota</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">🚛 Veículos</span><span style="color:#10b981;font-weight:600">23</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">⚙️ Equipamentos</span><span style="color:#f59e0b;font-weight:600">18</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">⛽ Custo Mensal</span><span style="color:#ef4444;font-weight:600">R$ 186.420</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#94a3b8">🔧 Em Manutenção</span><span style="color:#a78bfa;font-weight:600">3</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Últimas Produções</div>
+          <table>
+            <thead><tr><th>Obra</th><th>Serviço</th><th>Quantidade</th><th>Trecho</th><th>Responsável</th><th>Data</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600">Pavimentação Av. Central</td><td style="color:#94a3b8">Pavimentação Asfáltica</td><td style="color:#10b981;font-weight:600">140 ton</td><td style="color:#64748b">Est. 120 → 260</td><td style="color:#94a3b8">João Silva</td><td style="color:#64748b">14/03 08:30</td><td><span class="badge badge-green">Concluído</span></td></tr>
+              <tr><td style="font-weight:600">Rod. BR-101 Km 42</td><td style="color:#94a3b8">Fresagem</td><td style="color:#10b981;font-weight:600">2.400 m²</td><td style="color:#64748b">Km 42 → 44</td><td style="color:#94a3b8">Carlos Lima</td><td style="color:#64748b">14/03 07:15</td><td><span class="badge badge-blue">Em Execução</span></td></tr>
+              <tr><td style="font-weight:600">Rua das Flores</td><td style="color:#94a3b8">Tapa-Buraco</td><td style="color:#10b981;font-weight:600">8.5 ton</td><td style="color:#64748b">—</td><td style="color:#94a3b8">Pedro Santos</td><td style="color:#64748b">14/03 06:00</td><td><span class="badge badge-amber">Pendente</span></td></tr>
+              <tr><td style="font-weight:600">Condomínio Vila Verde</td><td style="color:#94a3b8">Imprimação</td><td style="color:#10b981;font-weight:600">3.200 m²</td><td style="color:#64748b">—</td><td style="color:#94a3b8">Ana Oliveira</td><td style="color:#64748b">13/03 14:00</td><td><span class="badge badge-green">Concluído</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ OBRAS ═══════════════ -->
+      <div class="page-content" id="page-obras">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Obras</div>
+            <div class="page-subtitle">5 obras cadastradas</div>
+          </div>
+          <button class="btn btn-primary" onclick="showModal('modal-obra')">+ Nova Obra</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Obra</th><th>Cliente</th><th>Cidade</th><th>Status</th><th>Área (m²)</th><th>Início</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><div style="font-weight:600;color:#e2e8f0">🏗️ Pavimentação Av. Central</div><div style="color:#64748b;font-size:11px">OBR001</div></td><td style="color:#94a3b8">Prefeitura Municipal</td><td style="color:#94a3b8">São Paulo/SP</td><td><span class="badge badge-blue">Em Andamento</span></td><td style="color:#10b981;font-weight:600">12.000</td><td style="color:#64748b">01/02/2026</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600;color:#e2e8f0">🏗️ Rod. BR-101 Km 42-50</div><div style="color:#64748b;font-size:11px">OBR002</div></td><td style="color:#94a3b8">DNIT</td><td style="color:#94a3b8">Florianópolis/SC</td><td><span class="badge badge-blue">Em Andamento</span></td><td style="color:#10b981;font-weight:600">48.000</td><td style="color:#64748b">15/01/2026</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600;color:#e2e8f0">🏗️ Rua das Flores</div><div style="color:#64748b;font-size:11px">OBR003</div></td><td style="color:#94a3b8">Construtora Beta</td><td style="color:#94a3b8">Curitiba/PR</td><td><span class="badge badge-blue">Em Andamento</span></td><td style="color:#10b981;font-weight:600">3.500</td><td style="color:#64748b">01/03/2026</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600;color:#e2e8f0">🏗️ Condomínio Vila Verde</div><div style="color:#64748b;font-size:11px">OBR004</div></td><td style="color:#94a3b8">Vila Verde Inc.</td><td style="color:#94a3b8">Campinas/SP</td><td><span class="badge badge-green">Concluído</span></td><td style="color:#10b981;font-weight:600">8.200</td><td style="color:#64748b">10/11/2025</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600;color:#e2e8f0">🏗️ Estacionamento Shopping</div><div style="color:#64748b;font-size:11px">OBR005</div></td><td style="color:#94a3b8">Shopping Center XYZ</td><td style="color:#94a3b8">Santos/SP</td><td><span class="badge badge-gray">Planejamento</span></td><td style="color:#10b981;font-weight:600">15.000</td><td style="color:#64748b">—</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ PRODUÇÃO ═══════════════ -->
+      <div class="page-content" id="page-producao">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Produção Diária</div>
+            <div class="page-subtitle">Registros de produção em campo</div>
+          </div>
+          <button class="btn btn-primary">+ Registrar Produção</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Data</th><th>Obra</th><th>Serviço</th><th>Trecho</th><th>Quantidade</th><th>Temp.</th><th>Clima</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#94a3b8">14/03/2026</td><td style="color:#e2e8f0">Pav. Av. Central</td><td style="color:#94a3b8">Pavimentação</td><td style="color:#64748b">120 → 260</td><td style="color:#10b981;font-weight:600">140 ton</td><td style="color:#f59e0b">148°C</td><td>☀️ Sol</td><td><span class="badge badge-green">Concluído</span></td></tr>
+              <tr><td style="color:#94a3b8">14/03/2026</td><td style="color:#e2e8f0">Rod. BR-101</td><td style="color:#94a3b8">Fresagem</td><td style="color:#64748b">Km 42 → 44</td><td style="color:#10b981;font-weight:600">2.400 m²</td><td style="color:#64748b">—</td><td>☀️ Sol</td><td><span class="badge badge-blue">Em Execução</span></td></tr>
+              <tr><td style="color:#94a3b8">14/03/2026</td><td style="color:#e2e8f0">Rua das Flores</td><td style="color:#94a3b8">Tapa-Buraco</td><td style="color:#64748b">—</td><td style="color:#10b981;font-weight:600">8.5 ton</td><td style="color:#f59e0b">142°C</td><td>🌤️ Nublado</td><td><span class="badge badge-amber">Pendente</span></td></tr>
+              <tr><td style="color:#94a3b8">13/03/2026</td><td style="color:#e2e8f0">Cond. Vila Verde</td><td style="color:#94a3b8">Imprimação</td><td style="color:#64748b">—</td><td style="color:#10b981;font-weight:600">3.200 m²</td><td style="color:#64748b">—</td><td>☀️ Sol</td><td><span class="badge badge-green">Concluído</span></td></tr>
+              <tr><td style="color:#94a3b8">13/03/2026</td><td style="color:#e2e8f0">Pav. Av. Central</td><td style="color:#94a3b8">Pavimentação</td><td style="color:#64748b">80 → 120</td><td style="color:#10b981;font-weight:600">125 ton</td><td style="color:#f59e0b">151°C</td><td>☀️ Sol</td><td><span class="badge badge-green">Concluído</span></td></tr>
+              <tr><td style="color:#94a3b8">12/03/2026</td><td style="color:#e2e8f0">Rod. BR-101</td><td style="color:#94a3b8">Pintura de Ligação</td><td style="color:#64748b">Km 40 → 42</td><td style="color:#10b981;font-weight:600">5.600 m²</td><td style="color:#64748b">—</td><td>🌧️ Chuvisco</td><td><span class="badge badge-green">Concluído</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ VEÍCULOS ═══════════════ -->
+      <div class="page-content" id="page-veiculos">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Veículos</div>
+            <div class="page-subtitle">23 veículos cadastrados</div>
+          </div>
+          <button class="btn btn-primary">+ Novo Veículo</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Placa</th><th>Tipo</th><th>Marca/Modelo</th><th>Ano</th><th>Cap. (ton)</th><th>Combustível</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><span class="plate-tag" style="color:#10b981">🚛 ABC-1234</span></td><td><span class="badge badge-blue">Caminhão</span></td><td>Volvo FH 540</td><td style="color:#94a3b8">2024</td><td style="color:#10b981;font-weight:600">32.0</td><td style="color:#94a3b8">Diesel</td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span class="plate-tag" style="color:#10b981">🚛 DEF-5678</span></td><td><span class="badge badge-blue">Caminhão</span></td><td>Scania R450</td><td style="color:#94a3b8">2023</td><td style="color:#10b981;font-weight:600">28.0</td><td style="color:#94a3b8">Diesel</td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span class="plate-tag" style="color:#10b981">🚗 GHI-9012</span></td><td><span class="badge badge-emerald">Pickup</span></td><td>Toyota Hilux</td><td style="color:#94a3b8">2025</td><td style="color:#10b981;font-weight:600">1.0</td><td style="color:#94a3b8">Diesel</td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span class="plate-tag" style="color:#10b981">🚜 JKL-3456</span></td><td><span class="badge badge-amber">Máquina</span></td><td>CAT CB64B</td><td style="color:#94a3b8">2022</td><td style="color:#64748b">—</td><td style="color:#94a3b8">Diesel</td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span class="plate-tag" style="color:#10b981">🚛 MNO-7890</span></td><td><span class="badge badge-purple">Carreta</span></td><td>Randon Basculante</td><td style="color:#94a3b8">2021</td><td style="color:#10b981;font-weight:600">35.0</td><td style="color:#94a3b8">Diesel</td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ EQUIPAMENTOS ═══════════════ -->
+      <div class="page-content" id="page-equipamentos">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Equipamentos</div>
+            <div class="page-subtitle">18 equipamentos cadastrados</div>
+          </div>
+          <button class="btn btn-primary">+ Novo Equipamento</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Equipamento</th><th>Marca/Modelo</th><th>Nº Série</th><th>Horímetro</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><div style="font-weight:600">⚙️ Vibroacabadora</div><div style="color:#64748b;font-size:11px">EQP001</div></td><td style="color:#94a3b8">XCMG RP903</td><td style="font-family:monospace;color:#64748b">SN-2024-001</td><td style="color:#f59e0b;font-weight:600">3.240 h</td><td><span class="badge badge-blue">Em Operação</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600">⚙️ Rolo Compactador</div><div style="color:#64748b;font-size:11px">EQP002</div></td><td style="color:#94a3b8">CAT CB64B</td><td style="font-family:monospace;color:#64748b">SN-2023-015</td><td style="color:#f59e0b;font-weight:600">2.180 h</td><td><span class="badge badge-blue">Em Operação</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600">⚙️ Fresadora</div><div style="color:#64748b;font-size:11px">EQP003</div></td><td style="color:#94a3b8">Wirtgen W210Fi</td><td style="font-family:monospace;color:#64748b">SN-2022-008</td><td style="color:#f59e0b;font-weight:600">4.560 h</td><td><span class="badge badge-blue">Em Operação</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600">⚙️ Distribuidor Asfalto</div><div style="color:#64748b;font-size:11px">EQP004</div></td><td style="color:#94a3b8">Ciber DAC-10</td><td style="font-family:monospace;color:#64748b">SN-2021-022</td><td style="color:#f59e0b;font-weight:600">5.890 h</td><td><span class="badge badge-green">Disponível</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><div style="font-weight:600">⚙️ Retroescavadeira</div><div style="color:#64748b;font-size:11px">EQP005</div></td><td style="color:#94a3b8">JCB 3CX</td><td style="font-family:monospace;color:#64748b">SN-2020-003</td><td style="color:#f59e0b;font-weight:600">6.120 h</td><td><span class="badge badge-amber">Manutenção</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ COMBUSTÍVEL ═══════════════ -->
+      <div class="page-content" id="page-combustivel">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Combustível</div>
+            <div class="page-subtitle">Controle de abastecimentos</div>
+          </div>
+          <button class="btn btn-primary">+ Novo Abastecimento</button>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Litros (Mês)</div>
+            <div class="kpi-value" style="color:#10b981">32.450 <span style="font-size:14px;color:#64748b">L</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Custo Total (Mês)</div>
+            <div class="kpi-value" style="color:#ef4444">R$ 214.170</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Registros</div>
+            <div class="kpi-value" style="color:#60a5fa">87</div>
+          </div>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Data</th><th>Veículo</th><th>Tipo</th><th>Litros</th><th>R$/L</th><th>Total</th><th>KM</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#94a3b8">14/03 08:15</td><td style="color:#e2e8f0;font-weight:600">ABC-1234</td><td><span class="badge badge-blue">Diesel</span></td><td style="color:#10b981;font-weight:600">380 L</td><td style="color:#94a3b8">R$ 6.59</td><td style="color:#ef4444;font-weight:600">R$ 2.504</td><td style="color:#64748b">145.230</td></tr>
+              <tr><td style="color:#94a3b8">14/03 07:30</td><td style="color:#e2e8f0;font-weight:600">DEF-5678</td><td><span class="badge badge-blue">Diesel</span></td><td style="color:#10b981;font-weight:600">420 L</td><td style="color:#94a3b8">R$ 6.59</td><td style="color:#ef4444;font-weight:600">R$ 2.768</td><td style="color:#64748b">98.450</td></tr>
+              <tr><td style="color:#94a3b8">13/03 17:00</td><td style="color:#e2e8f0;font-weight:600">GHI-9012</td><td><span class="badge badge-blue">Diesel</span></td><td style="color:#10b981;font-weight:600">65 L</td><td style="color:#94a3b8">R$ 6.45</td><td style="color:#ef4444;font-weight:600">R$ 419</td><td style="color:#64748b">52.180</td></tr>
+              <tr><td style="color:#94a3b8">13/03 16:20</td><td style="color:#e2e8f0;font-weight:600">JKL-3456</td><td><span class="badge badge-blue">Diesel</span></td><td style="color:#10b981;font-weight:600">200 L</td><td style="color:#94a3b8">R$ 6.59</td><td style="color:#ef4444;font-weight:600">R$ 1.318</td><td style="color:#64748b">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ RELATÓRIOS ═══════════════ -->
+      <div class="page-content" id="page-relatorios">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Relatórios Diários</div>
+            <div class="page-subtitle">Relatórios automáticos de campo</div>
+          </div>
+          <button class="btn btn-primary">+ Novo Relatório</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Data</th><th>Obra</th><th>Clima</th><th>Resumo</th><th>Autor</th><th></th></tr></thead>
+            <tbody>
+              <tr><td style="color:#94a3b8">14/03/2026</td><td><span style="color:#10b981">📄</span> Pav. Av. Central</td><td>☀️ Sol</td><td style="color:#64748b">Aplicação de 140 ton CBUQ no trecho 120-260. Sem ocorrências.</td><td style="color:#94a3b8">João Silva</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="color:#94a3b8">14/03/2026</td><td><span style="color:#10b981">📄</span> Rod. BR-101</td><td>☀️ Sol</td><td style="color:#64748b">Fresagem em andamento Km 42-44. Chuva prevista para amanhã.</td><td style="color:#94a3b8">Carlos Lima</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="color:#94a3b8">13/03/2026</td><td><span style="color:#10b981">📄</span> Cond. Vila Verde</td><td>☀️ Sol</td><td style="color:#64748b">Imprimação finalizada. Obra concluída.</td><td style="color:#94a3b8">Ana Oliveira</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ PEDIDOS DE MATERIAL ═══════════════ -->
+      <div class="page-content" id="page-pedidos">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🛒 Pedidos de Material</div>
+            <div class="page-subtitle">Solicite asfalto e materiais das usinas conectadas</div>
+          </div>
+          <button class="btn btn-amber">+ Novo Pedido</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Código</th><th>Usina</th><th>Obra</th><th>Nº Usina</th><th>Itens</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-weight:600">MAT001</td><td style="color:#94a3b8">Usina ABC</td><td style="color:#e2e8f0">Pav. Av. Central</td><td style="color:#60a5fa;font-family:monospace">PV000142</td><td style="color:#94a3b8">2 produtos</td><td style="color:#f59e0b;font-weight:600">R$ 78.400</td><td><span class="badge badge-green">Entregue</span></td><td><button class="btn btn-sm btn-outline">Ver</button></td></tr>
+              <tr><td style="font-family:monospace;font-weight:600">MAT002</td><td style="color:#94a3b8">Usina ABC</td><td style="color:#e2e8f0">Rod. BR-101</td><td style="color:#60a5fa;font-family:monospace">PV000156</td><td style="color:#94a3b8">1 produto</td><td style="color:#f59e0b;font-weight:600">R$ 112.000</td><td><span class="badge badge-amber">Em Produção</span></td><td><button class="btn btn-sm btn-blue">Sincronizar</button></td></tr>
+              <tr><td style="font-family:monospace;font-weight:600">MAT003</td><td style="color:#94a3b8">Usina ABC</td><td style="color:#e2e8f0">Rua das Flores</td><td style="color:#60a5fa;font-family:monospace">PV000163</td><td style="color:#94a3b8">1 produto</td><td style="color:#f59e0b;font-weight:600">R$ 2.380</td><td><span class="badge badge-blue">Enviado</span></td><td><button class="btn btn-sm btn-blue">Sincronizar</button></td></tr>
+              <tr><td style="font-family:monospace;font-weight:600">MAT004</td><td style="color:#94a3b8">Usina ABC</td><td style="color:#e2e8f0">Estac. Shopping</td><td style="color:#64748b">—</td><td style="color:#94a3b8">3 produtos</td><td style="color:#64748b">—</td><td><span class="badge badge-gray">Rascunho</span></td><td><button class="btn btn-sm btn-green">Enviar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:20px">
+          <div class="card-title">Fluxo de Integração com a Usina</div>
+          <div class="flow-step"><div class="flow-num">1</div><div><strong style="color:#e2e8f0">Criar Pedido</strong><br><span style="color:#64748b;font-size:12px">Selecione usina, obra e produtos do catálogo</span></div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><div class="flow-num">2</div><div><strong style="color:#e2e8f0">Enviar para Usina</strong><br><span style="color:#64748b;font-size:12px">Pedido vira Sales Order automaticamente na usina</span></div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><div class="flow-num">3</div><div><strong style="color:#e2e8f0">Acompanhar Produção</strong><br><span style="color:#64748b;font-size:12px">Sincronize status: Aceito → Em Produção → Pronto</span></div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><div class="flow-num" style="background:#f59e0b">4</div><div><strong style="color:#e2e8f0">Receber Entrega</strong><br><span style="color:#64748b;font-size:12px">Material entregue na obra com dados de pesagem</span></div></div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ INTEGRAÇÕES ═══════════════ -->
+      <div class="page-content" id="page-integracoes">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🔗 Integrações com Usinas</div>
+            <div class="page-subtitle">Conecte-se a usinas de asfalto para solicitar material</div>
+          </div>
+          <button class="btn btn-primary">+ Nova Integração</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Usina</th><th>API Key</th><th>Último Sync</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><span class="dot dot-green"></span><span style="font-weight:600">Usina ABC Asfalto</span></div><div style="color:#64748b;font-size:11px">http://usina-abc:3001/api</div></td>
+                <td style="font-family:monospace;color:#64748b;font-size:11px">usina_a3b7c9d1e5...</td>
+                <td style="color:#94a3b8">14/03 08:42</td>
+                <td><span class="badge badge-green">Ativa</span></td>
+                <td><button class="btn btn-sm btn-green">✓ Testar</button> <button class="btn btn-sm btn-outline">Editar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:20px">
+          <div class="card-title">Como Configurar</div>
+          <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;color:#94a3b8;">
+            <div>1. Solicite uma <strong style="color:#e2e8f0">API Key</strong> ao administrador da usina (tela "Integrações API" no Usina ERP)</div>
+            <div>2. Configure a <strong style="color:#e2e8f0">URL da API</strong> da usina (ex: http://usina.com:3001/api)</div>
+            <div>3. Clique em <strong style="color:#10b981">Testar</strong> para verificar a conexão</div>
+            <div>4. Pronto! Agora você pode criar pedidos de material em "Pedidos de Material"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SERVIÇOS ═══════════════ -->
+      <div class="page-content" id="page-servicos">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Serviços</div>
+            <div class="page-subtitle">Biblioteca de serviços de pavimentação</div>
+          </div>
+          <button class="btn btn-primary">+ Novo Serviço</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Código</th><th>Nome</th><th>Unidade</th><th></th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-PAV</td><td style="font-weight:600">Pavimentação Asfáltica</td><td style="color:#10b981">TON</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-IMP</td><td style="font-weight:600">Imprimação</td><td style="color:#10b981">M2</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-PIN</td><td style="font-weight:600">Pintura de Ligação</td><td style="color:#10b981">M2</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-TAP</td><td style="font-weight:600">Tapa-Buraco</td><td style="color:#10b981">TON</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-FRE</td><td style="font-weight:600">Fresagem</td><td style="color:#10b981">M2</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-MIC</td><td style="font-weight:600">Microrrevestimento</td><td style="color:#10b981">M2</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-TSD</td><td style="font-weight:600">Tratamento Superficial</td><td style="color:#10b981">M2</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-TER</td><td style="font-weight:600">Terraplanagem</td><td style="color:#10b981">M3</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-DRE</td><td style="font-weight:600">Drenagem</td><td style="color:#10b981">ML</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td style="font-family:monospace;color:#64748b">SRV-SIN</td><td style="font-weight:600">Sinalização</td><td style="color:#10b981">ML</td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════ USUÁRIOS ═══════════════ -->
+      <div class="page-content" id="page-usuarios">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Usuários</div>
+            <div class="page-subtitle">6 usuários cadastrados</div>
+          </div>
+          <button class="btn btn-primary">+ Novo Usuário</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><span style="color:#10b981">👤</span> <strong>Administrador</strong></td><td style="color:#94a3b8">admin@pavcontrol.com</td><td><span class="badge badge-red">Administrador</span></td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span style="color:#10b981">👤</span> <strong>João Silva</strong></td><td style="color:#94a3b8">joao@pavcontrol.com</td><td><span class="badge badge-emerald">Encarregado</span></td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span style="color:#10b981">👤</span> <strong>Carlos Lima</strong></td><td style="color:#94a3b8">carlos@pavcontrol.com</td><td><span class="badge badge-amber">Operador</span></td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span style="color:#10b981">👤</span> <strong>Ana Oliveira</strong></td><td style="color:#94a3b8">ana@pavcontrol.com</td><td><span class="badge badge-blue">Gerente</span></td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span style="color:#10b981">👤</span> <strong>Pedro Santos</strong></td><td style="color:#94a3b8">pedro@pavcontrol.com</td><td><span class="badge badge-purple">Motorista</span></td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><span style="color:#10b981">👤</span> <strong>Maria Costa</strong></td><td style="color:#94a3b8">maria@pavcontrol.com</td><td><span class="badge badge-gray">Visualizador</span></td><td><span class="badge badge-green">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-area -->
+</div><!-- /screen-app -->
+
+<!-- ═══════════════ MODAL: NOVA OBRA ═══════════════ -->
+<div class="modal-overlay" id="modal-obra">
+  <div class="modal">
+    <div class="modal-title">Nova Obra</div>
+    <div class="form-row">
+      <div class="form-col" style="flex:2"><label>Nome da Obra</label><input type="text" placeholder="Ex: Pavimentação Av. Central"></div>
+      <div class="form-col"><label>Status</label><select><option>Planejamento</option><option>Em Andamento</option><option>Pausado</option><option>Concluído</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-col"><label>Cliente</label><input type="text" placeholder="Nome do cliente"></div>
+      <div class="form-col"><label>Endereço</label><input type="text" placeholder="Endereço da obra"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-col"><label>Cidade</label><input type="text" placeholder="Cidade"></div>
+      <div class="form-col" style="flex:0.4"><label>UF</label><input type="text" maxlength="2" placeholder="SP"></div>
+      <div class="form-col"><label>Data Início</label><input type="date"></div>
+      <div class="form-col"><label>Previsão Fim</label><input type="date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-col"><label>Área Total (m²)</label><input type="number" placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-col"><label>Descrição</label><textarea rows="3" placeholder="Descrição da obra..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="hideModal('modal-obra')">Cancelar</button>
+      <button class="btn btn-primary" onclick="hideModal('modal-obra')">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Login ────────────────────────────────────────────────────
+function doLogin() {
+  document.getElementById('screen-login').style.display = 'none';
+  const app = document.getElementById('screen-app');
+  app.style.display = 'flex';
+}
+
+// ── Page Navigation ─────────────────────────────────────────
+const pageTitles = {
+  dashboard: 'Dashboard',
+  obras: 'Obras',
+  producao: 'Produção Diária',
+  veiculos: 'Veículos',
+  equipamentos: 'Equipamentos',
+  combustivel: 'Combustível',
+  relatorios: 'Relatórios Diários',
+  pedidos: 'Pedidos de Material',
+  integracoes: 'Integrações',
+  servicos: 'Serviços',
+  usuarios: 'Usuários',
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) page.style.display = 'block';
+
+  // Activate menu item
+  document.querySelectorAll('.menu-item').forEach(m => {
+    if (m.textContent.trim().includes(pageTitles[id]?.split(' ')[0] || '---')) {
+      m.classList.add('active');
+    }
+  });
+
+  document.getElementById('header-title').textContent = pageTitles[id] || id;
+}
+
+// ── Modal ───────────────────────────────────────────────────
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if (e.target === el) el.classList.remove('show');
+  });
+});
+
+// ── Clock ───────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>
